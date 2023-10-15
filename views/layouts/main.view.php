@@ -44,5 +44,4 @@
         <p>Projekt: Genius Budget Book von Eric Manig</p>
     </footer>
 </body>
-
 </html>

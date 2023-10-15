@@ -89,8 +89,26 @@ class DBInitialize {
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
-        $fstOfMonth = "'" . date('Y-m'). "-01'";
-        $query = "INSERT INTO `sandboxuserwdmonthly` (`id`, `dateslug`, `Bank Account-1-target`, `Bank Account-1-actual`,  `Savings Account-1-target`, `Savings Account-1-actual`, `Stocks-0-target`, `Stocks-0-actual`, `Real Estate-0-target`, `Real Estate-0-actual`,`State sponsored fund-0-target`, `State sponsored fund-0-actual`, `Collectibles-0-target`, `Collectibles-0-actual`) VALUES (NULL, {$fstOfMonth}, '2700', '3000', '5600','5400', '3200', '3750', '12000', '15400', '5000', '3250', '740', '730')";
+        $dates= [];
+        for($x=0; $x<14; $x++) {
+            $dates[] = "'" . date('Y-m',strtotime("-${x} month")) . "-01'";
+        }
+       
+        $query = "INSERT INTO `sandboxuserwdmonthly` (`id`, `dateslug`, `Bank Account-1-target`, `Bank Account-1-actual`,  `Savings Account-1-target`, `Savings Account-1-actual`, `Stocks-0-target`, `Stocks-0-actual`, `Real Estate-0-target`, `Real Estate-0-actual`,`State sponsored fund-0-target`, `State sponsored fund-0-actual`, `Collectibles-0-target`, `Collectibles-0-actual`) VALUES
+            (NULL, {$dates[13]}, '2700', '2700', '6000','6005', '3400', '3050', '12000', '13100', '2950', '2370', '1200', '1385'), 
+            (NULL, {$dates[12]}, '2450', '2450', '5800','5805', '3300', '2750', '12000', '12950', '2800', '2320', '1200', '1372'), 
+            (NULL, {$dates[11]}, '2400', '2400', '5600','5605', '3200', '2550', '12000', '12900', '2650', '2120', '1200', '1365'),
+            (NULL, {$dates[10]}, '2500', '2500', '5400','5405', '3100', '2750', '12000', '12800', '2500', '2010', '1200', '1380'),
+            (NULL, {$dates[9]}, '2400', '2400', '5200','5205', '3000', '2800', '12000', '12700', '2350', '1950', '1200', '1370'),
+            (NULL, {$dates[8]}, '2300', '2300', '5000','5000', '2900', '2850', '12000', '12650', '2200', '1970', '1200', '1355'),
+            (NULL, {$dates[7]}, '2000', '2000', '4800','4800', '2800', '3000', '12000', '12600', '2050', '2000', '1200', '1360'),
+            (NULL, {$dates[6]}, '2200', '2200', '4600','4600', '2700', '3300', '12000', '12550', '1900', '2120', '1200', '1350'),
+            (NULL, {$dates[5]}, '2000', '2000', '4400','4400', '2600', '3150', '12000', '12500', '1750', '1920', '740', '770'),
+            (NULL, {$dates[4]}, '1850', '1850', '4200','4200', '2500', '3000', '12000', '12450', '1600', '1810', '740', '770'),
+            (NULL, {$dates[3]}, '2050', '2050', '4000','4000', '2400', '2760', '12000', '12400', '1450', '1540', '740', '735'),
+            (NULL, {$dates[2]}, '2200', '2200', '3800','3800', '2300', '2600', '12000', '12350', '1300', '1360', '740', '735'),
+            (NULL, {$dates[1]}, '2500', '2500', '3600','3600', '2200', '2600', '12000', '12300', '1150', '1170', '740', '735'),
+            (NULL, {$dates[0]}, '2350', '2350', '3400','3400', '2100', '2350', '12000', '12100', '1000', '1050', '740', '730')";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
     }
