@@ -10,6 +10,7 @@ class WDController extends AbstractController{
     public function __construct(
         protected WDRepository $wdRepository,
         protected UsersRepository $usersRepository) {}
+        #TODO: username als constructor festlegen, genau wie aktuelles Datum
 
     public function wdCategoriesOfMonth($username, $date): array {
         $wdArray = $this->wdRepository->fetchAllOfMonth($username, $date);
@@ -62,6 +63,85 @@ class WDController extends AbstractController{
             $wdCreateArray = array_combine($wdcategories, array_values($_POST));
             $this->wdRepository->create($username, $date, $wdCreateArray);
             header('Location: ./?route=monthly-page');
+        }
+    }
+
+    public function currentTotalWealthDistribution() {
+        $username = $_SESSION['username'];
+        $date = date('Y-m');
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $date);
+        $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
+        return $wdMap; 
+    }
+
+    public function currentWDTarget() {
+        $wdMap = $this->currentTotalWealthDistribution();
+        $currentWDTargetArray = [];
+        foreach($wdMap AS $key => $value) {
+            if(preg_match('/^.*target$/', $key)) $currentWDTargetArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+        }
+        arsort($currentWDTargetArray);
+        return $currentWDTargetArray;
+    }
+
+    public function currentWDActual() {
+        $wdMap = $this->currentTotalWealthDistribution();
+        $currentWDActualArray = [];
+        foreach($wdMap AS $key => $value) {
+            if(preg_match('/^.*actual$/', $key)) $currentWDActualArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+        }
+        arsort($currentWDActualArray);
+        return $currentWDActualArray;
+    }
+
+    public function currentTotalWealth() {
+        $username = $_SESSION['username'];
+        $date = date('Y-m');
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $date);
+        $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
+        $wdValues = array_values($wdMap);
+        $currentTotalWealth = 0;
+        for($x=1; $x<sizeof($wdValues); $x=$x+2) {
+            $currentTotalWealth += $wdValues[$x];
+        }
+        return $currentTotalWealth;
+    }
+
+    public function wdTrend($startDate, $dataSet) {
+        $username = $_SESSION['username'];
+        $endDate = date('Y-m') . '-01';
+        $wdCollectionraw = $this->wdRepository->fectAllForTimeInterval($username, $startDate, $endDate);
+        $wdCollection = [];
+        foreach($wdCollectionraw AS $array) {
+            $wdCollection[] = array_slice($array, 1, sizeof($array) - 1);
+        } 
+        $filteredArray = [];
+        switch ($dataSet) {
+            case 'actual':
+                foreach($wdCollection AS $array) {
+                    $localeArray = [];
+                    foreach($array AS $key => $value) {
+                        if($key === 'dateslug') $localeArray[$key] = $value;
+                        if(preg_match('/^.*actual$/', $key)) $localeArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+                    }
+                $filteredArray[] = $localeArray;
+                }
+                return $filteredArray;
+            case 'total-target-actual':
+                foreach($wdCollection AS $array) {
+                    $localeArray = [];
+                    $localSumTarget = 0;
+                    $localSumActual = 0;
+                    foreach($array AS $key => $value) {
+                        if($key === 'dateslug') $localeArray[$key] = $value;
+                        if(preg_match('/^.*target$/', $key)) $localSumTarget += (int) $value;
+                        if(preg_match('/^.*actual$/', $key)) $localSumActual += (int) $value;
+                    }
+                $localeArray['Total wealth target'] = $localSumTarget;
+                $localeArray['Total wealth actual'] = $localSumActual;
+                $filteredArray[] = $localeArray;
+                }
+                return $filteredArray;
         }
     }
 }

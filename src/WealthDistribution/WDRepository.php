@@ -43,6 +43,16 @@ class WDRepository {
         return $result;
     }
 
+    public function fectAllForTimeInterval($username, $startDate, $endDate) {
+        $query = 'SELECT * FROM' . "`{$username}" . 'wdmonthly` WHERE `dateslug` BETWEEN :startdate AND :enddate';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':startdate', $startDate);
+        $stmt->bindValue(':enddate', $endDate);
+        $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
     public function update($username, $date, $wdUpdateArray) {    
         $date = $date . '-01';
         $queryArray = [];

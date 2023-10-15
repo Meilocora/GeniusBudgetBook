@@ -95,6 +95,12 @@ $container->add('monthlyPageWizard', function() {
     return new \App\FrontendWizard\MonthlyPageWizard();
 });
 
+$container->add('homepageController', function() use($container) {
+    return new \App\Controller\HomepageController(
+        $container->get('wdController'),
+        $container->get('yearlyController'));
+});
+
 // Routing Logic
 $route = @(string) ($_GET['route'] ?? 'page');
 
@@ -153,10 +159,18 @@ elseif($route === 'register/newUser') {
 elseif($route === 'homepage') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    $routingController = $container->get('routingController');
-    $routingController->render('homepage', [
-        'navRoutes' => $navRoutes
-    ]);
+    if(isset($_POST['startDate'])) {
+        $_SESSION['startDate'] = $_POST['startDate'];
+        $startDate = $_POST['startDate'];
+    } else {
+        if(isset($_SESSION['startDate'])) {
+            $startDate = $_SESSION['startDate'];
+        } else {
+            $startDate = date('Y') . '-01-01';
+        }
+    }
+    $homepageController = $container->get('homepageController');
+    $homepageController->showHomepage($navRoutes, $startDate);
 }
 elseif($route === 'homepage/sandbox') {   
     $dbController = $container->get('dbController');

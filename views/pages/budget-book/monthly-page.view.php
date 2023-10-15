@@ -66,18 +66,18 @@
     </div>
     <hr>
     <div class="additional-row">
-        <h3>Balance of budget book</h3>
+        <h3>Balance of budget book</h3>     
     </div>
     <div class="additional-row">
-        <span class="circle">Total income<br><?php echo e($balance['income']); ?> €</span>  
-        <span class="circle">Income p.d.<br><?php echo e((int) $additionalInfo['incomePerDay']); ?> €</span>
+        <span class="circle">Total income<br><?php echo e(number_format($balance['income'], '0', ',', '.')); ?> €</span>  
+        <span class="circle">Income p.d.<br><?php echo e(number_format($additionalInfo['incomePerDay'], '0', ',', '.')); ?> €</span>
     </div>
     <div class="additional-row">
-        <span class="circle">Total expenses<br><?php echo e($balance['expense']); ?> €</span>  
-        <span class="circle">Expenses p.d.<br><?php echo e((int) $additionalInfo['expensesPerDay']); ?> €</span>
+        <span class="circle">Total expenses<br><?php echo e(number_format($balance['expense'], '0', ',', '.')); ?> €</span>  
+        <span class="circle">Expenses p.d.<br><?php echo e(number_format($additionalInfo['expensesPerDay'], '0', ',', '.')); ?> €</span>
     </div>
     <div class="additional-row">
-        <span class="<?php if($balance['balance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Total balance<br><?php echo e($balance['balance']); ?> €</span>
+        <span class="<?php if($balance['balance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Total balance<br><?php echo e(number_format($balance['balance'], '0', ',', '.')); ?> €</span>
     </div>
 </section>
 <!-- ENTRY-LIST -->

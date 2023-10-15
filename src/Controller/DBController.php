@@ -54,7 +54,7 @@ class DBController extends AbstractController {
         ];
         $donationgoal = @(float) (400);
         $savinggoal = @(float) (1000);
-        $totalwealthgoal = @(float) (53000);
+        $totalwealthgoal = @(float) (30000);
 
         $this->dbInitialize->sandboxInitialize($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray, $donationgoal, $savinggoal, $totalwealthgoal);
         $_POST['username'] = $username;
