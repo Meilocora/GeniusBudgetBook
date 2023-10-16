@@ -10,7 +10,6 @@ class EntryModel {
     public float $amount;
     public string $dateslug;
     public string $comment;
-    public int $timestampslug;
     public int $income;
     public int $fixedentry;
 }

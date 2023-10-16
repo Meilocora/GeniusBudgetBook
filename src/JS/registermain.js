@@ -16,6 +16,7 @@ register.additionalInput("#anotherRevCat", "revenueCategories", "revcat", "e.g. 
 register.nextButton("#hideRevenueCategories", ["revcat"], "revenueCategories", "expenditureCategories");
 register.backButton("#showExpenditureCategories", "expenditureCategories", "goals");
 
+// #TODO: Hinweis, wie Donations gefunden werden
 register.additionalInput("#anotherExpCat", "expenditureCategories", "expcat", "e.g. Rent");
 register.nextButton("#hideExpenditureCategories", ["expcat"], "expenditureCategories", "goals");
 register.backButton("#showWealthDist", "wealthDistribution", "revenueCategories");

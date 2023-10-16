@@ -98,7 +98,8 @@ $container->add('monthlyPageWizard', function() {
 $container->add('homepageController', function() use($container) {
     return new \App\Controller\HomepageController(
         $container->get('wdController'),
-        $container->get('yearlyController'));
+        $container->get('yearlyController'),
+        $container->get('entryController'));
 });
 
 // Routing Logic
@@ -169,8 +170,18 @@ elseif($route === 'homepage') {
             $startDate = date('Y') . '-01-01';
         }
     }
+    if(isset($_POST['colorTheme'])) {
+        $_SESSION['colorTheme'] = $_POST['colorTheme'];
+        $colorTheme = $_POST['colorTheme'];
+    } else {
+        if(isset($_SESSION['colorTheme'])) {
+            $colorTheme = $_SESSION['colorTheme'];
+        } else {
+            $colorTheme = 'default';
+        }
+    }
     $homepageController = $container->get('homepageController');
-    $homepageController->showHomepage($navRoutes, $startDate);
+    $homepageController->showHomepage($navRoutes, $startDate, $colorTheme);
 }
 elseif($route === 'homepage/sandbox') {   
     $dbController = $container->get('dbController');

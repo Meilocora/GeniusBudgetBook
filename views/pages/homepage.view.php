@@ -8,6 +8,20 @@
             <span>Your total assets are currently worth: <?php echo number_format($currentTotalWealth, '0', ',', '.') . ' €'; ?></span>
         </div>
         <div class="charts-container-row">
+            <form action="./?route=homepage" method="post" class="chartScopeForm">
+                <input type="hidden" name="colorTheme" value="default">
+                <input type="submit" value="default" 
+                <?php if($colorTheme === 'default') echo 'disabled'; ?>
+                class="<?php if($colorTheme === 'default') echo 'chosen'; ?>">
+            </form>
+            <form action="./?route=homepage" method="post" class="chartScopeForm">
+                <input type="hidden" name="colorTheme" value="colorful">
+                <input type="submit" value="colorful" 
+                <?php if($colorTheme === 'colorful') echo 'disabled'; ?>
+                class="<?php if($colorTheme === 'colorful') echo 'chosen'; ?>">
+            </form>
+        </div>
+        <div class="charts-container-row">
             <canvas id="wdChartActualC" width="800px" height="350px"></canvas>
             <canvas id="wdChartActualP" width="500px" height="350px"></canvas>
         </div>  
@@ -35,19 +49,19 @@
                 <input type="hidden" name="startDate" value="<?php echo date('Y') . '-01-01'; ?>">
                 <input type="submit" value="YTD" 
                 <?php if($startDate === date('Y') . '-01-01') echo 'disabled'; ?>
-                class="<?php if($startDate === date('Y') . '-01-01') echo 'startDateChosen'; ?>">
+                class="<?php if($startDate === date('Y') . '-01-01') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="startDate" value="<?php echo date('Y-m',strtotime("-11 month")) . '-01'; ?>">
                 <input type="submit" value="YoY" 
                 <?php if($startDate === date('Y-m',strtotime("-11 month")) . '-01') echo 'disabled'; ?>
-                class="<?php if($startDate === date('Y-m',strtotime("-11 month")) . '-01') echo 'startDateChosen'; ?>">
+                class="<?php if($startDate === date('Y-m',strtotime("-11 month")) . '-01') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="startDate" value="1970-01-01">
                 <input type="submit" value="All" 
                 <?php if($startDate === '1970-01-01') echo 'disabled'; ?>
-                class="<?php if($startDate === '1970-01-01') echo 'startDateChosen'; ?>">
+                class="<?php if($startDate === '1970-01-01') echo 'chosen'; ?>">
             </form>
         </div>
         <div class="charts-container-row">
@@ -62,9 +76,18 @@
             <h1>Donation Goal</h1>
         </div>
         <div class="charts-container-row">
-            <div class="dummy-diagramm"></div>
-            <p>Your donation goal für XXXX is XXX</p>
-            <p>You need to donate xxx more to reach the goal!</p>
+            <canvas id="donationsGoalC" width="800px" height="350px"></canvas>
+            <canvas id="donationsGoalP" width="500px" height="350px"></canvas>
+        </div>
+        <div class="charts-container-row">
+            <span>Your donation goal is <?php echo number_format(array_sum($donationsArrayC), '0', ',', '.') . '€.'; ?></span>
+        </div>
+        <div class="charts-container-row">
+            <?php if($donationsArrayC[1] !== 0): ?>
+                <span>You need to donate <?php echo number_format($donationsArrayC[1], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
+            <?php else: ?>
+                <span>Congratulations! You already reached your donations goal.</span>
+            <?php endif; ?>
         </div>
     </div>  
     <div class="charts-container">
@@ -120,4 +143,10 @@
     let wdTrendYTData = [<?php for($x=1; $x<sizeof($wdYTargetActualC[0]); $x++) echo "{$wdYTargetActualC[0][$x]}, "; ?>];
     let wdTrendYAData = [<?php for($x=1; $x<sizeof($wdYTargetActualC[0]); $x++) echo "{$wdYTargetActualC[1][$x]}, "; ?>];
     chartGenerator.generateLineChart('wdTrendChartActualTargetC', 'Cumulative trend of wealth distributions', backgroundColorTransp2, wdGoalData, wdTrendYLabels, wdTrendYTALabels.reverse(), wdTrendYAData, wdTrendYTData);
+
+    let donationsGoalDataCurrency = [<?php echo "$donationsArrayC[0], $donationsArrayC[1]"; ?>];
+    chartGenerator.generatePieChart('donationsGoalC', ['Donations made', 'Donations missing'], donationsGoalDataCurrency, '€', true, backgroundColor2);
+    
+    let onationsGoalDataPercentages = [<?php echo "$donationsArrayP[0], $donationsArrayP[1]"; ?>];
+    chartGenerator.generatePieChart('donationsGoalP', ['Donations made', 'Donations missing'], onationsGoalDataPercentages, '%', false, backgroundColor2);
 </script>

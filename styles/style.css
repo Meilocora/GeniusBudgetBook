@@ -333,7 +333,18 @@ hr {
     display: block;
     color: inherit;
     height: 100%;
+}
+
+#nav-content>.nav-element {
     text-shadow: none;
+}
+
+#nav-content>.nav-element:hover {
+    text-shadow: var(--text-shadow-standard);
+}
+
+#nav-content>.active_sub {
+    text-shadow: var(--text-shadow-standard);
 }
 
 .dropdown{
@@ -687,13 +698,13 @@ section.homepage-container {
     font-size: 1.25rem;
 }
 
-.charts-container-row>.chartScopeForm {
+/* .charts-container-row>.chartScopeForm { */
 
-}
+/* } */
 
 .chartScopeForm>input[type="submit"] {
     color: white;
-    width: 5rem;
+    width: 7rem;
     height: 2.5rem;
     padding: .25rem 1rem;
     font-size: 1rem;
@@ -711,12 +722,10 @@ section.homepage-container {
     border-radius: 0px 20px 20px 0px;
 }
 
-.chartScopeForm>input[type="submit"].startDateChosen,
+.chartScopeForm>input[type="submit"].chosen,
 .chartScopeForm>input[type="submit"]:hover {
-    background-color: transparent;
-    --border-hover-btn: black 2px solid;
-    /* color: black; */
-    text-shadow: var(--text-shadow-standard);
+    background-color: var(--grey-light);
+    color: black;
     box-shadow: 0px 0px 8px black inset;
 }
 
@@ -726,10 +735,6 @@ section.homepage-container {
     border-radius: 100%;
     background-color: var(--grey-heavy);
     margin: 0 1.5rem;
-}
-
-canvas {
-    /* display: block; */
 }
 
 /* xxxxxxxxxxxxxxxxxxxxx OVERVIEW-VIEW xxxxxxxxxxxxxxxxxxxxx */

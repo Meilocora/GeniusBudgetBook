@@ -4,14 +4,16 @@ namespace App\Controller;
 
 use App\Controller\WDController;
 use App\Controller\YearlyController;
+use App\Controller\EntryController;
 
 class HomepageController extends AbstractController{
 
     public function __construct(
         protected WDController $wdController,
-        protected YearlyController $yearlyController) {}
+        protected YearlyController $yearlyController,
+        protected EntryController $entryController) {}
 
-    public function showHomepage($navRoutes, $startDate) {
+    public function showHomepage($navRoutes, $startDate, $colorTheme) {
         $currentWDTargetArrayC = $this->wdController->currentWDTarget(); 
         $currentWDTargetArrayP = $this->calculatePercentagesArray($currentWDTargetArrayC);
         $currentWDActualArrayC = $this->wdController->currentWDActual();
@@ -21,15 +23,14 @@ class HomepageController extends AbstractController{
         $currentGoalSharesP = $this->calculatePercentagesArray($currentGoalSharesC);
         $goalsArray = $this->yearlyController->fetchCurrentGoals();
         $daysleft = $this->calculateRemainingDays();
-
-        #TODO: Switch für Farben einbauen (Theme oder Bunt)
-        $backgroundColor10 = ['rgb(20,113,73)', 'rgb(25,128,83)', 'rgb(33,149,99)', 'rgb(44,175,118)', 'rgb(54,189,128)', 'rgb(75,197,133)', 'rgb(101,208,141)', 'rgb(128,218,144)', 'rgb(142,221,145)', 'rgb(207,245,191)'];
-        $backgroundColor2 = ['rgb(20,113,73)', 'rgb(207,245,191)'];
-        $transparency = 0.75;
-        $backgroundColorTransp10 = ["rgb(20,113,73,$transparency)", "rgb(25,128,83,$transparency)", "rgb(33,149,99,$transparency)", "rgb(44,175,118,$transparency)", "rgb(54,189,128,$transparency)", "rgb(75,197,133,$transparency)", "rgb(101,208,141,$transparency)", "rgb(128,218,144,$transparency)", "rgb(142,221,145,$transparency)", "rgb(207,245,191,$transparency)"];
-        $backgroundColorTransp2 = ["rgb(20,113,73,$transparency)", "rgb(207,245,191,$transparency)"];
+        $backgroundColor10 = $this->giveColors($colorTheme, 1)[0];
+        $backgroundColor2 = $this->giveColors($colorTheme, 1)[1];
+        $backgroundColorTransp10 = $this->giveColors($colorTheme, 0.75)[0];
+        $backgroundColorTransp2 = $this->giveColors($colorTheme, 0.75)[1];
         $wdYC = $this->wdTrendArray('actual', $startDate);
         $wdYTargetActualC = $this->wdTrendArray('total-target-actual', $startDate);
+        $donationsArrayC = $this->donationsValuesArray();
+        $donationsArrayP = $this->calculatePercentagesArray($donationsArrayC);
 
         $this->render('homepage', [
             'navRoutes' => $navRoutes,
@@ -42,13 +43,16 @@ class HomepageController extends AbstractController{
             'currentGoalSharesP' => $currentGoalSharesP,
             'goalsArray' => $goalsArray,
             'daysleft' => $daysleft,
+            'colorTheme' => $colorTheme,
             'backgroundColor10' => $backgroundColor10,
             'backgroundColorTransp10' => $backgroundColorTransp10,
             'backgroundColor2' => $backgroundColor2,
             'backgroundColorTransp2' => $backgroundColorTransp2,
             'startDate' => $startDate,
             'wdYC' => $wdYC,
-            'wdYTargetActualC' => $wdYTargetActualC
+            'wdYTargetActualC' => $wdYTargetActualC,
+            'donationsArrayC' => $donationsArrayC,
+            'donationsArrayP' => $donationsArrayP
         ]);
     }
 
@@ -67,6 +71,7 @@ class HomepageController extends AbstractController{
         return $totalWealthGoalShares;
     }
 
+    #TODO: In functions auslagern
     public function calculatePercentagesArray($array) {
         $sum = array_sum($array);
         $percentagesArray= [];
@@ -84,6 +89,23 @@ class HomepageController extends AbstractController{
         $daysleft = round((($timeleft/24)/60)/60); 
         return $daysleft;
     }
+
+    public function giveColors($colorTheme, $transparency) {
+        $colorsArray = [];
+        switch ($colorTheme) {
+            case 'default':
+                $colors10 = ["rgb(20,113,73,$transparency)", "rgb(25,128,83,$transparency)", "rgb(33,149,99,$transparency)", "rgb(44,175,118,$transparency)", "rgb(54,189,128,$transparency)", "rgb(75,197,133,$transparency)", "rgb(101,208,141,$transparency)", "rgb(128,218,144,$transparency)", "rgb(142,221,145,$transparency)", "rgb(207,245,191,$transparency)"];
+                $colors2 = ["rgb(20,113,73,$transparency)", "rgb(207,245,191,$transparency)"];
+                break;
+            case 'colorful':
+                $colors10 = ["rgb(255,0,0,$transparency)", "rgb(255,127,0,$transparency)", "rgb(255,255,0,$transparency)", "rgb(127,255,0,$transparency)", "rgb(0,255,0,$transparency)", "rgb(0,255,127,$transparency)", "rgb(0,255,255,$transparency)", "rgb(0,127,255,$transparency)", "rgb(0,0,255,$transparency)", "rgb(127,0,255,$transparency)"];
+                $colors2 = ["rgb(255,0,0,$transparency)", "rgb(127,0,255,$transparency)"];
+                break;
+            }
+        $colorsArray[] = $colors10;
+        $colorsArray[] = $colors2;
+        return $colorsArray;
+    } 
 
     public function wdTrendArray($dataSet, $startDate) {
         $twoDWDArray = $this->wdController->wdTrend($startDate, $dataSet);
@@ -112,13 +134,22 @@ class HomepageController extends AbstractController{
             $modifiedDateArray[] = date_create($singleDate)->format('M Y');
         }
         $wdTrendArray[] = $modifiedDateArray;
-
         return $wdTrendArray;
     }
 
-
-    #TODO: DonationGoal... wenn Kommentar "donation" oder "Spende" enthält (groß oder klein)... Hinweis bei Registrierung!
-                        // Liste mit allen Einträgen + 2x pie chart
+    public function donationsValuesArray() {
+        $startDate = date('Y-m-d', strtotime('first day of january this year'));
+        $donationEntries = $this->entryController->donationsTrend($startDate);
+        $currentGoalsArray = $this->yearlyController->fetchCurrentGoals();
+        $donationsValuesArray = [];
+        $donationsActual = 0;
+        foreach($donationEntries AS $entry) {
+            $donationsActual += $entry->amount;
+        }
+        $donationsValuesArray[] = $donationsActual;
+        $donationsValuesArray[] = max($currentGoalsArray['donationgoal'] - $donationsActual ,0);
+        return $donationsValuesArray;
+    }
 
     #TODO: SavingGoal... Alles, was zu liquiden Mitteln gehört... 2x pie-chart + 1x line-chart
 }

@@ -254,5 +254,18 @@ class EntryController extends AbstractController{
         }
         return $untransferedFixedEntries;
     }
+
+    public function donationsTrend($startDate) {
+        $username = $_SESSION['username'];
+        $endDate = date('Y-m-d');
+        $entryCollectionraw = $this->entryRepository->fectAllForTimeInterval($username, $startDate, $endDate);
+        $donationsEntries = [];
+        foreach($entryCollectionraw AS $entry) {
+            if(preg_match('/.*donation.*/i', $entry->category) | preg_match('/.*?donation.*?/i', $entry->title) | preg_match('/.*?donation.*?/i', $entry->comment)) {
+                $donationsEntries[] = $entry;
+            }
+        }
+        return $donationsEntries;
+    }
 }
 

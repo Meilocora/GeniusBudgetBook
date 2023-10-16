@@ -42,6 +42,15 @@ class EntryRepository {
         return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
     }
 
+    public function fectAllForTimeInterval($username, $startDate, $endDate) {
+        $query = 'SELECT * FROM' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :startdate AND :enddate';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':startdate', $startDate);
+        $stmt->bindValue(':enddate', $endDate);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
+    } 
+
     public function fetchAllOfMonthPerPage($date, $perPage, $currentPage): array {
         $username = $_SESSION['username'];
         $dateClass = new DateTime($date);

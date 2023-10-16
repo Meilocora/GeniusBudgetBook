@@ -66,8 +66,8 @@ class DBInitialize {
     public function sandboxEntriesFill() {
         function createRandCurrentDateArray ($month) {
             $randCurrentDateArray = [];
-            for($x = 0; $x < 8; $x++) {
-                $day = @(string) rand(1, 29);
+            for($x = 0; $x < 9; $x++) {
+                $day = @(string) rand(1, date('d'));
                 $randCurrentDateArray[] = "'" . date('Y-' . $month . '-' . $day). "'";
             }
             return $randCurrentDateArray;
@@ -85,7 +85,9 @@ class DBInitialize {
         (NULL, 'Gifts', 'Mother', 35, {$randDateArrayThisMonth[4]}, '', 0, 0), 
         (NULL, 'Journeys', 'Italie', 750, {$randDateArrayThisMonth[5]}, '', 0, 0),
         (NULL, 'Leisure', 'Party', 80, {$randDateArrayThisMonth[6]}, 'Went to the Club tonight', 0, 0),
-        (NULL, 'Transportation', 'Car refill', 90, {$randDateArrayThisMonth[7]}, '1,95€ per litre', 0, 0)";
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArrayThisMonth[7]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Gifts', 'Donation', 50, {$randDateArrayThisMonth[7]}, 'Animal Rescue Center', 0, 0),
+        (NULL, 'Gifts', 'Gift', 20, {$randDateArrayThisMonth[7]}, 'second donation', 0, 0)";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
