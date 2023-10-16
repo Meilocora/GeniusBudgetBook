@@ -1,3 +1,7 @@
++++++++++++ Implemented third party tools +++++++++++
+- chart.js
+- chart.js-plugin-datalabels
+
 The "genius budget book" can be used by hosting a local server via XAMPP.
 To use it via XAMPP:
 1) download XAMPP (https://www.apachefriends.org/de/download.html)
@@ -8,7 +12,7 @@ To use it via XAMPP:
 6) open browser (Google Chrome if possible)
 7) open following URL: http://localhost/GeniusBudgetBook/
 
-xxxx Additional Infos xxxx
++++++++++++ ADDITIONAL INFOS +++++++++++
 Because of missing responsetivety it is recommended to view on the 1920x1080 px display format.
 
 You can manually view, edit, save and delete the database at:
@@ -16,7 +20,7 @@ http://localhost/phpmyadmin/
 username: root
 password: 
 
-xxxx Bug-Fixing for MySQL xxxx
++++++++++++ Bug-Fixing for MySQL +++++++++++
 Problem: "Error: MySQL shutdown unexpectedly"
 Fix: delete "aria_log_control" at ...\xampp\mysql\data
 
