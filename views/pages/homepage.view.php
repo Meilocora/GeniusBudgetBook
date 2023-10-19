@@ -3,6 +3,10 @@
         <!-- #TODO: Button um Jahr auszuwählen + Button um Goals anzupassen -->
         <div class="charts-container-row">
             <h1>Total Wealth</h1>
+            <form action="./?route=homepage" method="post">
+                <input type="number" name="year" min="1970" max="<?php echo date('Y'); ?>" value="<?php echo $year; ?>">
+                <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='20px' width='20px'>
+            </form>
         </div>
         <div class="charts-container-row">
             <span>Your total assets are currently worth: <?php echo number_format($currentTotalWealth, '0', ',', '.') . ' €'; ?></span>
@@ -22,10 +26,18 @@
             </form>
         </div>
         <div class="charts-container-row">
-            <canvas id="wdChartActualC" width="800px" height="350px"></canvas>
-            <canvas id="wdChartActualP" width="500px" height="350px"></canvas>
+            <?php if(!empty($currentWDActualArrayC) & !empty($currentWDTargetArrayC)): ?>
+                <canvas id="wdChartActualC" width="800px" height="350px"></canvas>
+                <canvas id="wdChartActualP" width="500px" height="350px"></canvas>
+            <?php else: ?>
+                <h2>No wealth distribution entries for <?php echo $year; ?> available.</h2>
+            <?php endif; ?>
         </div>  
-            <?php if($currentGoalSharesC['Missing wealth'] !== 0): ?>
+            <?php if(array_values($currentGoalSharesC) === [0, 0]): ?>
+                <div class="charts-container-row">
+                    <h2>No monetary goals set for <?php echo $year; ?>.</h2>
+                </div>
+            <?php elseif($currentGoalSharesC['Missing wealth'] !== 0 && $year === date('Y')): ?>
                 <div class="charts-container-row">
                     <span>You have <?php echo e($daysleft); ?> days to reach your personal wealth goal of <?php echo number_format($goalsArray["totalwealthgoal"], '0', ',', '.') . '€'; ?>...</span>
                 </div> 
@@ -39,64 +51,78 @@
                 <div class="charts-container-row">
                     <span>Make sure to reach your donation goal aswell...</span>
                 </div>
-            <?php endif; ?>             
-        <div class="charts-container-row"> 
-            <canvas id="wdWealthGoalC" width="800px" height="350px"></canvas>
-            <canvas id="wdWealthGoalP" width="500px" height="350px"></canvas>
-        </div>
+            <?php endif; ?>    
+        <?php if(array_values($currentGoalSharesC) !== [0, 0]): ?>      
+            <div class="charts-container-row"> 
+                <canvas id="wdWealthGoalC" width="800px" height="350px"></canvas>
+                <canvas id="wdWealthGoalP" width="500px" height="350px"></canvas>
+            </div>
+        <?php endif; ?>
         <div class="charts-container-row">
             <form action="./?route=homepage" method="post" class="chartScopeForm">
-                <input type="hidden" name="startDate" value="<?php echo date('Y') . '-01-01'; ?>">
+                <input type="hidden" name="timeInterval" value="YTD">
                 <input type="submit" value="YTD" 
-                <?php if($startDate === date('Y') . '-01-01') echo 'disabled'; ?>
-                class="<?php if($startDate === date('Y') . '-01-01') echo 'chosen'; ?>">
+                <?php if($timeInterval === 'YTD') echo 'disabled'; ?>
+                class="<?php if($timeInterval === 'YTD') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
-                <input type="hidden" name="startDate" value="<?php echo date('Y-m',strtotime("-11 month")) . '-01'; ?>">
+                <input type="hidden" name="timeInterval" value="YOY">
                 <input type="submit" value="YoY" 
-                <?php if($startDate === date('Y-m',strtotime("-11 month")) . '-01') echo 'disabled'; ?>
-                class="<?php if($startDate === date('Y-m',strtotime("-11 month")) . '-01') echo 'chosen'; ?>">
+                <?php if($timeInterval === 'YOY') echo 'disabled'; ?>
+                class="<?php if($timeInterval === 'YOY') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
-                <input type="hidden" name="startDate" value="1970-01-01">
+                <input type="hidden" name="timeInterval" value="ALL">
                 <input type="submit" value="All" 
-                <?php if($startDate === '1970-01-01') echo 'disabled'; ?>
-                class="<?php if($startDate === '1970-01-01') echo 'chosen'; ?>">
+                <?php if($timeInterval === 'ALL') echo 'disabled'; ?>
+                class="<?php if($timeInterval === 'ALL') echo 'chosen'; ?>">
             </form>
         </div>
-        <div class="charts-container-row">
-            <canvas id="wdTrendChartActualC" width="1100px" height="450px"></canvas>
-        </div>
-        <div class="charts-container-row">
-            <canvas id="wdTrendChartActualTargetC" width="1100px" height="450px"></canvas>
-        </div>  
+        <?php if($wdYC !== [[0], [0]]): ?>
+            <div class="charts-container-row">
+                <canvas id="wdTrendChartActualC" width="1100px" height="450px"></canvas>
+            </div>
+            <div class="charts-container-row">
+                <canvas id="wdTrendChartActualTargetC" width="1100px" height="450px"></canvas>
+            </div>  
+        <?php endif; ?>
     </div>
     <div class="charts-container">
         <div class="charts-container-row">
             <h1>Donation Goal</h1>
         </div>
-        <div class="charts-container-row">
-            <canvas id="donationsGoalC" width="800px" height="350px"></canvas>
-            <canvas id="donationsGoalP" width="500px" height="350px"></canvas>
-        </div>
-        <div class="charts-container-row">
-            <span>Your donation goal is <?php echo number_format(array_sum($donationsArrayC), '0', ',', '.') . '€.'; ?></span>
-        </div>
-        <div class="charts-container-row">
-            <?php if($donationsArrayC[1] !== 0): ?>
-                <span>You need to donate <?php echo number_format($donationsArrayC[1], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
-            <?php else: ?>
-                <span>Congratulations! You already reached your donations goal.</span>
-            <?php endif; ?>
-        </div>
+        <?php if($goalsArray['donationgoal'] !== 0): ?>
+            <div class="charts-container-row">
+                <canvas id="donationsGoalC" width="800px" height="350px"></canvas>
+                <canvas id="donationsGoalP" width="500px" height="350px"></canvas>
+            </div>
+        <?php endif; ?>
+        <?php if($goalsArray['donationgoal'] !== 0): ?>
+            <div class="charts-container-row">
+                <span>Your donation goal is <?php echo number_format(array_sum($donationsArrayC), '0', ',', '.') . '€.'; ?></span>
+            </div>
+            <div class="charts-container-row">
+                <?php if($donationsArrayC[1] !== 0): ?>
+                    <span>You need to donate <?php echo number_format($donationsArrayC[1], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
+                <?php else: ?>
+                    <span>Congratulations! You already reached your donations goal.</span>
+                <?php endif; ?>
+            </div>
+        <?php else: ?>
+            <div class="charts-container-row">
+                <h2>No monetary goals set for <?php echo $year; ?>.</h2>
+            </div>
+        <?php endif ?>
     </div>  
     <div class="charts-container">
         <div class="charts-container-row">
             <h1>Saving Goal</h1>
         </div>
         <div class="charts-container-row">
-            <div class="dummy-diagramm"></div>
-            <p>Your saving goal für XXXX is XXX</p>
+                <canvas id="savingsTrendChartActualC" width="1100px" height="450px"></canvas>
+            </div>
+        <div class="charts-container-row">
+            <p>Your saving goal for <?php echo $year; ?> is <?php echo $goalsArray['savinggoal']; ?> €.</p>
             <p>You need to donate xxx more to reach the goal!</p>
         </div>
     </div>  
@@ -110,6 +136,7 @@
     let backgroundColor2 = [<?php foreach($backgroundColor2 AS $color) echo "'$color', "; ?>]
     let backgroundColorTransp10 = [<?php foreach($backgroundColorTransp10 AS $color) echo "'$color', "; ?>]
     let backgroundColorTransp2 = [<?php foreach($backgroundColorTransp2 AS $color) echo "'$color', "; ?>]
+    
     let wdLabelArray = [<?php foreach($currentWDActualArrayC AS $key => $value) echo "'$key'" . ", "; ?>];
     let wdDataArrayCurrency = [<?php foreach($currentWDActualArrayC AS $key => $value) echo "$value" . ", "; ?>];
     chartGenerator.generatePieChart('wdChartActualC', wdLabelArray, wdDataArrayCurrency, '€', true, backgroundColor10);
@@ -143,10 +170,25 @@
     let wdTrendYTData = [<?php for($x=1; $x<sizeof($wdYTargetActualC[0]); $x++) echo "{$wdYTargetActualC[0][$x]}, "; ?>];
     let wdTrendYAData = [<?php for($x=1; $x<sizeof($wdYTargetActualC[0]); $x++) echo "{$wdYTargetActualC[1][$x]}, "; ?>];
     chartGenerator.generateLineChart('wdTrendChartActualTargetC', 'Cumulative trend of wealth distributions', backgroundColorTransp2, wdGoalData, wdTrendYLabels, wdTrendYTALabels.reverse(), wdTrendYAData, wdTrendYTData);
-
+    
     let donationsGoalDataCurrency = [<?php echo "$donationsArrayC[0], $donationsArrayC[1]"; ?>];
     chartGenerator.generatePieChart('donationsGoalC', ['Donations made', 'Donations missing'], donationsGoalDataCurrency, '€', true, backgroundColor2);
     
-    let onationsGoalDataPercentages = [<?php echo "$donationsArrayP[0], $donationsArrayP[1]"; ?>];
-    chartGenerator.generatePieChart('donationsGoalP', ['Donations made', 'Donations missing'], onationsGoalDataPercentages, '%', false, backgroundColor2);
+    let donationsGoalDataPercentages = [<?php echo "$donationsArrayP[0], $donationsArrayP[1]"; ?>];
+    chartGenerator.generatePieChart('donationsGoalP', ['Donations made', 'Donations missing'], donationsGoalDataPercentages, '%', false, backgroundColor2);
+
+    let savingsTrendYLabels = [<?php foreach(end($savingsArrayC) AS $date) echo "'$date', "; ?>];
+    let savingsTrendYCategoryLabels = [<?php for($x=0; $x<sizeof($savingsArrayC)-1; $x++) echo "'{$savingsArrayC[$x][0]}', "; ?>];
+    let savingsGoalData = [<?php for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$goalsArray["savinggoal"]}, "; ?>];
+    let savingsTrendYDataCat1 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[0][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$savingsArrayC[0][$x]}, "; ?>];
+    let savingsTrendYDataCat2 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[1][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[1][$x]}', "; ?>];
+    let savingsTrendYDataCat3 = [<?php if(isset($savingsArrayC[2][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[2][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[2][$x]}', "; ?>];
+    let savingsTrendYDataCat4 = [<?php if(isset($savingsArrayC[3][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[3][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[3][$x]}', "; ?>];
+    let savingsTrendYDataCat5 = [<?php if(isset($savingsArrayC[4][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[4][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[4][$x]}', "; ?>];
+    let savingsTrendYDataCat6 = [<?php if(isset($savingsArrayC[5][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[5][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[5][$x]}', "; ?>];
+    let savingsTrendYDataCat7 = [<?php if(isset($savingsArrayC[6][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[6][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[6][$x]}', "; ?>];
+    let savingsTrendYDataCat8 = [<?php if(isset($savingsArrayC[7][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[7][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[7][$x]}', "; ?>];
+    let savingsTrendYDataCat9 = [<?php if(isset($savingsArrayC[8][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[8][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[8][$x]}', "; ?>];
+    let savingsTrendYDataCat10 = [<?php if(isset($savingsArrayC[9][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[9][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[9][$x]}', "; ?>];
+    chartGenerator.generateLineChart('savingsTrendChartActualC', 'Cumulative trend of savings', backgroundColorTransp10, savingsGoalData, savingsTrendYLabels, savingsTrendYCategoryLabels, savingsTrendYDataCat1, savingsTrendYDataCat2, savingsTrendYDataCat3, savingsTrendYDataCat4, savingsTrendYDataCat5, savingsTrendYDataCat6, savingsTrendYDataCat7, savingsTrendYDataCat8, savingsTrendYDataCat9, savingsTrendYDataCat10);
 </script>

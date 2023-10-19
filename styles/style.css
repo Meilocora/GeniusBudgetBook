@@ -1186,7 +1186,7 @@ input.edit {
 }
 
 .transferInactive {
-    background-color: var(--grey-light);
+    background-color: transparent;
     border:  1px solid var(--grey-heavy);
 }
 

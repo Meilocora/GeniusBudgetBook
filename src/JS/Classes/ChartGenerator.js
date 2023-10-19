@@ -61,7 +61,7 @@ export default class ChartGenerator {
     });
     }
 
-    generateLineChart(selector, titleText, lineColors, wdGoalData, xAxisLabels, lineLabels, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) {
+    generateLineChart(selector, titleText, lineColors, GoalData, xAxisLabels, lineLabels, data1, data2, data3, data4, data5, data6, data7, data8, data9, data10) {
         var ctx = document.getElementById(selector);
         let myChart = new Chart(ctx, {
             type: 'line',
@@ -120,7 +120,7 @@ export default class ChartGenerator {
                         fill: '-1',
                     },
                     {
-                        data: wdGoalData,
+                        data: GoalData,
                         label: 'Total wealth goal',
                         fill: '-1',
                         stack: "goal",
@@ -176,8 +176,8 @@ export default class ChartGenerator {
                 responsive: false,
                 scales: {
                     y: {    
-                            max: wdGoalData[0]*1.2,
-                            grid: {
+                            max: GoalData[0]*1.2,
+                             grid: {
                                 lineWidth: 1.5,
                             },
                             ticks: {

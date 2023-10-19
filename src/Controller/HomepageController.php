@@ -13,26 +13,31 @@ class HomepageController extends AbstractController{
         protected YearlyController $yearlyController,
         protected EntryController $entryController) {}
 
-    public function showHomepage($navRoutes, $startDate, $colorTheme) {
-        $currentWDTargetArrayC = $this->wdController->currentWDTarget(); 
-        $currentWDTargetArrayP = $this->calculatePercentagesArray($currentWDTargetArrayC);
-        $currentWDActualArrayC = $this->wdController->currentWDActual();
-        $currentWDActualArrayP = $this->calculatePercentagesArray($currentWDActualArrayC);
-        $currentTotalWealth = $this->wdController->currentTotalWealth();
-        $currentGoalSharesC = $this->currentGoalShares();
-        $currentGoalSharesP = $this->calculatePercentagesArray($currentGoalSharesC);
-        $goalsArray = $this->yearlyController->fetchCurrentGoals();
-        $daysleft = $this->calculateRemainingDays();
+    public function showHomepage($navRoutes, $year, $timeInterval, $colorTheme) {
+        $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12';
+        $startDate = $this->getStartDate($timeInterval, $year);
+        $currentWDTargetArrayC = $this->wdController->currentWDTarget($queryDate); 
+        $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
+        $currentWDActualArrayC = $this->wdController->currentWDActual($queryDate);
+        $currentWDActualArrayP = calculatePercentagesArray($currentWDActualArrayC);
+        $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
+        $currentGoalSharesC = $this->currentGoalShares($year, $queryDate);
+        $currentGoalSharesP = calculatePercentagesArray($currentGoalSharesC);
+        $goalsArray = $this->yearlyController->fetchCurrentGoals($year);
+        $daysleft = $this->calculateRemainingDays($year);
         $backgroundColor10 = $this->giveColors($colorTheme, 1)[0];
         $backgroundColor2 = $this->giveColors($colorTheme, 1)[1];
         $backgroundColorTransp10 = $this->giveColors($colorTheme, 0.75)[0];
         $backgroundColorTransp2 = $this->giveColors($colorTheme, 0.75)[1];
-        $wdYC = $this->wdTrendArray('actual', $startDate);
-        $wdYTargetActualC = $this->wdTrendArray('total-target-actual', $startDate);
-        $donationsArrayC = $this->donationsValuesArray();
-        $donationsArrayP = $this->calculatePercentagesArray($donationsArrayC);
+        $wdYC = $this->wdTrendArray('actual', $queryDate, $startDate);
+        $wdYTargetActualC = $this->wdTrendArray('total-target-actual', $queryDate, $startDate);
+        $donationsArrayC = $this->donationsValuesArray($year, $startDate);
+        $donationsArrayP = calculatePercentagesArray($donationsArrayC);
+        $savingsArrayC = $this->wdTrendArray('actual-liquid', $queryDate, $startDate);
 
         $this->render('homepage', [
+            'year' => $year,
+            'timeInterval' => $timeInterval,
             'navRoutes' => $navRoutes,
             'currentWDTargetArrayC' => $currentWDTargetArrayC,
             'currentWDTargetArrayP' => $currentWDTargetArrayP,
@@ -52,13 +57,27 @@ class HomepageController extends AbstractController{
             'wdYC' => $wdYC,
             'wdYTargetActualC' => $wdYTargetActualC,
             'donationsArrayC' => $donationsArrayC,
-            'donationsArrayP' => $donationsArrayP
+            'donationsArrayP' => $donationsArrayP,
+            'savingsArrayC' => $savingsArrayC,
+            
         ]);
     }
 
-    public function currentGoalShares() {
-        $currentGoalsArray = $this->yearlyController->fetchCurrentGoals();
-        $currentTotalWealth = $this->wdController->currentTotalWealth();
+    public function getStartDate($timeInterval, $year) {
+        switch ($timeInterval) {
+            case 'YTD':
+                return $year . '-01-01';
+            case 'YOY':
+                #TODO: was passiert beim Dezember 2022?!
+                return (int)$year -1 . '-' . date('m',strtotime("-11 month")) . '-01';
+            case 'ALL':
+                return '1970-01-01';
+            }
+    }
+
+    public function currentGoalShares($year, $queryDate) {
+        $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
+        $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
         $totalWealthGoalShares = [];
         if($currentTotalWealth < $currentGoalsArray['totalwealthgoal']) {
             $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
@@ -67,22 +86,12 @@ class HomepageController extends AbstractController{
             $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
             $totalWealthGoalShares['Missing wealth'] = 0;
         }
-        arsort($totalWealthGoalShares);  
+        arsort($totalWealthGoalShares); 
         return $totalWealthGoalShares;
     }
 
-    #TODO: In functions auslagern
-    public function calculatePercentagesArray($array) {
-        $sum = array_sum($array);
-        $percentagesArray= [];
-        foreach($array AS $key => $value) {
-            $percentagesArray[$key] = round($value/$sum*100, 2);
-        }
-        return $percentagesArray;
-    }
-
-    public function calculateRemainingDays() {
-        $year = date('Y');
+    #TODO auslagern functions
+    public function calculateRemainingDays($year) {
         $yearEnd = strtotime("31 December ${year}");
         $today = strtotime(date('Y-m-d'));
         $timeleft = $yearEnd-$today;
@@ -107,40 +116,44 @@ class HomepageController extends AbstractController{
         return $colorsArray;
     } 
 
-    public function wdTrendArray($dataSet, $startDate) {
-        $twoDWDArray = $this->wdController->wdTrend($startDate, $dataSet);
-        $categoriesCount = sizeof($twoDWDArray[0])-1;
-        $dateArray = [];
-        $categoriesArray = array_slice(array_keys($twoDWDArray[0]), 1, sizeof(array_keys($twoDWDArray[0])) - 1);
-        $wdTrendArray = [];
-        
-        for($y=0; $y<$categoriesCount; $y++) {
-            $localArray = [];
+    public function wdTrendArray($dataSet, $queryDate, $startDate) {
+        $twoDWDArray = $this->wdController->wdTrend($queryDate, $startDate, $dataSet);
+        if(!empty($twoDWDArray)) {
+            $categoriesCount = sizeof($twoDWDArray[0])-1;
+            $dateArray = [];
+            $categoriesArray = array_slice(array_keys($twoDWDArray[0]), 1, sizeof(array_keys($twoDWDArray[0])) - 1);
+            $wdTrendArray = [];
+            
+            for($y=0; $y<$categoriesCount; $y++) {
+                $localArray = [];
+                for($x=0; $x<sizeof($twoDWDArray); $x++) {
+                    foreach($twoDWDArray[$x] AS $key => $value) {
+                        if($key === $categoriesArray[$y]) $localArray[] = $value;
+                    }
+                }
+                array_unshift($localArray, $categoriesArray[$y]);
+                $wdTrendArray[] = $localArray;
+            }
             for($x=0; $x<sizeof($twoDWDArray); $x++) {
                 foreach($twoDWDArray[$x] AS $key => $value) {
-                    if($key === $categoriesArray[$y]) $localArray[] = $value;
+                    if($key === 'dateslug') $dateArray[] = $value;
                 }
             }
-            array_unshift($localArray, $categoriesArray[$y]);
-            $wdTrendArray[] = $localArray;
-        }
-        for($x=0; $x<sizeof($twoDWDArray); $x++) {
-            foreach($twoDWDArray[$x] AS $key => $value) {
-                if($key === 'dateslug') $dateArray[] = $value;
+            $modifiedDateArray = [];
+            foreach($dateArray AS $singleDate) {
+                $modifiedDateArray[] = date_create($singleDate)->format('M Y');
             }
+            $wdTrendArray[] = $modifiedDateArray;
+            return $wdTrendArray;
+        } else {
+            return [[0], [0]];
         }
-        $modifiedDateArray = [];
-        foreach($dateArray AS $singleDate) {
-            $modifiedDateArray[] = date_create($singleDate)->format('M Y');
-        }
-        $wdTrendArray[] = $modifiedDateArray;
-        return $wdTrendArray;
+        
     }
 
-    public function donationsValuesArray() {
-        $startDate = date('Y-m-d', strtotime('first day of january this year'));
+    public function donationsValuesArray($year, $startDate) {
         $donationEntries = $this->entryController->donationsTrend($startDate);
-        $currentGoalsArray = $this->yearlyController->fetchCurrentGoals();
+        $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $donationsValuesArray = [];
         $donationsActual = 0;
         foreach($donationEntries AS $entry) {
@@ -149,6 +162,12 @@ class HomepageController extends AbstractController{
         $donationsValuesArray[] = $donationsActual;
         $donationsValuesArray[] = max($currentGoalsArray['donationgoal'] - $donationsActual ,0);
         return $donationsValuesArray;
+    }
+
+    public function savingsArray($queryDate, $startDate) {
+        $array = $this->wdController->wdTrend($queryDate, $startDate, 'actual-liquid');
+        return $array;
+        
     }
 
     #TODO: SavingGoal... Alles, was zu liquiden Mitteln gehört... 2x pie-chart + 1x line-chart

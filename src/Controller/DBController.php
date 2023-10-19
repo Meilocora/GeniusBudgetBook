@@ -53,7 +53,7 @@ class DBController extends AbstractController {
             "expcat10"=>"Gifts"
         ];
         $donationgoal = @(float) (400);
-        $savinggoal = @(float) (1000);
+        $savinggoal = @(float) (9000);
         $totalwealthgoal = @(float) (30000);
 
         $this->dbInitialize->sandboxInitialize($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray, $donationgoal, $savinggoal, $totalwealthgoal);

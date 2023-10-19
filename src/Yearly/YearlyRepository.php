@@ -27,7 +27,6 @@ class YearlyRepository {
     }
 
     public function fetchAllOfYear($username, $year) {
-        $year = date('Y');
         $query = 'SELECT * FROM' . "`{$username}" . 'yearly` WHERE `year` = :year';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':year', $year);

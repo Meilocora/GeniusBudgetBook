@@ -17,3 +17,17 @@ function echoDate( $start, $end ){
     array_pop($ret);
     return $ret;
 }
+
+function calculatePercentagesArray($array) {
+    $sum = array_sum($array);
+    if($sum !== 0) {
+        $percentagesArray= [];
+        foreach($array AS $key => $value) {
+            $percentagesArray[$key] = round($value/$sum*100, 2);
+        }
+        return $percentagesArray;
+    } else {
+        return [0];
+    }
+    
+}

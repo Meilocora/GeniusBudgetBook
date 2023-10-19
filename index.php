@@ -160,14 +160,24 @@ elseif($route === 'register/newUser') {
 elseif($route === 'homepage') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    if(isset($_POST['startDate'])) {
-        $_SESSION['startDate'] = $_POST['startDate'];
-        $startDate = $_POST['startDate'];
+    if(isset($_POST['year'])) {
+        $_SESSION['year'] = $_POST['year'];
+        $year = $_POST['year'];
     } else {
-        if(isset($_SESSION['startDate'])) {
-            $startDate = $_SESSION['startDate'];
+        if(isset($_SESSION['year'])) {
+            $year = $_SESSION['year'];
         } else {
-            $startDate = date('Y') . '-01-01';
+            $year = date('Y');
+        }
+    }
+    if(isset($_POST['timeInterval'])) {
+        $_SESSION['timeInterval'] = $_POST['timeInterval'];
+        $timeInterval = $_POST['timeInterval'];
+    } else {
+        if(isset($_SESSION['timeInterval'])) {
+            $timeInterval = $_SESSION['timeInterval'];
+        } else {
+            $timeInterval = 'YTD';
         }
     }
     if(isset($_POST['colorTheme'])) {
@@ -181,7 +191,7 @@ elseif($route === 'homepage') {
         }
     }
     $homepageController = $container->get('homepageController');
-    $homepageController->showHomepage($navRoutes, $startDate, $colorTheme);
+    $homepageController->showHomepage($navRoutes, $year, $timeInterval, $colorTheme);
 }
 elseif($route === 'homepage/sandbox') {   
     $dbController = $container->get('dbController');

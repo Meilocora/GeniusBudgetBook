@@ -14,11 +14,15 @@ class YearlyController extends AbstractController {
         $this->yearlyRepository->add($username, $year, $donationgoal, $savinggoal, $totalwealthgoal);
     }
 
-    public function fetchCurrentGoals() {
+    public function fetchCurrentGoals($year) {
         $username = $_SESSION['username'];
-        $year = date('Y');
         $goalsMapRaw = $this->yearlyRepository->fetchAllOfYear($username, $year);
-        $goalsMap = array_slice($goalsMapRaw[0], 2, sizeof($goalsMapRaw[0]) - 2);
-        return $goalsMap;
+        if(!empty($goalsMapRaw)) {
+            $goalsMap = array_slice($goalsMapRaw[0], 2, sizeof($goalsMapRaw[0]) - 2);
+            return $goalsMap;
+        } else {
+            return ["donationgoal" => 0, "savinggoal" => 0, "totalwealthgoal" => 0];
+        }
+        
     }
 }
