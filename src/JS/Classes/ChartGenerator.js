@@ -6,55 +6,82 @@ import './../Chart.js/chartjs-plugin-datalabels.js';
 
 
 export default class ChartGenerator {
-    generatePieChart(selector, labelsArray, dataArray, symbol, legendDisplay, backgoundColors) {
+    generateDoughnutChart(selector, labelsArray, dataArray1, dataArray2, backgoundColors, legendPosition, titleText, titleDisplay) {
         var ctx = document.getElementById(selector);
         let myChart = new Chart(ctx, {
-        type: 'pie',
+        type: 'doughnut',
         plugins: [ChartDataLabels],
         data: {
             labels: labelsArray,
-            datasets: [{
-                data: dataArray,
-                backgroundColor: backgoundColors,
-                borderColor: 'rgb(0,0,0)',
-                borderWidth: 1,
-            }],
+            datasets: [
+                {
+                    data: dataArray1,
+                    backgroundColor: backgoundColors,
+                    borderColor: 'rgb(0,0,0)',
+                    borderWidth: 1,
+                    hoverOffset: 20,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'center',
+                        formatter: function(value) {
+                                return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` €`;
+                        }
+                    }
+                },
+                {
+                    data: dataArray2,
+                    backgroundColor: backgoundColors,
+                    borderColor: 'rgb(0,0,0)',
+                    borderWidth: 1,
+                    hoverOffset: -20,
+                    datalabels: {
+                        anchor: 'start',
+                        align: 'end',
+                        formatter: function(value) {
+                                return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` %`;
+                        }
+                    }
+                }
+            ],
             
         },
         options: {
+            hoverBackgroundColor: 'gold',
+            hoverBorderWidth: 2,
+            cutout: 40,
             layout: {
-                padding: 30
+                padding: 20
             },
             responsive: false,
             plugins: {
                 datalabels: {
                     display: 'auto',
                     color: 'white',
-                    anchor: 'end',
-                    align: 'end',
-                    offset: -30,
                     backgroundColor: '#495057',
                     borderWidth: '1',
                     borderColor: 'black',
                     borderRadius: 20,
-                    padding: 6,
+                    padding: 8,
                     font: {
-                        size: 16
+                        size: 14
                     },
-                    formatter: function(value) {
-                        return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` ${symbol}`;
-                        }
                 },
                 legend: {
-                    display: legendDisplay,
-                    position: `right`,
+                    position: legendPosition,
                     labels: {
                         color: 'black',
                         font: {
                             size: 16
-                        }
+                        },
                     }
                     
+                },
+                title: {
+                    text: titleText,
+                    display: titleDisplay,
+                    font: {
+                        size: 24,
+                    }
                 },
             }
             }
@@ -152,7 +179,6 @@ export default class ChartGenerator {
                         display: true,
                         font: {
                             size: 24,
-                            color: 'black',
                         },
                         text: titleText,
                     },
@@ -176,7 +202,7 @@ export default class ChartGenerator {
                 responsive: false,
                 scales: {
                     y: {    
-                            max: GoalData[0]*1.2,
+                            suggestedMax: GoalData[0]*1.05,
                              grid: {
                                 lineWidth: 1.5,
                             },
@@ -194,6 +220,7 @@ export default class ChartGenerator {
                     x: {
                         grid: {
                             clineWidth: 1.5,
+                            display: false,
                         },
                         ticks: {
                             font: {

@@ -31,3 +31,11 @@ function calculatePercentagesArray($array) {
     }
     
 }
+
+function calculateRemainingDays($year) {
+    $yearEnd = strtotime("31 December ${year}");
+    $today = strtotime(date($year . '-m-d'));
+    $timeleft = $yearEnd-$today;
+    $daysleft = round((($timeleft/24)/60)/60); 
+    return $daysleft;
+}

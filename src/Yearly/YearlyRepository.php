@@ -26,6 +26,17 @@ class YearlyRepository {
         return;
     }
 
+    public function update($username, $year, $donationgoal, $savinggoal, $totalwealthgoal) {
+        $query = 'UPDATE ' . "`{$username}" . 'yearly` SET `donationgoal` = :donationgoal, `savinggoal` = :savinggoal, `totalwealthgoal` = :totalwealthgoal WHERE `year` = :year';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':donationgoal', $donationgoal);
+        $stmt->bindValue(':savinggoal', $savinggoal);
+        $stmt->bindValue(':totalwealthgoal', $totalwealthgoal);
+        $stmt->bindValue(':year', $year);
+        $stmt->execute();
+        return;
+    }
+
     public function fetchAllOfYear($username, $year) {
         $query = 'SELECT * FROM' . "`{$username}" . 'yearly` WHERE `year` = :year';
         $stmt = $this->pdo->prepare($query);

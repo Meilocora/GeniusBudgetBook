@@ -193,6 +193,14 @@ elseif($route === 'homepage') {
     $homepageController = $container->get('homepageController');
     $homepageController->showHomepage($navRoutes, $year, $timeInterval, $colorTheme);
 }
+elseif($route === 'homepage/adjustgoals') {
+    $authService = $container->get('authService');
+    $authService->ensureLogin();
+    $yearlyController = $container->get('yearlyController');
+    $yearlyController->setGoals();
+    header('Location: ./?route=homepage');
+}
+
 elseif($route === 'homepage/sandbox') {   
     $dbController = $container->get('dbController');
     $dbController->sandboxInitialize();

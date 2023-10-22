@@ -77,24 +77,35 @@ class WDController extends AbstractController{
         }
     }
 
-    public function currentWDTarget($queryDate) {
+    public function currentWDValues($queryDate, $dataset) {
         $wdMap = $this->currentTotalWealthDistribution($queryDate);
-        $currentWDTargetArray = [];
-        foreach($wdMap AS $key => $value) {
-            if(preg_match('/^.*target$/', $key)) $currentWDTargetArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
-        }
-        arsort($currentWDTargetArray);
-        return $currentWDTargetArray;
-    }
+        $currentWDArray = [];
 
-    public function currentWDActual($queryDate) {
-        $wdMap = $this->currentTotalWealthDistribution($queryDate);
-        $currentWDActualArray = [];
-        foreach($wdMap AS $key => $value) {
-            if(preg_match('/^.*actual$/', $key)) $currentWDActualArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+        switch ($dataset) {
+            case 'actual':
+                foreach($wdMap AS $key => $value) {
+                    if(preg_match('/^.*actual$/', $key)) $currentWDArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+                }
+                
+                break;
+            case 'target':
+                foreach($wdMap AS $key => $value) {
+                    if(preg_match('/^.*target$/', $key)) $currentWDArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+                }
+                break;
+            case 'actual-liquid':
+                foreach($wdMap AS $key => $value) {
+                    if(preg_match('/^.*-1-actual$/', $key)) $currentWDArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+                }
+                break;
+            case 'target-liquid':
+                foreach($wdMap AS $key => $value) {
+                    if(preg_match('/^.*-1-target$/', $key)) $currentWDArray[preg_replace('/\-\d{1}.*/', '', $key)] = $value;
+                }
+                break; 
         }
-        arsort($currentWDActualArray);
-        return $currentWDActualArray;
+        arsort($currentWDArray);
+        return $currentWDArray;
     }
 
     public function currentTotalWealth($queryDate) {
@@ -108,6 +119,27 @@ class WDController extends AbstractController{
                 $currentTotalWealth += $wdValues[$x];
             }
             return $currentTotalWealth;
+        } else {
+            return 0;
+        }
+    }
+
+    public function currentTotalLiquid($queryDate) {
+        $username = $_SESSION['username'];
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $queryDate);
+        if(!empty($wdMapraw)) {
+            $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
+            foreach($wdMap AS $key => $value) {
+                if(preg_match('/^.*-0-.*$/', $key)) {
+                    unset($wdMap[$key]);  
+                  }
+                }
+            $wdValues = array_values($wdMap);
+            $currentTotalLiquid = 0;
+            for($x=1; $x<sizeof($wdValues); $x=$x+2) {
+                $currentTotalLiquid += $wdValues[$x];
+            }
+            return $currentTotalLiquid;
         } else {
             return 0;
         }

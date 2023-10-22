@@ -1,6 +1,8 @@
 +++++++++++ Implemented third party tools +++++++++++
 - chart.js
 - chart.js-plugin-datalabels
+- jQuery.js
+- jquery.waypoints.min.js
 
 The "genius budget book" can be used by hosting a local server via XAMPP.
 To use it via XAMPP:

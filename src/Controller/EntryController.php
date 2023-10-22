@@ -255,9 +255,9 @@ class EntryController extends AbstractController{
         return $untransferedFixedEntries;
     }
 
-    public function donationsTrend($startDate) {
+    public function donationsTrend($startDate, $year) {
         $username = $_SESSION['username'];
-        $endDate = date('Y-m-d');
+        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $entryCollectionraw = $this->entryRepository->fectAllForTimeInterval($username, $startDate, $endDate);
         $donationsEntries = [];
         foreach($entryCollectionraw AS $entry) {

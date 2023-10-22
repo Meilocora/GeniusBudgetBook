@@ -16,15 +16,16 @@ class HomepageController extends AbstractController{
     public function showHomepage($navRoutes, $year, $timeInterval, $colorTheme) {
         $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12';
         $startDate = $this->getStartDate($timeInterval, $year);
-        $currentWDTargetArrayC = $this->wdController->currentWDTarget($queryDate); 
+        $currentWDTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target'); 
         $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
-        $currentWDActualArrayC = $this->wdController->currentWDActual($queryDate);
+        $currentWDActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual');
         $currentWDActualArrayP = calculatePercentagesArray($currentWDActualArrayC);
         $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
-        $currentGoalSharesC = $this->currentGoalShares($year, $queryDate);
+        $currentGoalSharesC = $this->currentGoalShares($year, $queryDate, 'wd');
         $currentGoalSharesP = calculatePercentagesArray($currentGoalSharesC);
+
         $goalsArray = $this->yearlyController->fetchCurrentGoals($year);
-        $daysleft = $this->calculateRemainingDays($year);
+        $daysleft = calculateRemainingDays($year);
         $backgroundColor10 = $this->giveColors($colorTheme, 1)[0];
         $backgroundColor2 = $this->giveColors($colorTheme, 1)[1];
         $backgroundColorTransp10 = $this->giveColors($colorTheme, 0.75)[0];
@@ -33,7 +34,16 @@ class HomepageController extends AbstractController{
         $wdYTargetActualC = $this->wdTrendArray('total-target-actual', $queryDate, $startDate);
         $donationsArrayC = $this->donationsValuesArray($year, $startDate);
         $donationsArrayP = calculatePercentagesArray($donationsArrayC);
+        $donationEntries = $this->entryController->donationsTrend($startDate, $year);
+
         $savingsArrayC = $this->wdTrendArray('actual-liquid', $queryDate, $startDate);
+        $currentSavingsTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target-liquid'); 
+        $currentSavingsTargetArrayP = calculatePercentagesArray($currentSavingsTargetArrayC);
+        $currentSavingsActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual-liquid'); 
+        $currentSavingsActualArrayP = calculatePercentagesArray($currentSavingsActualArrayC);
+        $currentTotalLiquid = $this->wdController->currentTotalLiquid($queryDate);
+        $currentSavingGoalSharesC = $this->currentGoalShares($year, $queryDate, 'liquid');
+        $currentSavingGoalSharesP = calculatePercentagesArray($currentSavingGoalSharesC);
 
         $this->render('homepage', [
             'year' => $year,
@@ -58,8 +68,15 @@ class HomepageController extends AbstractController{
             'wdYTargetActualC' => $wdYTargetActualC,
             'donationsArrayC' => $donationsArrayC,
             'donationsArrayP' => $donationsArrayP,
+            'donationEntries' => $donationEntries,
             'savingsArrayC' => $savingsArrayC,
-            
+            'currentSavingsTargetArrayC' => $currentSavingsTargetArrayC,
+            'currentSavingsTargetArrayP' => $currentSavingsTargetArrayP,
+            'currentSavingsActualArrayC' => $currentSavingsActualArrayC,
+            'currentSavingsActualArrayP' => $currentSavingsActualArrayP,
+            'currentTotalLiquid' => $currentTotalLiquid,
+            'currentSavingGoalSharesC' => $currentSavingGoalSharesC,
+            'currentSavingGoalSharesP' => $currentSavingGoalSharesP,
         ]);
     }
 
@@ -75,28 +92,35 @@ class HomepageController extends AbstractController{
             }
     }
 
-    public function currentGoalShares($year, $queryDate) {
+    public function currentGoalShares($year, $queryDate, $dataset) {
         $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
-        $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
-        $totalWealthGoalShares = [];
-        if($currentTotalWealth < $currentGoalsArray['totalwealthgoal']) {
-            $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
-            $totalWealthGoalShares['Missing wealth'] = $currentGoalsArray['totalwealthgoal'] - $currentTotalWealth;
-        } else {
-            $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
-            $totalWealthGoalShares['Missing wealth'] = 0;
+        $totalGoalShares = [];
+        switch ($dataset) {
+            case 'wd':
+                $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
+                if($currentTotalWealth < $currentGoalsArray['totalwealthgoal']) {
+                    $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
+                    $totalWealthGoalShares['Missing wealth'] = $currentGoalsArray['totalwealthgoal'] - $currentTotalWealth;
+                } else {
+                    $totalWealthGoalShares['Current total wealth'] = $currentTotalWealth;
+                    $totalWealthGoalShares['Missing wealth'] = 0;
+                }
+                $totalGoalShares = $totalWealthGoalShares;
+                break;
+            case 'liquid':
+                $currentTotalLiquid = $this->wdController->currentTotalLiquid($queryDate);
+                if($currentTotalLiquid < $currentGoalsArray['savinggoal']) {
+                    $totalLiquidWealthGoalShares['Current total liquid wealth'] = $currentTotalLiquid;
+                    $totalLiquidWealthGoalShares['Missing liquid wealth'] = $currentGoalsArray['savinggoal'] - $currentTotalLiquid;
+                } else {
+                    $totalLiquidWealthGoalShares['Current total liquid wealth'] = $currentTotalLiquid;
+                    $totalLiquidWealthGoalShares['Missing liquid wealth'] = 0;
+                }
+                $totalGoalShares = $totalLiquidWealthGoalShares;
+                break;
         }
-        arsort($totalWealthGoalShares); 
-        return $totalWealthGoalShares;
-    }
-
-    #TODO auslagern functions
-    public function calculateRemainingDays($year) {
-        $yearEnd = strtotime("31 December ${year}");
-        $today = strtotime(date('Y-m-d'));
-        $timeleft = $yearEnd-$today;
-        $daysleft = round((($timeleft/24)/60)/60); 
-        return $daysleft;
+        arsort($totalGoalShares); 
+        return $totalGoalShares;
     }
 
     public function giveColors($colorTheme, $transparency) {
@@ -152,7 +176,7 @@ class HomepageController extends AbstractController{
     }
 
     public function donationsValuesArray($year, $startDate) {
-        $donationEntries = $this->entryController->donationsTrend($startDate);
+        $donationEntries = $this->entryController->donationsTrend($startDate, $year);
         $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $donationsValuesArray = [];
         $donationsActual = 0;
