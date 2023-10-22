@@ -4,6 +4,7 @@
 - jQuery.js
 - jquery.waypoints.min.js
 
++++++++++++ How to use +++++++++++
 The "genius budget book" can be used by hosting a local server via XAMPP.
 To use it via XAMPP:
 1) download XAMPP (https://www.apachefriends.org/de/download.html)
