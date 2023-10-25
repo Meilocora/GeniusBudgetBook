@@ -20,12 +20,11 @@ class EntryController extends AbstractController{
         protected WDController $wdController,
         protected UsersController $usersController) {}
 
-    public function showEntries(array $navRoutes, string $sortingProperty, string $sort, string $date, int $perPage, int $currentPage, string $username) {
+    public function showEntries(array $navRoutes, string $colorTheme, string $userShortcut, string $sortingProperty, string $sort, string $date, int $perPage, int $currentPage, string $username) {
         $categories = $this->usersController->usersEntryCats($username);
         $unsortedEntries = $this->entryRepository->fetchAllOfMonthPerPage($date, $perPage, $currentPage);
         $entries = $this->entryRepository->sortByProperty($unsortedEntries, $sortingProperty, $sort);
         $balance = $this->calculateMonthlyBalanceSheet($date);
-        $additionalInfo = $this->additionalInfo($date);
         $sortButtons = $this->sortButtons($sort);
         $datePretty = (new DateTime($date))->format('F Y');
         $numPages = ceil($this->entryRepository->countEntriesOfMonth($date) / $perPage);
@@ -39,8 +38,9 @@ class EntryController extends AbstractController{
             'categories' => $categories,
             'entries' => $entries,
             'navRoutes' => $navRoutes,
+            'colorTheme' => $colorTheme,
+            'userShortcut' => $userShortcut,
             'balance' => $balance,
-            'additionalInfo' => $additionalInfo,
             'sortButtons' => $sortButtons,
             'datePretty' => $datePretty,
             'numPages' => $numPages,
@@ -119,31 +119,29 @@ class EntryController extends AbstractController{
 
     private function calculateMonthlyBalanceSheet($date): ?array {
         $allEntries = $this->entryRepository->fetchAllOfMonth($date);
+        $fixedIncome = 0;
         $income = 0;
-        $expense = 0;
+        $fixedExpenses = 0;
+        $expenses = 0;
         foreach($allEntries AS $entry) {
             
             if($entry->income === 1) {
+                if($entry->fixedentry === 1) {
+                    $fixedIncome += $entry->amount;
+                }
                 $income += $entry->amount;
             }
             else {
-                $expense -= $entry->amount;
+                if($entry->fixedentry === 1) {
+                    $fixedExpenses -= $entry->amount;
+                }
+                $expenses -= $entry->amount;
             }
+
         }
-        $balance = $income + $expense;
-        return ['income' => $income, 'expense' => $expense, 'balance' =>$balance];
-    }
-
-    private function additionalInfo($date): array {
-        $balance = $this->calculateMonthlyBalanceSheet($date);
-        $monthFstDay = (new DateTime('first day of this month'))->format('d');
-        $monthLstDay = (new DateTime('last day of this month'))->format('d');
-        $daysPerMonth = $monthLstDay - $monthFstDay + 1;
-
-        $incomePerDay = $balance['income'] / $daysPerMonth;
-        $expensesPerDay = $balance['expense'] / $daysPerMonth;
-
-        return ['incomePerDay' => $incomePerDay, 'expensesPerDay' => $expensesPerDay];
+        $fixedBalance = $fixedIncome + $fixedExpenses;
+        $balance = $income + $expenses;
+        return ['fixedIncome' => $fixedIncome, 'income' => $income, 'fixedExpenses' => $fixedExpenses, 'expenses' => $expenses, 'fixedBalance' => $fixedBalance, 'balance' =>$balance];
     }
 
     public function sortButtons($sort) {
@@ -256,7 +254,7 @@ class EntryController extends AbstractController{
     }
 
     public function donationsTrend($startDate, $year) {
-        $username = $_SESSION['username'];
+        $username = strtolower($_SESSION['username']);
         $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $entryCollectionraw = $this->entryRepository->fectAllForTimeInterval($username, $startDate, $endDate);
         $donationsEntries = [];

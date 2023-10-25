@@ -5,17 +5,20 @@ namespace App\Controller;
 use App\Controller\WDController;
 use App\Controller\YearlyController;
 use App\Controller\EntryController;
+use App\Controller\ColorThemeController;
 
 class HomepageController extends AbstractController{
 
     public function __construct(
         protected WDController $wdController,
         protected YearlyController $yearlyController,
-        protected EntryController $entryController) {}
+        protected EntryController $entryController,
+        protected ColorThemeController $colorThemeController) {}
 
-    public function showHomepage($navRoutes, $year, $timeInterval, $colorTheme) {
+    public function showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet) {
         $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12';
         $startDate = $this->getStartDate($timeInterval, $year);
+
         $currentWDTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target'); 
         $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
         $currentWDActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual');
@@ -26,10 +29,11 @@ class HomepageController extends AbstractController{
 
         $goalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $daysleft = calculateRemainingDays($year);
-        $backgroundColor10 = $this->giveColors($colorTheme, 1)[0];
-        $backgroundColor2 = $this->giveColors($colorTheme, 1)[1];
-        $backgroundColorTransp10 = $this->giveColors($colorTheme, 0.75)[0];
-        $backgroundColorTransp2 = $this->giveColors($colorTheme, 0.75)[1];
+
+        $backgroundColor10 = $this->colorThemeController->giveChartColors($chartColorSet, 1)[0];
+        $backgroundColor2 = $this->colorThemeController->giveChartColors($chartColorSet, 1)[1];
+        $backgroundColorTransp10 = $this->colorThemeController->giveChartColors($chartColorSet, 0.75)[0];
+        $backgroundColorTransp2 = $this->colorThemeController->giveChartColors($chartColorSet, 0.75)[1];
         $wdYC = $this->wdTrendArray('actual', $queryDate, $startDate);
         $wdYTargetActualC = $this->wdTrendArray('total-target-actual', $queryDate, $startDate);
         $donationsArrayC = $this->donationsValuesArray($year, $startDate);
@@ -49,6 +53,8 @@ class HomepageController extends AbstractController{
             'year' => $year,
             'timeInterval' => $timeInterval,
             'navRoutes' => $navRoutes,
+            'colorTheme' => $colorTheme,
+            'userShortcut' => $userShortcut,
             'currentWDTargetArrayC' => $currentWDTargetArrayC,
             'currentWDTargetArrayP' => $currentWDTargetArrayP,
             'currentWDActualArrayC' => $currentWDActualArrayC,
@@ -58,7 +64,7 @@ class HomepageController extends AbstractController{
             'currentGoalSharesP' => $currentGoalSharesP,
             'goalsArray' => $goalsArray,
             'daysleft' => $daysleft,
-            'colorTheme' => $colorTheme,
+            'chartColorSet' => $chartColorSet,
             'backgroundColor10' => $backgroundColor10,
             'backgroundColorTransp10' => $backgroundColorTransp10,
             'backgroundColor2' => $backgroundColor2,
@@ -123,23 +129,6 @@ class HomepageController extends AbstractController{
         return $totalGoalShares;
     }
 
-    public function giveColors($colorTheme, $transparency) {
-        $colorsArray = [];
-        switch ($colorTheme) {
-            case 'default':
-                $colors10 = ["rgb(20,113,73,$transparency)", "rgb(25,128,83,$transparency)", "rgb(33,149,99,$transparency)", "rgb(44,175,118,$transparency)", "rgb(54,189,128,$transparency)", "rgb(75,197,133,$transparency)", "rgb(101,208,141,$transparency)", "rgb(128,218,144,$transparency)", "rgb(142,221,145,$transparency)", "rgb(207,245,191,$transparency)"];
-                $colors2 = ["rgb(20,113,73,$transparency)", "rgb(207,245,191,$transparency)"];
-                break;
-            case 'colorful':
-                $colors10 = ["rgb(255,0,0,$transparency)", "rgb(255,127,0,$transparency)", "rgb(255,255,0,$transparency)", "rgb(127,255,0,$transparency)", "rgb(0,255,0,$transparency)", "rgb(0,255,127,$transparency)", "rgb(0,255,255,$transparency)", "rgb(0,127,255,$transparency)", "rgb(0,0,255,$transparency)", "rgb(127,0,255,$transparency)"];
-                $colors2 = ["rgb(255,0,0,$transparency)", "rgb(127,0,255,$transparency)"];
-                break;
-            }
-        $colorsArray[] = $colors10;
-        $colorsArray[] = $colors2;
-        return $colorsArray;
-    } 
-
     public function wdTrendArray($dataSet, $queryDate, $startDate) {
         $twoDWDArray = $this->wdController->wdTrend($queryDate, $startDate, $dataSet);
         if(!empty($twoDWDArray)) {
@@ -193,6 +182,4 @@ class HomepageController extends AbstractController{
         return $array;
         
     }
-
-    #TODO: SavingGoal... Alles, was zu liquiden Mitteln gehört... 2x pie-chart + 1x line-chart
 }

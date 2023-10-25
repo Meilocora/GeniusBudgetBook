@@ -1,0 +1,7 @@
+:root {
+    --theme-color-light: #98de2c;
+    --theme-color-medium: #9ACD32;
+    --theme-color-heavy: #228B22;
+    --theme-color-neon: #4efd54;
+    --theme-color-background: linear-gradient(0deg, rgba(10,41,7,1) 0%, rgba(103,175,18,1) 100%);
+}

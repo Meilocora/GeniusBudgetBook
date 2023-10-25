@@ -1,0 +1,7 @@
+:root {
+    --theme-color-light: aquamarine;
+    --theme-color-medium: aqua;
+    --theme-color-heavy: dodgerblue;
+    --theme-color-neon: cyan;
+    --theme-color-background: linear-gradient(0deg, rgb(7, 12, 41) 0%, rgb(45, 134, 223) 100%);
+}

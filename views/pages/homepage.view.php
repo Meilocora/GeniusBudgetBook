@@ -24,16 +24,21 @@
         </div>
         <div class="settings-row">
             <form action="./?route=homepage" method="post" class="chartScopeForm">
-                <input type="hidden" name="colorTheme" value="default">
+                <input type="hidden" name="chartColorSet" value="default">
                 <input type="submit" value="default" 
-                <?php if($colorTheme === 'default') echo 'disabled'; ?>
-                class="<?php if($colorTheme === 'default') echo 'chosen'; ?>">
+                class="<?php if($chartColorSet === 'default') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
-                <input type="hidden" name="colorTheme" value="colorful">
+                <input type="hidden" name="chartColorSet" value="colorful">
                 <input type="submit" value="colorful" 
-                <?php if($colorTheme === 'colorful') echo 'disabled'; ?>
-                class="<?php if($colorTheme === 'colorful') echo 'chosen'; ?>">
+                class="<?php if($chartColorSet === 'colorful') echo 'chosen'; ?>">
+            </form>
+            <!-- #TODO: Infobox, when disabled that you must define a custom set first -->
+            <form action="./?route=homepage" method="post" class="chartScopeForm">
+                <input type="hidden" name="chartColorSet" value="custom">
+                <input type="submit" value="custom" 
+                <?php if(!isset($_COOKIE['customChartColorTheme'])) echo 'disabled'; ?>
+                <?php if($chartColorSet === 'custom') echo 'class="chosen"'; ?>>
             </form>
         </div>
         <div class="settings-row">
@@ -43,19 +48,16 @@
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="timeInterval" value="YTD">
                 <input type="submit" value="YTD" 
-                <?php if($timeInterval === 'YTD') echo 'disabled'; ?>
                 class="<?php if($timeInterval === 'YTD') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="timeInterval" value="YOY">
                 <input type="submit" value="YoY" 
-                <?php if($timeInterval === 'YOY') echo 'disabled'; ?>
                 class="<?php if($timeInterval === 'YOY') echo 'chosen'; ?>">
             </form>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="timeInterval" value="ALL">
                 <input type="submit" value="All" 
-                <?php if($timeInterval === 'ALL') echo 'disabled'; ?>
                 class="<?php if($timeInterval === 'ALL') echo 'chosen'; ?>">
             </form>
         </div>
@@ -82,11 +84,11 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="./src/JS/jQuery.js" defer></script>
-<script type="text/javascript" src="./src/JS/jquery.waypoints.min.js" defer></script>
+<script type="text/javascript" src="./src/JS/jQuery/jQuery.js" defer></script>
+<script type="text/javascript" src="./src/JS/jQuery/jquery.waypoints.min.js" defer></script>
 <script type="module" defer>
     'use strict';
-    import "./src/JS/jquery.waypoints.min.js";
+    import "./src/JS/jQuery/jquery.waypoints.min.js";
     let scroll1 = document.getElementById('scroll1');
     let scroll2 = document.getElementById('scroll2');
     let scroll3 = document.getElementById('scroll3');

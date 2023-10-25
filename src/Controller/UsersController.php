@@ -17,11 +17,12 @@ class UsersController extends AbstractController {
 
     public function addUser($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray, $donationgoal, $savinggoal, $totalwealthgoal): bool{    
         $userExisting = $this->usersRepository->userExisting($username);
-        if($userExisting) {
+        if(!empty($userExisting)) {
             return false;
         } 
         else {
-            $this->usersRepository->addUser($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray);
+            $passwordHashed = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);    
+            $this->usersRepository->addUser($username, $passwordHashed, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray);
             $this->wdRepository->generateTable($username);
             $this->entryRepository->generateTable($username);
             $this->yearlyController->generateAndFillTableYearly($username, $donationgoal, $savinggoal, $totalwealthgoal);

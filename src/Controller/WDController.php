@@ -7,11 +7,14 @@ use App\Users\UsersRepository;
 
 class WDController extends AbstractController{
 
+    protected string $username;
+
     public function __construct(
         protected WDRepository $wdRepository,
-        protected UsersRepository $usersRepository) {}
-        #TODO: username als constructor festlegen, genau wie aktuelles Datum
-
+        protected UsersRepository $usersRepository) {
+            $this->username = strtolower($_SESSION['username']);
+        }
+        
     public function wdCategoriesOfMonth($username, $date): array {
         $wdArray = $this->wdRepository->fetchAllOfMonth($username, $date);
         if(empty($wdArray)) {
@@ -43,17 +46,16 @@ class WDController extends AbstractController{
     }
 
     public function updateBalances() {
-        $username = strtolower($_SESSION['username']);
         $date = date('Y-m',strtotime($_POST['date']));
         unset($_POST['date']);
-        $wdArray = $this->wdRepository->fetchAllOfMonth($username, $date);
+        $wdArray = $this->wdRepository->fetchAllOfMonth($this->username, $date);
         if(!empty($wdArray)) {
             $wdcategoriesraw = array_slice($wdArray[0], 2, sizeof($wdArray[0]) - 2);
             $wdUpdateArray = array_combine(array_keys($wdcategoriesraw), array_values($_POST));
-            $this->wdRepository->update($username, $date, $wdUpdateArray);
+            $this->wdRepository->update($this->username, $date, $wdUpdateArray);
             header('Location: ./?route=monthly-page');
         } else {
-            $results = $this->usersRepository->fetchWDCategories($username);
+            $results = $this->usersRepository->fetchWDCategories($this->username);
             $resultsIndexed = array_values($results);
             $wdcategories = [];
             for($x = 0; $x <= sizeof($resultsIndexed)-1; $x=$x+2) {
@@ -61,14 +63,13 @@ class WDController extends AbstractController{
                 $wdcategories[] = $resultsIndexed[$x] . '-' . $resultsIndexed[$x+1] . '-actual';
             }  
             $wdCreateArray = array_combine($wdcategories, array_values($_POST));
-            $this->wdRepository->create($username, $date, $wdCreateArray);
+            $this->wdRepository->create($this->username, $date, $wdCreateArray);
             header('Location: ./?route=monthly-page');
         }
     }
 
     public function currentTotalWealthDistribution($queryDate) {
-        $username = $_SESSION['username'];
-        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $queryDate);
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($this->username, $queryDate);
         if(!empty($wdMapraw)) {
             $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
             return $wdMap; 
@@ -109,8 +110,7 @@ class WDController extends AbstractController{
     }
 
     public function currentTotalWealth($queryDate) {
-        $username = $_SESSION['username'];
-        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $queryDate);
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($this->username, $queryDate);
         if(!empty($wdMapraw)) {
             $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
             $wdValues = array_values($wdMap);
@@ -125,8 +125,7 @@ class WDController extends AbstractController{
     }
 
     public function currentTotalLiquid($queryDate) {
-        $username = $_SESSION['username'];
-        $wdMapraw = $this->wdRepository->fetchAllOfMonth($username, $queryDate);
+        $wdMapraw = $this->wdRepository->fetchAllOfMonth($this->username, $queryDate);
         if(!empty($wdMapraw)) {
             $wdMap = array_slice($wdMapraw[0], 2, sizeof($wdMapraw[0]) - 2);
             foreach($wdMap AS $key => $value) {
@@ -146,9 +145,8 @@ class WDController extends AbstractController{
     }
 
     public function wdTrend($queryDate, $startDate, $dataSet) {
-        $username = $_SESSION['username'];
         $endDate = $queryDate . '-01';
-        $wdCollectionraw = $this->wdRepository->fectAllForTimeInterval($username, $startDate, $endDate);
+        $wdCollectionraw = $this->wdRepository->fectAllForTimeInterval($this->username, $startDate, $endDate);
         $wdCollection = [];
         foreach($wdCollectionraw AS $array) {
             $wdCollection[] = array_slice($array, 1, sizeof($array) - 1);

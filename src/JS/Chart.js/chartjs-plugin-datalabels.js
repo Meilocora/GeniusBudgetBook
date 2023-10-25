@@ -948,7 +948,7 @@ var layout = {
       }
     }
 
-    // TODO New `z` option: labels with a higher z-index are drawn
+    // New `z` option: labels with a higher z-index are drawn
     // of top of the ones with a lower index. Lowest z-index labels
     // are also discarded first when hiding overlapping labels.
     labels.sort(function(a, b) {

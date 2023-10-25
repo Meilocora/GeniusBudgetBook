@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php if($colorTheme === 'customTheme'): ?>
+        <link rel='stylesheet' href='./styles/<?php echo e($colorTheme); ?>.php'>
+    <?php else: ?>
+        <link rel="stylesheet" href="./styles/<?php echo e($colorTheme); ?>.css">
+    <?php endif; ?>
     <link rel="stylesheet" href="./styles/style.css">
     <title>Genius Budget Book</title>
 </head>
@@ -37,6 +42,9 @@
                     </ul>
                 </nav>
             </div>    
+        <aside class="userSettings">
+                <a href="./?route=userSettings" class="userShortcut"><?php echo e($userShortcut); ?></a>     
+        </aside>
         <?php endif; ?> 
     </header>
         <?php echo $content; ?>

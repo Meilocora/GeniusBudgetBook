@@ -2,6 +2,8 @@
 
 import Register from "./Classes/Register.js";
 
+// #TODO: siehe customTheme.php um frühzeitigen Abgleich mit usernamen zu ermöglichen
+
 let register = new Register();
 
 register.defuseInitialErrorBox();

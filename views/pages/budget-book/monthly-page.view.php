@@ -69,14 +69,15 @@
         <h3>Balance of budget book</h3>     
     </div>
     <div class="additional-row">
+        <span class="circle">Fixed income<br><?php echo e(number_format($balance['fixedIncome'], '0', ',', '.')); ?> €</span>
         <span class="circle">Total income<br><?php echo e(number_format($balance['income'], '0', ',', '.')); ?> €</span>  
-        <span class="circle">Income p.d.<br><?php echo e(number_format($additionalInfo['incomePerDay'], '0', ',', '.')); ?> €</span>
     </div>
     <div class="additional-row">
-        <span class="circle">Total expenses<br><?php echo e(number_format($balance['expense'], '0', ',', '.')); ?> €</span>  
-        <span class="circle">Expenses p.d.<br><?php echo e(number_format($additionalInfo['expensesPerDay'], '0', ',', '.')); ?> €</span>
+        <span class="circle">Fixed expenses<br><?php echo e(number_format($balance['fixedExpenses'], '0', ',', '.')); ?> €</span>
+        <span class="circle">Total expenses<br><?php echo e(number_format($balance['expenses'], '0', ',', '.')); ?> €</span>  
     </div>
     <div class="additional-row">
+    <span class="<?php if($balance['fixedBalance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Fixed balance<br><?php echo e(number_format($balance['fixedBalance'], '0', ',', '.')); ?> €</span>
         <span class="<?php if($balance['balance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Total balance<br><?php echo e(number_format($balance['balance'], '0', ',', '.')); ?> €</span>
     </div>
 </section>
@@ -188,43 +189,7 @@
                             <input type="hidden" name="comment" id="<?php echo e($entry->id); ?>-newcomment">
                             <input type="hidden" name="fixedentry" id="<?php echo e($entry->id); ?>-newfixedentry">
                             <input type="submit" value="Update" class="updateButton btn-small btn-small-hover">
-                            <!-- #TODO: JS auslagern -->
-                            <script>
-                                document.querySelector(".updateButton").addEventListener("click", e => {
-                                    let entryId = e.target.form.id.value;
-
-                                    let categoryValue = document.getElementById(`${entryId}-category`).value;
-                                    let new_category_element = e.target.form.category;
-                                    new_category_element.setAttribute("value", categoryValue);
-
-                                    let titleValue = document.getElementById(`${entryId}-title`).value;
-                                    let new_title_element = e.target.form.title;
-                                    new_title_element.setAttribute("value", titleValue);
-
-                                    let amountValue = document.getElementById(`${entryId}-amount`).value;
-                                    let new_amount_element = e.target.form.amount;
-                                    new_amount_element.setAttribute("value", amountValue);
-
-                                    let dateslugValue = document.getElementById(`${entryId}-dateslug`).value;
-                                    let new_dateslug_element = e.target.form.dateslug;
-                                    new_dateslug_element.setAttribute("value", dateslugValue);
-
-                                    let commentValue = document.getElementById(`${entryId}-comment`).value;
-                                    let new_comment_element = e.target.form.comment;
-                                    new_comment_element.setAttribute("value", commentValue);
-
-                                    let fixedentrybox = document.getElementById(`${entryId}-fixedentry`).checked;
-                                    console.log(fixedentrybox);
-                                    let fixedentryValue;
-                                    if(fixedentrybox === true) {
-                                        fixedentryValue = 1;
-                                    } else {
-                                        fixedentryValue = 0;
-                                    }
-                                    let new_fixedentry_element = e.target.form.fixedentry;
-                                    new_fixedentry_element.setAttribute("value", fixedentryValue);
-                                }); 
-                            </script>
+                            <script type="module" src="./src/JS/monthlypagemain.js"></script>
                         </form>
                     <?php endif; ?>
                 </span>

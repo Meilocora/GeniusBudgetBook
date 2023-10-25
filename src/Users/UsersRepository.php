@@ -3,10 +3,12 @@
 namespace App\Users;
 
 use PDO;
+use App\AuthService\AuthServiceUser;
 
 class UsersRepository {
     public function __construct(
-        protected PDO $pdo) {}
+        protected PDO $pdo,
+        protected AuthServiceUser $authServiceUser) {}
 
     public function fetchAll($username) {
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `username` = :username");
@@ -16,18 +18,19 @@ class UsersRepository {
         return $result;
     }
 
-    public function userExisting($username): bool{
+    public function userExisting($username) {
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `username` = :username");
         $stmt->bindValue(':username', $username);
         $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        #TODO: Logik Teil gehört in Controller
-        if(!empty($result)) {
-            return true;
-        }
-        else{
-            return false;
-        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function fetchUser($username) {
+        $stmt = $this->pdo->prepare('SELECT * FROM `users` WHERE `username` = :username');
+        $stmt->bindValue(':username', $username);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, AuthServiceUser::class);
+        $stmt->execute();
+        return $stmt->fetch();
     }
 
     public function fetchWDCategories($username): array {
@@ -87,9 +90,7 @@ class UsersRepository {
         return;
     }
 
-    public function addUser($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray) {
-        #TODO: password_hash gehört in den Controller...
-        $passwordHashed = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);    
+    public function addUser($username, $passwordHashed, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray) {
         $stmt = $this->pdo->prepare("INSERT INTO `users` (`id`, `username`, `password`, `wd1`, `wd1Liquid`, `wd2`, `wd2Liquid`, `wd3`, `wd3Liquid`, `wd4`, `wd4Liquid`, `wd5`, `wd5Liquid`, `wd6`, `wd6Liquid`, `wd7`, `wd7Liquid`, `wd8`, `wd8Liquid`, `wd9`, `wd9Liquid`, `wd10`, `wd10Liquid`, `revcat1`, `revcat2`, `revcat3`, `revcat4`, `revcat5`, `revcat6`, `revcat7`, `revcat8`, `revcat9`, `revcat10`, `expcat1`, `expcat2`, `expcat3`, `expcat4`, `expcat5`, `expcat6`, `expcat7`, `expcat8`, `expcat9`, `expcat10`) 
                                         VALUES (NULL, :username, :passwordHashed, 
                                         :wd1, :wd1Liquid, :wd2, :wd2Liquid, :wd3, :wd3Liquid, :wd4, :wd4Liquid, :wd5, :wd5Liquid, :wd6, :wd6Liquid, :wd7, :wd7Liquid, :wd8, :wd8Liquid, :wd9, :wd9Liquid, :wd10, :wd10Liquid, 

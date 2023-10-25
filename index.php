@@ -2,13 +2,16 @@
 
 require_once __DIR__ . '/inc/all.php';
 
-// Initialize and fill the container with class receipts
+// ++++++++++ CONTAINER INITIALISATION ++++++++++\\
 $container = new \App\Support\Container();
 $container->add('pdo', function() {
     return require __DIR__ . '/inc/db-connect.inc.php';
 });
 $container->add('routingController', function() use($container) {
     return new \App\Controller\RoutingController();
+});
+$container->add('colorThemeController', function() {
+    return new \App\Controller\ColorThemeController();
 });
 
 $container->add('dbController', function() use($container) {
@@ -37,9 +40,13 @@ $container->add('loginController', function() use($container) {
     return new \App\Controller\LoginController(
         $container->get('authService'));
 });
+$container->add('authServiceUser', function() {
+    return new \App\AuthService\AuthServiceUser();
+});
 $container->add('authService', function() use($container) {
     return new \App\AuthService\AuthService(
-        $container->get('pdo'));
+        $container->get('pdo'),
+        $container->get('usersRepository'));
 });
 
 $container->add('entryController', function() use($container) {
@@ -79,7 +86,8 @@ $container->add('usersController', function() use($container) {
 });
 $container->add('usersRepository', function() use($container) {
     return new \App\Users\UsersRepository(
-        $container->get('pdo'));
+        $container->get('pdo'),
+        $container->get('authServiceUser'));
 });
 
 $container->add('yearlyController', function() use($container) {
@@ -99,12 +107,12 @@ $container->add('homepageController', function() use($container) {
     return new \App\Controller\HomepageController(
         $container->get('wdController'),
         $container->get('yearlyController'),
-        $container->get('entryController'));
+        $container->get('entryController'),
+        $container->get('colorThemeController'));
 });
 
-// Routing Logic
-$route = @(string) ($_GET['route'] ?? 'page');
 
+// ++++++++++ GLOBAL VARIABLES ++++++++++\\
 $navRoutes = [
     'homepage',
     'overview',
@@ -112,16 +120,55 @@ $navRoutes = [
     'tools'
 ];
 
+if(isset($_POST['colorTheme'])) {
+    setcookie('colorTheme', $_POST['colorTheme']);
+    $colorTheme = $_POST['colorTheme'];
+} else {
+    if(isset($_COOKIE['colorTheme'])) {
+        $colorTheme = $_COOKIE['colorTheme'];
+    } else {
+        $colorTheme = 'greenTheme';
+        setcookie('colorTheme', $colorTheme);
+    }
+}
+
+
+if(isset($_POST['chartColorSet'])) {
+    setcookie('chartColorSet', $_POST['chartColorSet']);
+    $chartColorSet = $_POST['chartColorSet'];
+} else {
+    if(isset($_COOKIE['chartColorSet'])) {
+        $chartColorSet = $_COOKIE['chartColorSet'];
+    } else {
+        $chartColorSet = 'default';
+    }
+}
+
+// ++++++++++ ROUTING LOGIC ++++++++++\\
+$route = @(string) ($_GET['route'] ?? 'page');
+
+$authService = $container->get('authService');
+$authService->ensureSession();
+if(isset($_SESSION['username'])) {
+    $userShortcut = strtoupper(substr($_SESSION['username'],0,1));
+} else {
+    $userShortcut = '';
+}
+
 if($route === 'page') {
     $routingController = $container->get('routingController');
     $routingController->render('start/start', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 elseif($route === 'login') {
     $routingController = $container->get('routingController');
     $routingController->render('start/login', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 else if($route === 'logout') {
@@ -137,7 +184,9 @@ elseif($route === 'register') {
     $dbController->usersInitialize();
     $routingController = $container->get('routingController');
     $routingController->render('start/register', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 elseif($route === 'register/newUser') {
@@ -153,7 +202,9 @@ elseif($route === 'register/newUser') {
         $_POST['errorMessage'] = $addUserOk;
         $routingController = $container->get('routingController');
         $routingController->render('start/register', [
-            'navRoutes' => $navRoutes
+            'navRoutes' => $navRoutes,
+            'colorTheme' => $colorTheme,
+            'userShortcut' => $userShortcut
         ]);
     }
 }
@@ -180,18 +231,8 @@ elseif($route === 'homepage') {
             $timeInterval = 'YTD';
         }
     }
-    if(isset($_POST['colorTheme'])) {
-        $_SESSION['colorTheme'] = $_POST['colorTheme'];
-        $colorTheme = $_POST['colorTheme'];
-    } else {
-        if(isset($_SESSION['colorTheme'])) {
-            $colorTheme = $_SESSION['colorTheme'];
-        } else {
-            $colorTheme = 'default';
-        }
-    }
     $homepageController = $container->get('homepageController');
-    $homepageController->showHomepage($navRoutes, $year, $timeInterval, $colorTheme);
+    $homepageController->showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet);
 }
 elseif($route === 'homepage/adjustgoals') {
     $authService = $container->get('authService');
@@ -200,17 +241,34 @@ elseif($route === 'homepage/adjustgoals') {
     $yearlyController->setGoals();
     header('Location: ./?route=homepage');
 }
-
 elseif($route === 'homepage/sandbox') {   
     $dbController = $container->get('dbController');
     $dbController->sandboxInitialize();
+}
+elseif($route === 'userSettings') {
+    $authService = $container->get('authService');
+    $authService->ensureLogin();
+    $routingController = $container->get('routingController');
+    $routingController->render('userSettings', [
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
+    ]);
+}
+elseif($route === 'userSettings/adjustColorTheme') {
+    $authService = $container->get('authService');
+    $authService->ensureLogin();
+    $colorThemeController = $container->get('colorThemeController');
+    $colorThemeController->adjustColorTheme();
 }
 elseif($route === 'overview') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
     $routingController = $container->get('routingController');
     $routingController->render('budget-book/overview', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 elseif($route === 'monthly-page') {
@@ -251,7 +309,7 @@ elseif($route === 'monthly-page') {
     $sortingProperty = @(string) ($_POST['sortingProperty'] ?? 'dateslug');
     $sort = @(string) ($_POST['sort'] ?? 'sortDateAsc');
     $entryController = $container->get('entryController');
-    $entryController->showEntries($navRoutes, $sortingProperty, $sort, $date, $perPage, $currentPage, $_SESSION['username']);
+    $entryController->showEntries($navRoutes, $colorTheme, $userShortcut, $sortingProperty, $sort, $date, $perPage, $currentPage, $_SESSION['username']);
 }
 else if($route === 'monthly-page/create') {
     $authService = $container->get('authService');
@@ -291,7 +349,9 @@ else if($route === 'custom-view') {
     $authService->ensureLogin();
     $routingController = $container->get('routingController');
     $routingController->render('custom-view', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 else if($route === 'tools') {
@@ -299,7 +359,9 @@ else if($route === 'tools') {
     $authService->ensureLogin();
     $routingController = $container->get('routingController');
     $routingController->render('tools', [
-        'navRoutes' => $navRoutes
+        'navRoutes' => $navRoutes,
+        'colorTheme' => $colorTheme,
+        'userShortcut' => $userShortcut
     ]);
 }
 #TODO: route = settings (von homepage ansteuerbar)
@@ -309,5 +371,5 @@ else if($route === 'tools') {
 // => user löschen bzw. verändern
 else {
     $routingController = $container->get('routingController');
-    $routingController->showError404($navRoutes);
+    $routingController->showError404($navRoutes, $colorTheme, $userShortcut);
 }

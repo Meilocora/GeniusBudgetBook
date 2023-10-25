@@ -27,7 +27,7 @@ function calculatePercentagesArray($array) {
         }
         return $percentagesArray;
     } else {
-        return [0];
+        return [0, 0];
     }
     
 }
