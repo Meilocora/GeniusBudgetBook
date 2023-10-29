@@ -83,4 +83,11 @@ class WDRepository {
         $stmt->execute();
         return;
     }
+
+    public function updateTablename($oldUsername, $newUsername) {
+        $query = 'ALTER TABLE ' . "`{$oldUsername}" . 'wdmonthly` RENAME TO' . "`{$newUsername}" . 'wdmonthly`';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
 }

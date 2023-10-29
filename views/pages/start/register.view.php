@@ -1,4 +1,4 @@
-<script type="module" src="./src/JS/registermain.js"></script>
+<script type="module" src="./src/JS/registermain.php"></script>
 <section class="container-register">
     <form action="./?route=register/newUser" class="form-register" method="POST">
         <h1 class="row-register" id="mainTitle">User Registration</h1>

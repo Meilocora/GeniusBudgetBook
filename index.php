@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '512000000');
 
 require_once __DIR__ . '/inc/all.php';
 
@@ -82,7 +83,8 @@ $container->add('usersController', function() use($container) {
         $container->get('usersRepository'),
         $container->get('wdRepository'),
         $container->get('entryRepository'),
-        $container->get('yearlyController'));
+        $container->get('yearlyController'),
+        $container->get('yearlyRepository'));
 });
 $container->add('usersRepository', function() use($container) {
     return new \App\Users\UsersRepository(
@@ -120,6 +122,14 @@ $navRoutes = [
     'tools'
 ];
 
+// Unset Custom Colorsets fast
+// session_start();
+// var_dump($_POST);
+// var_dump($_SESSION);
+// session_destroy();
+// setcookie('customColorTheme', '', -1);
+// setcookie('customChartColorTheme', '', -1);
+
 if(isset($_POST['colorTheme'])) {
     setcookie('colorTheme', $_POST['colorTheme']);
     $colorTheme = $_POST['colorTheme'];
@@ -131,7 +141,6 @@ if(isset($_POST['colorTheme'])) {
         setcookie('colorTheme', $colorTheme);
     }
 }
-
 
 if(isset($_POST['chartColorSet'])) {
     setcookie('chartColorSet', $_POST['chartColorSet']);
@@ -182,11 +191,15 @@ elseif($route === 'login/verify') {
 elseif($route === 'register') {
     $dbController = $container->get('dbController');
     $dbController->usersInitialize();
+    $usersController = $container->get('usersController');
+    $usernames = implode(',',$usersController->fetchUsernames());
+    setcookie('name', "{$usernames}", time() + 1);
     $routingController = $container->get('routingController');
     $routingController->render('start/register', [
         'navRoutes' => $navRoutes,
         'colorTheme' => $colorTheme,
-        'userShortcut' => $userShortcut
+        'userShortcut' => $userShortcut,
+        'usernames' =>$usernames
     ]);
 }
 elseif($route === 'register/newUser') {
@@ -248,11 +261,17 @@ elseif($route === 'homepage/sandbox') {
 elseif($route === 'userSettings') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
+    isset($_SESSION['errorArray']) ? $errorArray = explode(',',$_SESSION['errorArray']) : $errorArray = [];
+    if(isset($_SESSION['errorArray'])) unset($_SESSION['errorArray']);
+    $usersController = $container->get('usersController');
+    $userCats = $usersController->fetchUserCats();
     $routingController = $container->get('routingController');
     $routingController->render('userSettings', [
         'navRoutes' => $navRoutes,
         'colorTheme' => $colorTheme,
-        'userShortcut' => $userShortcut
+        'userShortcut' => $userShortcut,
+        'errorArray' => $errorArray,
+        'userCats' => $userCats
     ]);
 }
 elseif($route === 'userSettings/adjustColorTheme') {
@@ -260,6 +279,12 @@ elseif($route === 'userSettings/adjustColorTheme') {
     $authService->ensureLogin();
     $colorThemeController = $container->get('colorThemeController');
     $colorThemeController->adjustColorTheme();
+}
+elseif($route === 'userSettings/changeUserData') {
+    $authService = $container->get('authService');
+    $authService->ensureLogin();
+    $usersController = $container->get('usersController');
+    $usersController->changeUserData();
 }
 elseif($route === 'overview') {
     $authService = $container->get('authService');
@@ -364,11 +389,6 @@ else if($route === 'tools') {
         'userShortcut' => $userShortcut
     ]);
 }
-#TODO: route = settings (von homepage ansteuerbar)
-// => Categorien ändern oder löschen
-// => Username bzw. Passwort ändern
-#TODO: route = admin (bei Login)
-// => user löschen bzw. verändern
 else {
     $routingController = $container->get('routingController');
     $routingController->showError404($navRoutes, $colorTheme, $userShortcut);

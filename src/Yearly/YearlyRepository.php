@@ -46,5 +46,10 @@ class YearlyRepository {
         return $result;
     }
 
-
+    public function updateTablename($oldUsername, $newUsername) {
+        $query = 'ALTER TABLE ' . "`{$oldUsername}" . 'yearly` RENAME TO' . "`{$newUsername}" . 'yearly`';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
 }

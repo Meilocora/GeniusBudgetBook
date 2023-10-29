@@ -33,11 +33,7 @@ class AuthService {
     }
 
     public function handleLogin(string $username, string $password): bool {
-        $stmt = $this->pdo->prepare('SELECT * FROM `users` WHERE `username` = :username');
-        $stmt->bindValue(':username', $username);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, AuthServiceUser::class);
-        $stmt->execute();
-        $user = $stmt->fetch();
+        $user =$this->usersRepository->fetchUser($username);
         $passwordOk = password_verify($password, $user->password);
         if($passwordOk === true) {
             $this->ensureSession();

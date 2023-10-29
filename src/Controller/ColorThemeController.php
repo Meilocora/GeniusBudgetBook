@@ -12,16 +12,14 @@ class ColorThemeController extends AbstractController{
         }
 
     public function adjustColorTheme() {
-        if(isset($_POST['colorTheme'])) {
-            header('Location: ./?route=homepage');
-        } elseif (isset($_POST['customChartColor'])) {
+        if (isset($_POST['customChartColor'])) {
             $customChartColorTheme = [];
             for ($i = 1; $i < 11; $i++) {
                 $customChartColorTheme[] = $_POST["color{$i}"];
             }
             $customChartColorTheme = implode(",", $customChartColorTheme);
             setcookie('customChartColorTheme', $customChartColorTheme);
-            header('Location: ./?route=homepage');
+            header('Location: ./?route=userSettings');
         } elseif (isset($_POST['customColorTheme'])) {
             $customColorTheme = [];
             $customColorTheme[] = $_POST['theme-color-light'];
@@ -32,7 +30,10 @@ class ColorThemeController extends AbstractController{
             $customColorTheme[] = $_POST['theme-color-background-2'];
             $customColorTheme = implode(",", $customColorTheme);
             setcookie('customColorTheme', $customColorTheme);
-            header('Location: ./?route=homepage');
+            header('Location: ./?route=userSettings');
+        }
+        else {
+            header('Location: ./?route=userSettings');
         }
     }
 

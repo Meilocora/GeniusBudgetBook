@@ -1,4 +1,8 @@
 export default class Register {
+
+    constructor(usernames) {
+        this._usernames = [usernames];
+    }
     
     defuseInitialErrorBox() {
         let errorBox = document.querySelector(".error-box, .registry-error");
@@ -99,6 +103,9 @@ export default class Register {
             if(value.match(/^\d.*?/)) errorArray.push("- username can`t begin with a number");
             if(value.match(/[\.\^\$\*\+\-\?\(\)\[\]\{\}\\\|]/)) errorArray.push("- you can`t use: . ^ $ * + - ? ( ) [ ] { } \ |");
             if(!value.match(/^[^\ ].*[^\ .]$/)) errorArray.push("- username can't start or end with blank space");
+            this._usernames[0].forEach(element => {
+                if (element == value) errorArray.push("- username already exists!");
+            });
         }
         if(key === "newUserPw") {
             // if(!value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,60}$/)) errorArray.push("- password must include 8 to 60 characters, at least one uppercase letter, one lowercase letter, one number and one special character");
@@ -128,7 +135,7 @@ export default class Register {
             for(let i=1; i<11; i++) {
                 let input = inputsFilled.get(`${e}${i}`);
                 if(typeof input !== "undefined") {
-                    if(!input.match(/^.{4,30}$/)) errorArray.push(`The name of the category "${input}" can include at least 4 and maximum 20 symbols`);  
+                    if(!input.match(/^.{3,20}$/)) errorArray.push(`The name of the category "${input}" can include at least 3 and maximum 20 symbols`);  
                 } 
             }
         }); 

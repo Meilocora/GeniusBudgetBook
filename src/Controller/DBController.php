@@ -18,6 +18,7 @@ class DBController extends AbstractController {
 
     public function sandboxInitialize() {
         $username ='sandboxuser';
+        $passwordHashed = password_hash('sandboxuser', PASSWORD_DEFAULT, ['cost' => 12]);
         $password = 'sandboxuser';
         $wealthdistarray = [
             "wealthdist1"=>"Bank Account",
@@ -56,7 +57,7 @@ class DBController extends AbstractController {
         $savinggoal = @(float) (9000);
         $totalwealthgoal = @(float) (30000);
 
-        $this->dbInitialize->sandboxInitialize($username, $password, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray, $donationgoal, $savinggoal, $totalwealthgoal);
+        $this->dbInitialize->sandboxInitialize($username, $passwordHashed, $wealthdistarray, $wdliquidarray, $revcatarray, $expcatarray, $donationgoal, $savinggoal, $totalwealthgoal);
         $_POST['username'] = $username;
         $_POST['password'] = $password;
         $this->loginController->login();

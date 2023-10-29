@@ -126,7 +126,7 @@ a {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 select {
@@ -134,7 +134,7 @@ select {
     color: black;
 }
 
-hr {
+hr:not([class="thin-line"]) {
     border-width: 3px;
     border-radius: var(--border-radius);
     border-color: black;
@@ -143,15 +143,23 @@ hr {
     margin-bottom: 0;
 }
 
+div.error-container {
+    position: relative;
+}
+
 .error-box {
     position: absolute;
     font-size: 1rem;
-    background-color: var(--grey-medium);
+    background-color: white;
     color: var(--red-danger);
     border-radius: var(--border-radius);
     border: var(--red-danger) 4px solid;
     padding: .5rem .5rem;
     text-align: center;
+}
+
+.error-box:hover {
+    cursor: pointer;
 }
 
 /* === BUTTONS === */
@@ -260,24 +268,32 @@ hr {
     color: var(--theme-color-neon);
 }
 
-/* === KEYFRAMES === */
+/* === TRANSITIONS === */
+article.hide {
+    opacity: 0;
+    visibility: hidden;
+    height: 0px !important;
+    transition: opacity .2s ease-in-out 0s, visibility .2s ease-in-out 0s, height .4s ease-in-out;
+}
 
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    25% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 0;
-    }
-    75% {
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 1;
-    }
+article:not([class="hide"]) {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .4s ease-in-out .5s, visibility .4s ease-in-out .5s, height .6s ease-in-out;
+}
+
+article.hide hr.thin-line {
+    border: 1px solid black;
+    width: 1px;
+    transition: width .4s linear 0s, border .4s linear 0s;
+}
+
+article:not([class="hide"]) hr.thin-line { 
+    width: 75%;
+    border: 1.25px solid black;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    transition: width 1s linear .5s, border 1s linear .5s;
 }
 
 /* xxxxxxxxxxxxxxxxxxxxx MAIN-VIEW xxxxxxxxxxxxxxxxxxxxx */
@@ -367,39 +383,37 @@ hr {
     position: relative;
 }
 
-#nav-content {
-    display: none;
+.dropdown #nav-content {
     width: 100%;
     height: 1px;
     position: absolute;
     top: 47px;
-    background: var(--background-nav);
-    border: var(--border-active);
-    border-radius: 0 0px 20px 20px;
+    background: linear-gradient(90deg, rgba(175,177,179,1) 0%, rgba(190,190,190,1) 100%);
+    border: 0px solid black;
     border-top: none;
+    border-radius: 0 0px 20px 20px;
     font-size: 1rem;
     color: black;
-    
+    transition: border 0s ease-out .5s, height .5s linear;
+    z-index: 4;
 }
 
 .dropdown:hover #nav-content {
     display: flex;
     flex-direction: column;
     height: 147px;
-    animation-duration: 1s;
-    animation-name: dropdowngrow;
-    z-index: 4;
+    border: var(--border-active);
+    border-top: none;
+    transition: border 0s linear, height .5s linear;
+}
+
+.dropdown #nav-content .nav-element {
+    opacity: 0;
 }
 
 .dropdown:hover #nav-content .nav-element {
-    animation-duration: 1s;
-    animation-name: fadeIn;
-}
-
-@keyframes dropdowngrow {
-    0%  {height: 1px;}
-    
-    100% {height: 147px;}
+    opacity: 1;
+    transition: opacity 1.5s ease-in;
 }
 
 .active_sub {
@@ -443,20 +457,21 @@ hr {
 }
 
 /* === USERSHORTCUT === */
+/* #TODO: Umbenennen, da verwirrend mit echtem userSettings Bereich... */
 aside.userSettings {
     display: flex;
     position: absolute;
-    top: 42px;
+    top: 35px;
     right: 345px;
     border: var(--border-active);
     border-radius: 100%;
     align-items: center;
     justify-content: center;
-    height: 5rem;
-    width: 5rem;
+    height: 6rem;
+    width: 6rem;
     text-align: center;
     background-color: var(--grey-heavy);
-    transition: background-color .3s ease-in-out;
+    transition: all .5s ease-in-out;
 }
 
 a.userShortcut {
@@ -466,15 +481,19 @@ a.userShortcut {
     font-size: 3.5rem;
     padding: 8px 20px;
     margin: -8px -20px;
-    transition: color .3s ease-in-out;
+    transition: all .5s ease-in-out;
 }
 
 aside.userSettings:hover {
-    background-color: transparent;
+    background-color: var(--theme-color-heavy);
+    border-color: var(--theme-color-neon);
+    transition: all .5s ease-in-out;
 }
 
 aside.userSettings:hover a.userShortcut {
-    color: black;
+    font-size: 5rem;
+    color: var(--theme-color-neon);
+    transition: all .5s ease-in-out;
 }
 
 /* === FOOTER === */
@@ -635,7 +654,6 @@ div.start-box {
     font-size: inherit;
     font-family: inherit;
     margin-right: 1rem;
-    background-color: var(--grey-medium);
 }
 
 .row-register>input[type="checkbox"] {
@@ -650,12 +668,11 @@ div.start-box {
     font-family: inherit;
 }
 
-/* #TODO: Position ändern */
 .row-register img:hover+span {
     position: absolute;
     display: block;
-    right: 200px;
-    top: 150px;
+    right: 450px;
+    top: 340px;
     width: 200px;
     height: 100px;
     font-size: 1rem;
@@ -864,18 +881,40 @@ a.scrollActive,
     left: 92px;
 }
 
-#homepageSettingsContainer {
-    display: none;
+#settings-box #homepageSettingsContainer {
+    display: block;
     position: fixed;
     top: 200px;
     left: 130px;
-    height: 450px;
-    width: 450px;
-    padding: 1rem;
+    height: 1px;
+    width: 1px;
+    padding: 0;
+    border: none;
     background-color: #495057;
-    border: 2px solid black;
     border-radius: var(--border-radius);
-    transition: width .5s ease-in-out;
+    transition: border 1s linear, padding .1s linear, height 1s linear .1s, width .9s ease-in-out .1s;
+    z-index: 4;
+}
+
+#settings-box:hover #homepageSettingsContainer {
+    width: 450px;
+    height: 450px;
+    opacity: 1;
+    padding: 1rem;
+    border: 2px solid black;
+    transition: border 1s linear, padding 1.2s linear, height 1s linear 0s, width .9s ease-in-out 0s;
+}
+
+#settings-box>#homepageSettingsContainer * {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .2s linear 0s, opacity .2s linear 0s;
+}
+
+#settings-box:hover>#homepageSettingsContainer * {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility .5s linear 1s, opacity .5s linear 1s;
 }
 
 .settings-row {
@@ -884,28 +923,6 @@ a.scrollActive,
     align-items: center;
     justify-content: center;
     margin: .5rem;
-}
-
-#settings-box:hover #homepageSettingsContainer {
-    display: block;
-    animation-duration: 1s;
-    animation-name: boxgrow;
-    z-index: 4;
-}
-
-@keyframes boxgrow {
-    0%  {   width: 1px;
-            height: 450px;}
-    
-    100% {   width: 450px;
-            height: 450px;}
-}
-
-
-#settings-box:hover>#homepageSettingsContainer * {
-    animation: 1s fadeIn;
-    animation-fill-mode: forwards;
-    opacity: 0;
 }
 
 .chartScopeForm>input[type="submit"] {
@@ -925,11 +942,6 @@ a.scrollActive,
     background-color: var(--grey-light);
     color: black;
     box-shadow: 0px 0px 8px black inset;
-}
-
-.chartScopeForm>input[type="submit"]:disabled {
-    background-color: var(--grey-medium);
-    color: grey;
 }
 
 .settings-row>.chartScopeForm:first-of-type>input[type="submit"] {
@@ -973,6 +985,7 @@ a.scrollActive,
 
 /* xxxxxxxxxxxxxxxxxxxxx USERSETTINGS-VIEW xxxxxxxxxxxxxxxxxxxxx */
 .userSettings-container {
+    width: 1250px;
     display: flex;
     flex-direction: column;
     /* -ms-grid-row: 3; */
@@ -981,12 +994,18 @@ a.scrollActive,
     padding: 1rem 1rem;
     border-radius: var(--border-radius);
     margin-right: 1rem;
-    background-color: var(--grey-light);
+    background: var(--background-standard);
     border: var(--border-container);
     min-width: 50%;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 28vh;
     font-size: 1.25rem;
+    transition: var(--container-transition);
+}
+
+.userSettings-container:hover {
+    box-shadow: var(--container-hover);
 }
 
 .userSettings-row {
@@ -1000,7 +1019,7 @@ a.scrollActive,
 
 .userSettings-col {
     display: flex;
-    width: 10rem;
+    width: 9.5rem;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -1008,9 +1027,184 @@ a.scrollActive,
     text-align: center;
 }
 
-.userSettings-col>input[type="color"] {
+.userSettings-row label {
+    display: inline-block;
+}
+
+.userSettings-row input[type="text"],
+.userSettings-row input[type="password"],
+.userSettings-row input[type="number"] {
+    display: block;
+    width: 200px;
+    border: var(--border-standard);
+    border-color: var(--theme-color-neon);
+    outline: 0;
+    transition: var(--transition-input);
+    border-radius: var(--border-radius);
+    padding-left: .5rem;
+    font-size: inherit;
+    font-family: inherit;
+    margin-right: 1rem;
+    background-color: var(--grey-heavy);
+    color: var(--theme-color-neon);
+}
+
+input[type="color"] {
+    appearance: none;
     height: 3rem;
     width: 6rem;
+    background-color: transparent;
+    border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+input[type="color"]::-webkit-color-swatch {
+	border-radius: 50%;
+    border: 2px solid black;
+}
+
+input[type="color"]::-moz-color-swatch {
+    border-radius: 100%;
+    border: 2px solid black;
+}
+
+.select {
+    display: block;
+    padding: .25rem .5rem;
+    border: var(--border-standard);
+    border-color: var(--theme-color-neon);
+    background-color: var(--grey-heavy);
+    color: var(--theme-color-neon);
+    border-radius: var(--border-radius);
+    outline: 0;
+    transition: var(--transition-input);
+    padding-left: .5rem;
+    font-size: inherit;
+    font-family: inherit;
+    text-align: center;
+    font-weight: bold;
+    margin: 0 1rem;
+    width: 200px;
+}
+
+#userSettings_errorBox {
+    width: 700px;
+    top: 400px;
+    left: 615px;
+}
+
+#userSettings_errorBox span {
+    font-size: 1.5rem;
+}
+
+#title_changeUsername,
+#title_changePassword,
+#title_changeColorTheme,
+#title_colorTheme,
+#title_chartColorTheme,
+#title_wdcats,
+#title_revcats,
+#title_expcats {
+    cursor: grab;
+}
+
+#usernameForm {
+    height: 95px;
+}
+
+#passwordForm {
+    height: 170px;
+}
+
+#standardColorForm {
+    height: 90px; 
+}
+
+#customColorForm {
+    height: 275px;
+}
+
+#customChartColorForm {
+    height: 230px;
+}
+
+#wdForm, 
+#revcatForm,
+#expcatForm {
+    height: 415px;
+}
+
+div[id^="disclaimer"] {
+    top: -80px;
+    right: -10px;
+    width: 400px;
+}
+
+.userSettings-container h3:not([class="titleSelected"])  {
+    color: black;
+    width: 60%;
+    text-shadow: none;
+    font-weight: bold;
+    transition: width 1s ease-in-out, color .2s ease-in-out, text-shadow .2s ease-in-out;
+}
+
+.userSettings-container h3:hover {
+    color: white;
+    text-shadow: var(--text-shadow-standard);
+    font-weight: bold;
+    transition: all .3s ease-in-out;
+}
+.userSettings-container h3.titleSelected {
+    color: white;
+    text-shadow: var(--text-shadow-standard);
+    transition: color .2s ease-in-out, text-shadow .2s ease-in-out;
+}
+
+.userSettings-container h3:not([class="titleSelected"])>input[type="image"] {
+    transition: transform .3s ease-in-out;
+}
+
+.userSettings-container h3.titleSelected>input[type="image"] {
+    transition: transform 1s ease-in-out;
+    transform: rotate(90deg);
+}
+
+#title_changeUsername.titleSelected {
+    width: 201px;
+    transition: width 1s ease-in-out;
+}
+
+#title_changePassword.titleSelected {
+    width: 198px;
+    transition: width 1s ease-in-out;
+}
+
+#title_changeColorTheme.titleSelected {
+    width: 221px;
+    transition: width 1s ease-in-out;
+}
+
+#title_colorTheme.titleSelected {
+    width: 308px;
+    transition: width 1s ease-in-out;
+}
+#title_chartColorTheme.titleSelected {
+    width: 368px;
+    transition: width 1s ease-in-out;
+}
+#title_wdcats.titleSelected {
+    width: 261px;
+    transition: width 1s ease-in-out;
+}
+#title_revcats.titleSelected {
+    width: 253px;
+    transition: width 1s ease-in-out;
+}
+#title_expcats.titleSelected {
+    width: 292px;
+    transition: width 1s ease-in-out;
 }
 
 /* xxxxxxxxxxxxxxxxxxxxx OVERVIEW-VIEW xxxxxxxxxxxxxxxxxxxxx */
@@ -1459,6 +1653,7 @@ input.edit {
     background-color: var(--theme-color-heavy);
     border: var(--border-hover-btn);
     color: var(--theme-color-neon);
+    transition: var(--transition-button);
 }
 
 .transferInactive {
@@ -1503,13 +1698,17 @@ input.edit {
 }
 
 #pagination-setting {
-    display: none;
+    width: 100%;
+    height: 0px;
+    opacity: 0;
     text-align: center;
     position: relative;
+    transition: height .5s linear, opacity .5s ease-in-out;
 }
 
 .list-container:hover #pagination-setting {
-    display: block;
+    height: 1.5rem;
+    opacity: 1;
 }
 
 .list-container input[type="number"] {

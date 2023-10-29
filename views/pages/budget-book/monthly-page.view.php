@@ -117,6 +117,7 @@
     </div>
 
     <!-- List of Entries for this month -->
+    <!-- #TODO: shows 0 Entries, when entries are deleted ... must "refresh" with click on pagination -->
     <?php if(!empty($entries)): ?>
         <?php foreach($entries AS $entry): ?>
             <div class="table-row <?php if($entry->fixedentry === 1) echo 'fixedentry'; ?>">

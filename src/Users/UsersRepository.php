@@ -18,6 +18,12 @@ class UsersRepository {
         return $result;
     }
 
+    public function fetchAllData() {
+        $stmt = $this->pdo->prepare("SELECT * FROM `users`");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function userExisting($username) {
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `username` = :username");
         $stmt->bindValue(':username', $username);
@@ -143,5 +149,48 @@ class UsersRepository {
         
         $stmt->execute();
         return;
+    }
+
+    public function updateUsername($oldUsername, $newUsername) {
+        $stmt = $this->pdo->prepare('UPDATE `users` SET `username` = :newusername WHERE `username` = :oldusername');
+        $stmt->bindValue(':newusername', $newUsername);
+        $stmt->bindValue(':oldusername', $oldUsername);
+        $stmt->execute();
+        return;
+    }
+
+    public function updatePassword($username, $changedPassword) {
+        $stmt = $this->pdo->prepare('UPDATE `users` SET `password` = :password WHERE `username` = :username');
+        $stmt->bindValue(':password', $changedPassword);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return;
+    }
+
+    public function updateCategories($catsKeys, $catsValues) {
+        $username = $_SESSION['username'];
+        $editArray = [];
+        for ($i = 0; $i < count($catsKeys); $i++) {
+            $editArray[] = "`{$catsKeys[$i]}` = '{$catsValues[$i]}' ";
+        }
+        $editString = implode(",", $editArray);
+        $query = 'UPDATE `users` SET ' . "{$editString}" . 'WHERE `username` = :username';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return;
+    }
+
+    public function deleteCategory($category) {
+        $username = $_SESSION['username'];
+        foreach ($category as $key => $value) {
+            $deleteString = "`{$key}` = ''";
+        }
+        $query = 'UPDATE `users` SET ' . "{$deleteString}" . ' WHERE `username` = :username';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return;
+       
     }
 }

@@ -33,13 +33,13 @@
                 <input type="submit" value="colorful" 
                 class="<?php if($chartColorSet === 'colorful') echo 'chosen'; ?>">
             </form>
-            <!-- #TODO: Infobox, when disabled that you must define a custom set first -->
+            <?php if(isset($_COOKIE['customChartColorTheme'])): ?>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="chartColorSet" value="custom">
-                <input type="submit" value="custom" 
-                <?php if(!isset($_COOKIE['customChartColorTheme'])) echo 'disabled'; ?>
-                <?php if($chartColorSet === 'custom') echo 'class="chosen"'; ?>>
+                <input type="submit" value="custom" id="customChartColorSet" 
+                class="<?php if($chartColorSet === 'custom') echo 'chosen'; ?>">
             </form>
+            <?php endif; ?>
         </div>
         <div class="settings-row">
             <span>Change timeinterval:</span>

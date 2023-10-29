@@ -9,6 +9,8 @@ class EntryRepository {
     public function __construct(
         protected PDO $pdo) {}
 
+        #TODO: username als construct übernehmen... in allen Repositories
+
     public function generateTable($username) {
         $query = 'CREATE TABLE `geniusbudgetbook`.' . "`{$username}" . 'entries` (`id` INT(11) NOT NULL AUTO_INCREMENT , `category` VARCHAR(50) NOT NULL , `title` VARCHAR(50) NOT NULL , `amount` FLOAT NOT NULL , `dateslug` DATE NOT NULL , `comment` VARCHAR(1024) NOT NULL , `income` BOOLEAN NOT NULL , `fixedentry` BOOLEAN NOT NULL , PRIMARY KEY (`id`), INDEX (`category`), INDEX (`title`)) ENGINE = InnoDB';
         $stmt = $this->pdo->prepare($query);
@@ -146,6 +148,42 @@ class EntryRepository {
         $stmt->bindValue(':income', $income);
         $stmt->bindValue(':fixedentry', $fixedentry);
         $stmt->execute();
+    }
+
+    public function updateTablename($oldUsername, $newUsername) {
+        $query = 'ALTER TABLE ' . "`{$oldUsername}" . 'entries` RENAME TO' . "`{$newUsername}" . 'entries`';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
+
+    public function updateEntryCategory($changeEntries) {
+        $username = $_SESSION['username'];
+        foreach ($changeEntries as $key => $value) {
+            $query = 'UPDATE  ' . "`{$username}" . "entries` SET `category` = '{$value}' WHERE `category` = '{$key}'";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
+        }
+        return;
+    }
+
+    #TODO: should be in EntryController, but there is a memory_limit error, when adding this controller to UsersController...
+    public function deleteEntryCategory($deleteCategory) {
+        $username = $_SESSION['username'];
+        $deleteEntries = $this->fetchByCategory($deleteCategory);
+        foreach ($deleteEntries as $entry) {
+            $this->delete($entry->id);
+        }
+        return;
+    }
+
+    public function fetchByCategory($category) {
+        $username = $_SESSION['username'];
+        $query = 'SELECT * FROM ' . "`{$username}" . 'entries` WHERE `category` = :category';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue('category', array_values($category)[0]);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
     }
 
 }

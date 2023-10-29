@@ -250,6 +250,7 @@ class EntryController extends AbstractController{
         foreach($compareArrayLastMonth AS $entryLastMonth) {
             if(!in_array($entryLastMonth, $compareArrayThisMonth)) $untransferedFixedEntries[] = $entryLastMonth;
         }
+        
         return $untransferedFixedEntries;
     }
 
@@ -265,5 +266,6 @@ class EntryController extends AbstractController{
         }
         return $donationsEntries;
     }
+
 }
 
