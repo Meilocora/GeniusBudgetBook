@@ -6,9 +6,14 @@ use App\Users\UsersRepository;
 use PDO;
 
 class WDRepository {
+
+    public string $username;
+
     public function __construct(
         protected PDO $pdo,
-        protected UsersRepository $usersRepository) {}
+        protected UsersRepository $usersRepository) {
+            $this->username = isset($_SESSION['username']) ? strtolower($_SESSION['username']) : '';
+        }
 
     public function generateTable($username) {
         $wdCategories = $this->usersRepository->fetchWDCategories($username);
@@ -16,7 +21,7 @@ class WDRepository {
         $queryArray = [];
 
         for($x = 0; $x <= sizeof($wdCategoriesValues)-1; $x=$x+2) {
-            $queryArray[] = "`{$wdCategoriesValues[$x]}-{$wdCategoriesValues[$x+1]}-target` VARCHAR(50) NOT NULL, `{$wdCategoriesValues[$x]}-{$wdCategoriesValues[$x+1]}-actual` VARCHAR(50) NOT NULL";
+            $queryArray[] = "`{$wdCategoriesValues[$x]}-{$wdCategoriesValues[$x+1]}-target` VARCHAR(20) NOT NULL, `{$wdCategoriesValues[$x]}-{$wdCategoriesValues[$x+1]}-actual` VARCHAR(20) NOT NULL";
         }  
         $queryAddColumns = implode(', ', $queryArray);
         $query = 'CREATE TABLE `geniusbudgetbook`.' . "`{$username}" . 'wdmonthly` (`id` INT(11) NOT NULL AUTO_INCREMENT , `dateslug` DATE NOT NULL , ' . $queryAddColumns . ' , PRIMARY KEY (`id`)) ENGINE = InnoDB';
@@ -25,9 +30,9 @@ class WDRepository {
         return;    
     }
 
-    public function fetchAllOfMonth($username, $date): array {
+    public function fetchAllOfMonth($date): array {
         $dateSQL = date('Y-m-d', strtotime($date . '-01'));
-        $query = 'SELECT * FROM' . "`{$username}" . 'wdmonthly` WHERE `dateslug` = :date';
+        $query = 'SELECT * FROM' . "`{$this->username}" . 'wdmonthly` WHERE `dateslug` = :date';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':date', $dateSQL);
         $stmt->execute();
@@ -35,16 +40,16 @@ class WDRepository {
         return $result;
     }
 
-    public function fetchAll($username) {
-        $query = 'SELECT * FROM' . "`{$username}" . 'wdmonthly`';
+    public function fetchAll() {
+        $query = 'SELECT * FROM' . "`{$this->username}" . 'wdmonthly`';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
     }
 
-    public function fectAllForTimeInterval($username, $startDate, $endDate) {
-        $query = 'SELECT * FROM' . "`{$username}" . 'wdmonthly` WHERE `dateslug` BETWEEN :startdate AND :enddate';
+    public function fetchAllForTimeInterval($startDate, $endDate) {
+        $query = 'SELECT * FROM' . "`{$this->username}" . 'wdmonthly` WHERE `dateslug` BETWEEN :startdate AND :enddate';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':startdate', $startDate);
         $stmt->bindValue(':enddate', $endDate);
@@ -53,21 +58,21 @@ class WDRepository {
         return $result;
     }
 
-    public function update($username, $date, $wdUpdateArray) {    
+    public function update($date, $wdUpdateArray) {    
         $date = $date . '-01';
         $queryArray = [];
         foreach($wdUpdateArray AS $key => $value) {
             $queryArray[] = "`{$key}` = {$value}";
         }  
         $queryString = implode(', ', $queryArray);
-        $query = 'UPDATE ' . "`{$username}" . 'wdmonthly` SET ' . $queryString . ' WHERE `dateslug` = :date';
+        $query = 'UPDATE ' . "`{$this->username}" . 'wdmonthly` SET ' . $queryString . ' WHERE `dateslug` = :date';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':date', $date);
         $stmt->execute();
         return;
     }
 
-    public function create($username, $date, $wdCreateArray) {
+    public function create($date, $wdCreateArray) {
         $dateSQL = date('Y-m-d', strtotime($date . '-01'));
         $queryArrayColumns = [];
         $queryArrayValues = [];
@@ -77,7 +82,7 @@ class WDRepository {
         }  
         $queryStringColumns = implode(', ', $queryArrayColumns);
         $queryStringValues = implode(', ', $queryArrayValues);
-        $query = 'INSERT INTO  ' . "`{$username}" . 'wdmonthly` ( `id`, `dateslug`, ' . $queryStringColumns . ') VALUES (NULL, :date, ' . $queryStringValues . ')';
+        $query = 'INSERT INTO  ' . "`{$this->username}" . 'wdmonthly` ( `id`, `dateslug`, ' . $queryStringColumns . ') VALUES (NULL, :date, ' . $queryStringValues . ')';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':date', $dateSQL);
         $stmt->execute();
@@ -86,6 +91,30 @@ class WDRepository {
 
     public function updateTablename($oldUsername, $newUsername) {
         $query = 'ALTER TABLE ' . "`{$oldUsername}" . 'wdmonthly` RENAME TO' . "`{$newUsername}" . 'wdmonthly`';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
+
+    public function renameColumn($columnOld, $columnNew) {
+        // $query = 'ALTER TABLE ' . "`{$username}" . 'wdmonthly` RENAME COLUMN ' . "`{$columnOld}`" . ' TO ' .  "`{$columnNew}`"; // won't work for some reason
+        $query = 'ALTER TABLE ' . "`{$this->username}" . 'wdmonthly` CHANGE ' . "`{$columnOld}` `{$columnNew}` VARCHAR(20)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
+
+    public function createColumns($category) {
+        $username = $_SESSION['username'];
+        $query = 'ALTER TABLE ' . "`{$username}" . 'wdmonthly` ADD '. "`{$category}-target` VARCHAR(20) NOT NULL AFTER `dateslug`, ADD `{$category}-actual` VARCHAR(20) NOT NULL AFTER `{$category}-target`";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return;
+    }
+
+    public function dropColumns($columnTarget, $columnActual) {
+        $username = $_SESSION['username'];
+        $query = 'ALTER TABLE ' . "`{$username}" . 'wdmonthly` DROP COLUMN ' . "`{$columnTarget}`," . ' DROP COLUMN ' . "`{$columnActual}`";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         return;

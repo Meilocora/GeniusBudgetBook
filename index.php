@@ -110,6 +110,15 @@ $container->add('homepageController', function() use($container) {
         $container->get('wdController'),
         $container->get('yearlyController'),
         $container->get('entryController'),
+        $container->get('colorThemeController'),
+        $container->get('chartController'));
+});
+
+$container->add('chartController', function() use($container){
+    return new \App\Controller\ChartController(
+        $container->get('wdController'),
+        $container->get('yearlyController'),
+        $container->get('entryController'),
         $container->get('colorThemeController'));
 });
 
@@ -119,6 +128,7 @@ $navRoutes = [
     'homepage',
     'overview',
     'monthly-page',
+    'custom-overview',
     'tools'
 ];
 
@@ -334,7 +344,7 @@ elseif($route === 'monthly-page') {
     $sortingProperty = @(string) ($_POST['sortingProperty'] ?? 'dateslug');
     $sort = @(string) ($_POST['sort'] ?? 'sortDateAsc');
     $entryController = $container->get('entryController');
-    $entryController->showEntries($navRoutes, $colorTheme, $userShortcut, $sortingProperty, $sort, $date, $perPage, $currentPage, $_SESSION['username']);
+    $entryController->showEntries($navRoutes, $colorTheme, $userShortcut, $sortingProperty, $sort, $date, $perPage, $currentPage);
 }
 else if($route === 'monthly-page/create') {
     $authService = $container->get('authService');
@@ -369,11 +379,11 @@ else if($route === 'monthly-page/fixedentries') {
     $entryController = $container->get('entryController');
     $entryController->transferFixedEntries($date);
 }
-else if($route === 'custom-view') {
+else if($route === 'custom-overview') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
     $routingController = $container->get('routingController');
-    $routingController->render('custom-view', [
+    $routingController->render('budget-book/custom-overview', [
         'navRoutes' => $navRoutes,
         'colorTheme' => $colorTheme,
         'userShortcut' => $userShortcut

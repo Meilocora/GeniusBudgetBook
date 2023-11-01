@@ -115,7 +115,6 @@ export default class Register {
             if(!value.match(/^.*(?=.*\d)[A-Za-z\d@$!%*?&].*$/)) errorArray.push("- password must include at least one number ");
             if(!value.match(/^.*(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&].*$/)) errorArray.push("- password must include at least one special character");
             if(!value.match(/^.*[^\ ].*[^\ .].*$/)) errorArray.push("- password can't start or end with blank space.");
-            
         }       
         return errorArray;
     }
@@ -267,11 +266,15 @@ export default class Register {
                     questionmark.setAttribute("width", "12px");
                     questionmark.setAttribute("alt", "Questionmark symbol.");
                     checkboxInput.insertAdjacentElement("afterend", questionmark);
+
+                    let infoContainer = document.createElement("div");
+                    infoContainer.setAttribute("class", "info-container");
     
-                    let explanation = document.createElement("span");
-                    explanation.setAttribute("class", "hidden");
-                    explanation.textContent = `Check to add this category to liquid assets. Liquid assets will be added to your savings balance.`;
-                    questionmark.insertAdjacentElement("afterend", explanation);
+                    let info = document.createElement("span");
+                    info.setAttribute("class", "info-box");
+                    info.textContent = `Check to add this category to liquid assets. Liquid assets will be added to your savings balance.`;
+                    infoContainer.insertAdjacentElement("afterbegin", info);
+                    questionmark.insertAdjacentElement("afterend", infoContainer);
                     
                     if(totalCategories === 9) {
                         document.getElementById("anotherWealthDistCat").classList.toggle("hidden");

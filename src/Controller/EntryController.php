@@ -20,15 +20,15 @@ class EntryController extends AbstractController{
         protected WDController $wdController,
         protected UsersController $usersController) {}
 
-    public function showEntries(array $navRoutes, string $colorTheme, string $userShortcut, string $sortingProperty, string $sort, string $date, int $perPage, int $currentPage, string $username) {
-        $categories = $this->usersController->usersEntryCats($username);
+    public function showEntries(array $navRoutes, string $colorTheme, string $userShortcut, string $sortingProperty, string $sort, string $date, int $perPage, int $currentPage) {
+        $categories = $this->usersController->usersEntryCats();
         $unsortedEntries = $this->entryRepository->fetchAllOfMonthPerPage($date, $perPage, $currentPage);
         $entries = $this->entryRepository->sortByProperty($unsortedEntries, $sortingProperty, $sort);
         $balance = $this->calculateMonthlyBalanceSheet($date);
         $sortButtons = $this->sortButtons($sort);
         $datePretty = (new DateTime($date))->format('F Y');
         $numPages = ceil($this->entryRepository->countEntriesOfMonth($date) / $perPage);
-        $wdcategories = $this->wdController->wdCategoriesOfMonth($username, $date);
+        $wdcategories = $this->wdController->wdCategoriesOfMonth($date);
         if(empty($this->checkUntransferedFixedEntries($date))) {
             $transferPossible = false;
         } else {
@@ -59,7 +59,7 @@ class EntryController extends AbstractController{
             $date = @(string) ($_POST['date'] ?? '');
             $comment = @(string) ($_POST['comment'] ?? '');
             $fixedentry = @(float) ($_POST['fixedentry'] ?? '0');
-            $expCats = $this->usersController->usersExpCats($_SESSION['username']);
+            $expCats = $this->usersController->usersExpCats();
             if(in_array($category, $expCats)) {
                 $income = 0;
             } else {
@@ -102,7 +102,7 @@ class EntryController extends AbstractController{
             $dateslug = @(string) ($_POST['dateslug'] ?? '');
             $comment = @(string) ($_POST['comment'] ?? '');
             $fixedentry = @(float) ($_POST['fixedentry'] ?? '0');
-            $expCats = $this->usersController->usersExpCats($_SESSION['username']);
+            $expCats = $this->usersController->usersExpCats();
             if(in_array($category, $expCats)) {
                 $income = 0;
             } else {
@@ -255,9 +255,8 @@ class EntryController extends AbstractController{
     }
 
     public function donationsTrend($startDate, $year) {
-        $username = strtolower($_SESSION['username']);
         $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
-        $entryCollectionraw = $this->entryRepository->fectAllForTimeInterval($username, $startDate, $endDate);
+        $entryCollectionraw = $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
         $donationsEntries = [];
         foreach($entryCollectionraw AS $entry) {
             if(preg_match('/.*donation.*/i', $entry->category) | preg_match('/.*?donation.*?/i', $entry->title) | preg_match('/.*?donation.*?/i', $entry->comment)) {
@@ -266,6 +265,5 @@ class EntryController extends AbstractController{
         }
         return $donationsEntries;
     }
-
 }
 

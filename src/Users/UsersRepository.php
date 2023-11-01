@@ -6,11 +6,13 @@ use PDO;
 use App\AuthService\AuthServiceUser;
 
 class UsersRepository {
+
     public function __construct(
         protected PDO $pdo,
         protected AuthServiceUser $authServiceUser) {}
 
-    public function fetchAll($username) {
+    public function fetchAll() {
+        $username = strtolower($_SESSION['username']);
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `username` = :username");
         $stmt->bindValue(':username', $username);
         $stmt->execute();
@@ -31,7 +33,8 @@ class UsersRepository {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function fetchUser($username) {
+    public function fetchUser($username = '') {
+        if($username === '') $username = strtolower($_SESSION['username']);
         $stmt = $this->pdo->prepare('SELECT * FROM `users` WHERE `username` = :username');
         $stmt->bindValue(':username', $username);
         $stmt->setFetchMode(PDO::FETCH_CLASS, AuthServiceUser::class);
@@ -39,7 +42,8 @@ class UsersRepository {
         return $stmt->fetch();
     }
 
-    public function fetchWDCategories($username): array {
+    public function fetchWDCategories($username = ''): array {
+        if($username === '') $username = strtolower($_SESSION['username']);
         $stmt = $this->pdo->prepare("SELECT * FROM `users` WHERE `username` = :username");
         $stmt->bindValue(':username', $username);
         $stmt->execute();
@@ -159,7 +163,8 @@ class UsersRepository {
         return;
     }
 
-    public function updatePassword($username, $changedPassword) {
+    public function updatePassword($changedPassword) {
+        $username = strtolower($_SESSION['username']);
         $stmt = $this->pdo->prepare('UPDATE `users` SET `password` = :password WHERE `username` = :username');
         $stmt->bindValue(':password', $changedPassword);
         $stmt->bindValue(':username', $username);
@@ -168,7 +173,7 @@ class UsersRepository {
     }
 
     public function updateCategories($catsKeys, $catsValues) {
-        $username = $_SESSION['username'];
+        $username = strtolower($_SESSION['username']);
         $editArray = [];
         for ($i = 0; $i < count($catsKeys); $i++) {
             $editArray[] = "`{$catsKeys[$i]}` = '{$catsValues[$i]}' ";
@@ -182,15 +187,43 @@ class UsersRepository {
     }
 
     public function deleteCategory($category) {
-        $username = $_SESSION['username'];
+        $username = strtolower($_SESSION['username']);
         foreach ($category as $key => $value) {
-            $deleteString = "`{$key}` = ''";
+            $deleteString = "`{$key}` = '' ";
         }
         $query = 'UPDATE `users` SET ' . "{$deleteString}" . ' WHERE `username` = :username';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':username', $username);
         $stmt->execute();
         return;
-       
+    }
+
+    public function updateWDCategory($category, $liquid) {
+        $username = strtolower($_SESSION['username']);
+        $editArray = [];
+        foreach ($category as $key => $value) {
+            $editArray[] = "`{$key}` = '{$value}' ";
+        }
+        foreach ($liquid as $key => $value) {
+            $editArray[] = "`{$key}` = '{$value}' ";
+        }
+        $editString = implode(",", $editArray);
+        $query = 'UPDATE `users` SET ' . "{$editString}" . 'WHERE `username` = :username';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return;
+    }
+
+    public function deleteWDCategory($category) {
+        $username = strtolower($_SESSION['username']);
+        foreach ($category as $key => $value) {
+            $deleteString = "`{$key}` = '', `{$key}Liquid` = '0'";
+        }
+        $query = 'UPDATE `users` SET ' . "{$deleteString}" . ' WHERE `username` = :username';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindValue(':username', $username);
+        $stmt->execute();
+        return;
     }
 }

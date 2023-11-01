@@ -30,7 +30,7 @@
                             <div class="clearfix" id="nav-content">
                                 <a href="./?route=overview" class="nav-element <?php if($_GET['route'] === 'overview') echo 'active_sub'; ?>">Overview</a>
                                 <a href="./?route=monthly-page" class="nav-element <?php if($_GET['route'] === 'monthly-page') echo 'active_sub'; ?>">Monthly Page</a>
-                                <a href="./?route=custom-view" class="nav-element <?php if($_GET['route'] === 'custom-view') echo 'active_sub'; ?>">Custom Overview</a>     
+                                <a href="./?route=custom-overview" class="nav-element <?php if($_GET['route'] === 'custom-view') echo 'active_sub'; ?>">Custom Overview</a>     
                             </div>
                         </li>
                         <li class="<?php if($_GET['route'] === 'tools') echo 'active'; ?>">

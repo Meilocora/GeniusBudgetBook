@@ -31,9 +31,11 @@
                 <input type="text" name="wealthdist1" id="wealthdist1" placeholder="e.g. Bank account" maxlength="20">
                 <input type="checkbox" name="wd1liquid" value="1" id="wd1liquid">
                 <img src="./img/questionmark.png" height="12px" width="12px" alt="Questionmark symbol.">
-                <span class="hidden">
-                    Check to add this category to liquid assets. Liquid assets will be added to your savings balance.
-                </span>
+                <div class="info-container">
+                    <span class="info-box">
+                        Check to add this category to liquid assets. Liquid assets will be added to your savings balance.
+                    </span>
+                </div>
             </div>
             <div class="btn-row">
                 <input type="submit" value="Add category" id="anotherWealthDistCat" class="btn">

@@ -6,10 +6,13 @@ use DateTime;
 use PDO;
 
 class EntryRepository {
-    public function __construct(
-        protected PDO $pdo) {}
 
-        #TODO: username als construct übernehmen... in allen Repositories
+    protected string $username;
+
+    public function __construct(
+        protected PDO $pdo) {
+            $this->username = isset($_SESSION['username']) ? strtolower($_SESSION['username']) : '';
+        }
 
     public function generateTable($username) {
         $query = 'CREATE TABLE `geniusbudgetbook`.' . "`{$username}" . 'entries` (`id` INT(11) NOT NULL AUTO_INCREMENT , `category` VARCHAR(50) NOT NULL , `title` VARCHAR(50) NOT NULL , `amount` FLOAT NOT NULL , `dateslug` DATE NOT NULL , `comment` VARCHAR(1024) NOT NULL , `income` BOOLEAN NOT NULL , `fixedentry` BOOLEAN NOT NULL , PRIMARY KEY (`id`), INDEX (`category`), INDEX (`title`)) ENGINE = InnoDB';
@@ -19,11 +22,10 @@ class EntryRepository {
     }
 
     public function fetchAllOfMonth($date): array {
-        $username = $_SESSION['username'];
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT * FROM ' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC';
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':monthFstDay', $monthFstDay);
         $stmt->bindValue(':monthLstDay', $monthLstDay);
@@ -32,11 +34,10 @@ class EntryRepository {
     }
 
     public function fetchAllOfGivenMonth($date): array {
-        $username = $_SESSION['username'];
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT * FROM ' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC';
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':monthFstDay', $monthFstDay);
         $stmt->bindValue(':monthLstDay', $monthLstDay);
@@ -44,8 +45,8 @@ class EntryRepository {
         return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
     }
 
-    public function fectAllForTimeInterval($username, $startDate, $endDate) {
-        $query = 'SELECT * FROM' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :startdate AND :enddate';
+    public function fetchAllForTimeInterval($startDate, $endDate) {
+        $query = 'SELECT * FROM' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :startdate AND :enddate';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':startdate', $startDate);
         $stmt->bindValue(':enddate', $endDate);
@@ -54,11 +55,10 @@ class EntryRepository {
     } 
 
     public function fetchAllOfMonthPerPage($date, $perPage, $currentPage): array {
-        $username = $_SESSION['username'];
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT * FROM ' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC LIMIT :offset, :perPage';
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC LIMIT :offset, :perPage';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':monthFstDay', $monthFstDay);
         $stmt->bindValue(':monthLstDay', $monthLstDay);
@@ -69,11 +69,10 @@ class EntryRepository {
     }
 
     public function countEntriesOfMonth($date) {
-        $username = $_SESSION['username'];
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT COUNT(*) AS `count` FROM ' . "`{$username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ';
+        $query = 'SELECT COUNT(*) AS `count` FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':monthFstDay', $monthFstDay);
         $stmt->bindValue(':monthLstDay', $monthLstDay);
@@ -113,8 +112,7 @@ class EntryRepository {
     }
 
     public function create(string $category, string $title, float $amount, string $date, string $comment, int $income, int $fixedentry): bool {
-        $username = $_SESSION['username'];
-        $query = 'INSERT INTO  ' . "`{$username}" . 'entries` (category, title, amount, dateslug, comment, income, fixedentry) VALUES (:category, :title, :amount, :dateslug, :comment, :income, :fixedentry) ';
+        $query = 'INSERT INTO  ' . "`{$this->username}" . 'entries` (category, title, amount, dateslug, comment, income, fixedentry) VALUES (:category, :title, :amount, :dateslug, :comment, :income, :fixedentry) ';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':category', $category);
         $stmt->bindValue(':title', $title);
@@ -128,16 +126,14 @@ class EntryRepository {
     }
 
     public function delete($id) {
-        $username = $_SESSION['username'];
-        $query = 'DELETE FROM  ' . "`{$username}" . 'entries` WHERE `id`=:id';
+        $query = 'DELETE FROM  ' . "`{$this->username}" . 'entries` WHERE `id`=:id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
     }
 
     public function update(int $id, string $category, string $title, float $amount, string $dateslug, string $comment, int $income, int $fixedentry) {
-        $username = $_SESSION['username'];
-        $query = 'UPDATE  ' . "`{$username}" . 'entries` SET `category` = :category, `title` = :title, `amount` = :amount, `dateslug` = :dateslug, `comment` = :comment, `income` = :income, `fixedentry` = :fixedentry WHERE `id` = :id';
+        $query = 'UPDATE  ' . "`{$this->username}" . 'entries` SET `category` = :category, `title` = :title, `amount` = :amount, `dateslug` = :dateslug, `comment` = :comment, `income` = :income, `fixedentry` = :fixedentry WHERE `id` = :id';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':id', $id);
         $stmt->bindValue(':category', $category);
@@ -158,18 +154,16 @@ class EntryRepository {
     }
 
     public function updateEntryCategory($changeEntries) {
-        $username = $_SESSION['username'];
         foreach ($changeEntries as $key => $value) {
-            $query = 'UPDATE  ' . "`{$username}" . "entries` SET `category` = '{$value}' WHERE `category` = '{$key}'";
+            $query = 'UPDATE  ' . "`{$this->username}" . "entries` SET `category` = '{$value}' WHERE `category` = '{$key}'";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
         }
         return;
     }
 
-    #TODO: should be in EntryController, but there is a memory_limit error, when adding this controller to UsersController...
+    // should be in EntryController, but there is a memory_limit error, when adding this controller to UsersController...
     public function deleteEntryCategory($deleteCategory) {
-        $username = $_SESSION['username'];
         $deleteEntries = $this->fetchByCategory($deleteCategory);
         foreach ($deleteEntries as $entry) {
             $this->delete($entry->id);
@@ -178,8 +172,7 @@ class EntryRepository {
     }
 
     public function fetchByCategory($category) {
-        $username = $_SESSION['username'];
-        $query = 'SELECT * FROM ' . "`{$username}" . 'entries` WHERE `category` = :category';
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `category` = :category';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue('category', array_values($category)[0]);
         $stmt->execute();

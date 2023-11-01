@@ -1,3 +1,4 @@
+<script type="module" src="./src/JS/usersettingsmain.js"></script>
 <section class="userSettings-container">
     <?php if (!empty($errorArray)): ?>
         <div class="error-box" id="userSettings_errorBox">
@@ -39,12 +40,6 @@
             </div>
         </form>
     </article>
-    <script>
-         document.querySelector("#title_changeUsername").addEventListener("click", e => {
-            document.getElementById('usernameForm').classList.toggle("hide");
-            document.getElementById('title_changeUsername').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ CHANGE PASSWORD ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_changePassword">
@@ -74,12 +69,6 @@
             </div>
         </form>
     </article>
-    <script>
-         document.querySelector("#title_changePassword").addEventListener("click", e => {
-            document.getElementById('passwordForm').classList.toggle("hide");
-            document.getElementById('title_changePassword').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ CHANGE COLOR-THEME ++++++++++ -->
     <?php $colorThemes = ['greenTheme', 'redTheme', 'blueTheme', 'customTheme']; ?>
     <div class="userSettings-row">
@@ -112,12 +101,6 @@
             </form>
         </div>
     </article>
-    <script>
-         document.querySelector("#title_changeColorTheme").addEventListener("click", e => {
-            document.getElementById('standardColorForm').classList.toggle("hide");
-            document.getElementById('title_changeColorTheme').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ COLOR-THEME ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_colorTheme">
@@ -165,12 +148,6 @@
             </form>
         </div>  
     </article>
-    <script>
-         document.querySelector("#title_colorTheme").addEventListener("click", e => {
-            document.getElementById('customColorForm').classList.toggle("hide");
-            document.getElementById('title_colorTheme').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ CHART COLOR-THEME ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_chartColorTheme">
@@ -180,6 +157,9 @@
     </div>
     <article id="customChartColorForm" class="hide">
         <hr class="thin-line">
+        <div class="userSettings-row">
+            <span style="font-style: italic;">Set colors for the max. 10 different lines or sections of the charts.</span>
+        </div>
         <form action="./?route=userSettings/adjustColorTheme" method="POST">
         <input type="hidden" name="customChartColor" value="1">
         <div class="userSettings-row">
@@ -222,12 +202,6 @@
             </form>
         </div>
     </article>
-    <script>
-         document.querySelector("#title_chartColorTheme").addEventListener("click", e => {
-            document.getElementById('customChartColorForm').classList.toggle("hide");
-            document.getElementById('title_chartColorTheme').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ Edit WEALTH DISTRIBUTIONS ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_wdcats">
@@ -237,18 +211,20 @@
     </div>
     <article id="wdForm" class="hide">
         <hr class="thin-line">
-        <form action="./?route=userSettings/changeUserData" method="POST">
+        <form action="./?route=userSettings/changeUserData" method="POST" id="wdcatFormular">
         <?php for($i = 1; $i <= 18; $i+=2): ?>
             <div class="userSettings-row">
                 <label for="wdcat<?php echo($i+1)/2; ?>">Category <?php echo ($i+1)/2; ?>: &nbsp &nbsp </label>
                 <input type="hidden" name="oldwdcat<?php echo ($i+1)/2; ?>" id="oldwdcat<?php echo ($i+1)/2; ?>" value="<?php echo $userCats['wdcats'][$i-1]; ?>" form="wdcatFormular">
                 <input type="text" name="wdcat<?php echo ($i+1)/2; ?>" id="wdcat<?php echo ($i+1)/2; ?>" value="<?php echo $userCats['wdcats'][$i-1]; ?>" form="wdcatFormular" maxlength="20">
                 <input type="hidden" name="oldwdliq<?php echo ($i+1)/2; ?>" id="oldwdliq<?php echo ($i+1)/2; ?>" value="<?php echo $userCats['wdcats'][$i]; ?>" form="wdcatFormular">
-                <input type="checkbox" name="wdliq<?php echo ($i+1)/2; ?>" id="wdliq<?php echo ($i+1)/2; ?>" <?php if($userCats['wdcats'][$i] === 1) echo "checked"; ?> form="wdcatFormular">
-                </form>
+                <input type="hidden" name="wdliq<?php echo ($i+1)/2; ?>" value="0">
+                <input type="checkbox" name="wdliq<?php echo ($i+1)/2; ?>" id="wdliq<?php echo ($i+1)/2; ?>" value="1" <?php if($userCats['wdcats'][$i] === 1) echo "checked"; ?> form="wdcatFormular">
+            </form>
                 <form action="./?route=userSettings/changeUserData" method="post" id="deleteWDcatForm<?php echo ($i+1)/2; ?>">
-                    <input type="hidden" name="delete" value="1" form="deleteWDcatForm<?php echo ($i+1)/2; ?>">
+                    <input type="hidden" name="deleteWDCat" value="1" form="deleteWDcatForm<?php echo ($i+1)/2; ?>">
                     <input type="hidden" name="deletewdcat<?php echo ($i+1)/2; ?>" value="<?php echo $userCats['wdcats'][$i-1]; ?>" form="deleteWDcatForm<?php echo ($i+1)/2; ?>">
+                    <input type="hidden" name="deletewdliq<?php echo ($i+1)/2; ?>" value="<?php echo $userCats['wdcats'][$i]; ?>" form="deleteWDcatForm<?php echo ($i+1)/2; ?>">
                     <button class="btn-small btn-delete" id="dummyWDCatDelete<?php echo ($i+1)/2; ?>">X</button>
                 <div class="error-container">
                     <div class="error-box hidden" id="disclaimerDeleteWDcat<?php echo ($i+1)/2; ?>">
@@ -268,10 +244,10 @@
                 <input type="hidden" name="oldwdcat10" id="oldwdcat10" value="<?php echo $userCats['wdcats'][18]; ?>" form="wdcatFormular">
                 <input type="text" name="wdcat10" id="wdcat10" value="<?php echo $userCats['wdcats'][18]; ?>" form="wdcatFormular" maxlength="20">
                 <input type="hidden" name="oldwdliq10" id="oldwdliq10" value="<?php echo $userCats['wdcats'][19]; ?>" form="wdcatFormular">
-                <input type="checkbox" name="wdliq10" id="wdliq10" <?php if($userCats['wdcats'][19] === 1) echo "ckecked"; ?> form="wdcatFormular">
-                </form>
+                <input type="checkbox" name="wdliq10" id="wdliq10" value="1" <?php if($userCats['wdcats'][19] === 1) echo "ckecked"; ?> form="wdcatFormular">
+            </form>
                 <form action="./?route=userSettings/changeUserData" method="post" id="deleteWDcatForm10">
-                    <input type="hidden" name="delete" value="1" form="deleteWDcatForm10">
+                    <input type="hidden" name="deleteWDCat" value="1" form="deleteWDcatForm10">
                     <input type="hidden" name="deletewdcat10" value="<?php echo $userCats['wdcats'][18]; ?>" form="deleteWDcatForm10">
                     <button class="btn-small btn-delete" id="dummyWDCatDelete10">X</button>
                 <div class="error-container">
@@ -289,26 +265,21 @@
         </div>
         <hr class="thin-line">
         <div class="userSettings-row">
-            <input type="submit" value="Send" class="btn">
+        <input type="hidden" name="editWDCat" value="1" form="wdcatFormular">
+            <input type="submit" value="Send" class="btn" id="dummyWDConfirm">
+            <div class="error-container">
+                <div class="error-box hidden" id="hintWD">
+                    <img src="./img/error.png" alt="Error Symbol" height="70px" width="70px">
+                    <h1>Attention</h1>
+                    <span>If you edit a category to an empty string all entries of this category will be deleted permanently!</span>
+                    <span>Do you want to confirm the edit?</span><br>
+                    <input type="submit" value="Yes" class="btn-small btn-small-hover" form="wdcatFormular" id="confirmWDCat">
+                    <button class="btn-small btn-delete" id="abortWDCat">No</button>  
+                </div>
+            </div>
             </form>
         </div>
     </article>
-    <script>
-        for ( let i=1; i<=10; i++ ) {
-            document.querySelector(`#dummyWDCatDelete${i}`).addEventListener("click", e => {
-            e.preventDefault();
-            document.getElementById(`disclaimerDeleteWDcat${i}`).classList.toggle("hidden");
-            });
-            document.getElementById(`abortWDCat${i}`).addEventListener("click", e => {
-                e.preventDefault();
-                document.getElementById(`disclaimerDeleteWDcat${i}`).classList.toggle("hidden");
-            });
-        };
-         document.querySelector("#title_wdcats").addEventListener("click", e => {
-            document.getElementById('wdForm').classList.toggle("hide");
-            document.getElementById('title_wdcats').classList.toggle("titleSelected");
-         });
-    </script>
     <!-- ++++++++++ EDIT REVENUE CATEGORIES ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_revcats">
@@ -326,7 +297,7 @@
                 <input type="text" name="revcat<?php echo $i; ?>" id="revcat<?php echo $i; ?>" value="<?php echo $userCats['revcats'][$i-1]; ?>" form="revcatFormular" maxlength="20">
                 </form>
                 <form action="./?route=userSettings/changeUserData" method="post" id="deleteRevcatForm<?php echo $i; ?>">
-                    <input type="hidden" name="delete" value="1" form="deleteRevcatForm<?php echo $i; ?>">
+                    <input type="hidden" name="deleteRevCat" value="1" form="deleteRevcatForm<?php echo $i; ?>">
                     <input type="hidden" name="deleterevcat<?php echo $i; ?>" value="<?php echo $userCats['revcats'][$i-1]; ?>" form="deleteRevcatForm<?php echo $i; ?>">
                     <button class="btn-small btn-delete" id="dummyRevCatDelete<?php echo $i; ?>">X</button>
                 <div class="error-container">
@@ -347,7 +318,7 @@
                 <input type="hidden" name="oldrevcat10" id="oldrevcat10" value="<?php echo $userCats['revcats'][9]; ?>" form="revcatFormular">
                 <input type="text" name="revcat10" id="revcat10" value="<?php echo $userCats['revcats'][9]; ?>" form="revcatFormular" maxlength="20">
                 <form action="./?route=userSettings/changeUserData" method="post" id="deleteRevcatForm10">
-                    <input type="hidden" name="delete" value="1" form="deleteRevcatForm10">
+                    <input type="hidden" name="deleteRevCat" value="1" form="deleteRevcatForm10">
                     <input type="hidden" name="deleterevcat10" value="<?php echo $userCats['revcats'][9]; ?>" form="deleteRevcatForm10">
                     <button class="btn-small btn-delete" id="dummyRevCatDelete10">X</button>
                 <div class="error-container">
@@ -356,7 +327,7 @@
                         <h1>Attention</h1>
                         <span>Do you really want to permanently delete "<?php echo $userCats['revcats'][9]; ?>"?</span>
                         <span>All entries of this category will be deleted aswell.</span><br>
-                        <input type="submit" value="Yes" class="btn-small btn-delete" form="deleteRevcatForm" id="deleteRevCat">
+                        <input type="submit" value="Yes" class="btn-small btn-delete" form="deleteRevcatForm10" id="deleteRevCat10">
                         <button class="btn-small btn-small-hover" id="abortRevCat10">No</button>
                     </div>
                 </div>
@@ -364,27 +335,21 @@
             </div>
         <hr class="thin-line">
         <div class="userSettings-row">
-            <input type="hidden" name="edit" value="1" form="revcatFormular">
-            <input type="submit" value="Send" class="btn" form="revcatFormular">
+            <input type="hidden" name="editRevCat" value="1" form="revcatFormular">
+            <input type="submit" value="Send" class="btn" form="revcatFormular" id="dummyRevCatConfirm">
+            <div class="error-container">
+                <div class="error-box hidden" id="hintRevcat">
+                    <img src="./img/error.png" alt="Error Symbol" height="70px" width="70px">
+                    <h1>Attention</h1>
+                    <span>If you edit a category to an empty string all entries of this category will be deleted permanently!</span>
+                    <span>Do you want to confirm the edit?</span><br>
+                    <input type="submit" value="Yes" class="btn-small btn-small-hover" form="revcatFormular" id="confirmRevCat">
+                    <button class="btn-small btn-delete" id="abortRevCat">No</button>  
+                </div>
+            </div>
             </form>
         </div>
     </article>
-    <script>
-        for ( let i=1; i<=9; i++ ) {
-            document.querySelector(`#dummyRevCatDelete${i}`).addEventListener("click", e => {
-            e.preventDefault();
-            document.getElementById(`disclaimerDeleteRevcat${i}`).classList.toggle("hidden");
-            });
-            document.getElementById(`abortRevCat${i}`).addEventListener("click", e => {
-                e.preventDefault();
-                document.getElementById(`disclaimerDeleteRevcat${i}`).classList.toggle("hidden");
-            });
-        };
-        document.querySelector("#title_revcats").addEventListener("click", e => {
-            document.getElementById('revcatForm').classList.toggle("hide");
-            document.getElementById('title_revcats').classList.toggle("titleSelected");
-        });
-    </script>
     <!-- ++++++++++ EDIT EXPENDITURE CATEGORIES ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_expcats">
@@ -401,9 +366,9 @@
                 <input type="hidden" name="oldexpcat<?php echo $i; ?>" id="oldexpcat<?php echo $i; ?>" value="<?php echo $userCats['expcats'][$i-1]; ?>" form="expcatFormular">
                 <input type="text" name="expcat<?php echo $i; ?>" id="expcat<?php echo $i; ?>" value="<?php echo $userCats['expcats'][$i-1]; ?>" form="expcatFormular" maxlength="20">
                 </form>
-                <form action="./?route=userSettings/changeUserData" method="post" id="deleteexpcatForm<?php echo $i; ?>">
-                    <input type="hidden" name="delete" value="1" form="deleteexpcatForm<?php echo $i; ?>">
-                    <input type="hidden" name="deleteexpcat<?php echo $i; ?>" value="<?php echo $userCats['expcats'][$i-1]; ?>" form="deleteexpcatForm<?php echo $i; ?>">
+                <form action="./?route=userSettings/changeUserData" method="post" id="deleteExpcatForm<?php echo $i; ?>">
+                    <input type="hidden" name="deleteExpCat" value="1" form="deleteExpcatForm<?php echo $i; ?>">
+                    <input type="hidden" name="deleteexpcat<?php echo $i; ?>" value="<?php echo $userCats['expcats'][$i-1]; ?>" form="deleteExpcatForm<?php echo $i; ?>">
                     <button class="btn-small btn-delete" id="dummyExpCatDelete<?php echo $i; ?>">X</button>
                 <div class="error-container">
                     <div class="error-box hidden" id="disclaimerDeleteExpcat<?php echo $i; ?>">
@@ -421,16 +386,16 @@
                 <label for="expcat10">Category 10: &nbsp </label>
                 <input type="hidden" name="oldexpcat10" id="oldexpcat10" value="<?php echo $userCats['expcats'][9]; ?>" form="expcatFormular">
                 <input type="text" name="expcat10" id="expcat10" value="<?php echo $userCats['expcats'][9]; ?>" form="expcatFormular" maxlength="20">
-                <form action="./?route=userSettings/changeUserData" method="post" id="deleteexpcatForm10">
-                    <input type="hidden" name="delete" value="1" form="deleteexpcatForm10">
-                    <input type="hidden" name="deleteexpcat10" value="<?php echo $userCats['expcats'][9]; ?>" form="deleteexpcatForm10">
+                <form action="./?route=userSettings/changeUserData" method="post" id="deleteExpcatForm10">
+                    <input type="hidden" name="deleteExpCat" value="1" form="deleteExpcatForm10">
+                    <input type="hidden" name="deleteexpcat10" value="<?php echo $userCats['expcats'][9]; ?>" form="deleteExpcatForm10">
                     <button class="btn-small btn-delete" id="dummyExpCatDelete10">X</button>
                 <div class="error-container">
                     <div class="error-box hidden" id="disclaimerDeleteExpcat10">
                         <img src="./img/error.png" alt="Error Symbol" height="70px" width="70px">
                         <h1>Do you really want to permanently delete <?php echo $userCats['expcats'][9]; ?>?</h1>
                         <span>All entries of this category will be deleted aswell.</span><br>
-                        <input type="submit" value="Yes" class="btn-small btn-delete" form="deleteExpcatForm" id="deleteExpCat">
+                        <input type="submit" value="Yes" class="btn-small btn-delete" form="deleteExpcatForm10" id="deleteExpCat10">
                         <button class="btn-small btn-small-hover" id="abortExpCat10">No</button>
                     </div>
                 </div>
@@ -438,29 +403,21 @@
             </div>
         <hr class="thin-line">
         <div class="userSettings-row">
-            <input type="hidden" name="edit" value="1" form="expcatFormular">
-            <input type="submit" value="Send" class="btn" form="expcatFormular">
+            <input type="hidden" name="editExpCat" value="1" form="expcatFormular">
+            <input type="submit" value="Send" class="btn" form="expcatFormular" id="dummyExpCatConfirm">
+            <div class="error-container">
+                <div class="error-box hidden" id="hintExpcat">
+                    <img src="./img/error.png" alt="Error Symbol" height="70px" width="70px">
+                    <h1>Attention</h1>
+                    <span>If you edit a category to an empty string all entries of this category will be deleted permanently!</span>
+                    <span>Do you want to confirm the edit?</span><br>
+                    <input type="submit" value="Yes" class="btn-small btn-small-hover" form="expcatFormular" id="confirmExpCat">
+                    <button class="btn-small btn-delete" id="abortExpCat">No</button>  
+                </div>
+            </div>
             </form>
         </div>
     </article>
-    <script>
-        for ( let i=1; i<=10; i++ ) {
-            document.querySelector(`#dummyExpCatDelete${i}`).addEventListener("click", e => {
-            e.preventDefault();
-            document.getElementById(`disclaimerDeleteExpcat${i}`).classList.toggle("hidden");
-            });
-            document.getElementById(`abortExpCat${i}`).addEventListener("click", e => {
-                e.preventDefault();
-                document.getElementById(`disclaimerDeleteExpcat${i}`).classList.toggle("hidden");
-            });
-        };
-         document.querySelector("#title_expcats").addEventListener("click", e => {
-            document.getElementById('expcatForm').classList.toggle("hide");
-            document.getElementById('title_expcats').classList.toggle("titleSelected");
-         });
-    </script>
-     <!-- #TODO: EntryCategorien ändern oder löschen => Tabelle mit Funition "delete" [auch für alle Einträge...mit disclaimer] und "edit" -->
-    <!-- #TODO: WD Categorien ändern oder löschen => Tabelle mit Funition "delete" [auch für alle Einträge...mit disclaimer] und "edit" -->
     <div class="userSettings-row">
         <a href="./?route=homepage" class="cancel-btn">Get Back!</a>
     </div>

@@ -19,7 +19,7 @@
         </div>
         <div class="form-row">
             <label for="date" class="label">Date</label>
-            <input type="date" name="date" id="date" class="input" value="<?php echo (new DateTime($datePretty))->format('Y-m-d'); ?>" required>
+            <input type="date" name="date" id="date" class="input" value="<?php echo date('Y-m-d'); ?>" required>
         </div>
         <div class="form-row">
             <label for="comment" class="label">Comment</label>

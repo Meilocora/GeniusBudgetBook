@@ -11,6 +11,7 @@ class ColorThemeController extends AbstractController{
             $this->colorTheme = ($_COOKIE['colorTheme']);
         }
 
+        // #TODO: ColorThemeRepository, sodass Color Themes in DB gespeichert werden anstelle von COOKIES
     public function adjustColorTheme() {
         if (isset($_POST['customChartColor'])) {
             $customChartColorTheme = [];
