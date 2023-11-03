@@ -54,16 +54,16 @@ class EntryRepository {
         return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
     } 
 
-    public function fetchAllOfMonthPerPage($date, $perPage, $currentPage): array {
+    public function fetchAllOfMonthPerPageSortedByProperty($date,$sortingProperty, $sortMode, $perPage, $currentPage): array {
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC LIMIT :offset, :perPage';
+        $limit = $perPage;
+        $offset = ($currentPage - 1) * $perPage;
+        $query = 'SELECT * FROM ' . "`{$this->username}" . "entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `{$sortingProperty}` {$sortMode} LIMIT {$limit} OFFSET {$offset}";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':monthFstDay', $monthFstDay);
         $stmt->bindValue(':monthLstDay', $monthLstDay);
-        $stmt->bindValue(':offset', ($currentPage - 1) * $perPage, PDO::PARAM_INT);
-        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
     }
@@ -78,37 +78,6 @@ class EntryRepository {
         $stmt->bindValue(':monthLstDay', $monthLstDay);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
-    }
-
-    public function sortByProperty($entries, string $sortingProperty, string $sort) {
-        if(preg_match('/Asc/', $sort) === 1) {
-            if(preg_match('/Amount/', $sort) === 1) {
-                usort($entries,fn($a, $b) => $a->$sortingProperty > $b->$sortingProperty);
-                return $entries;
-            }
-            elseif(preg_match('/Date/', $sort) === 1) {
-                usort($entries,fn($a, $b) => strtotime($a->dateslug) - strtotime($b->dateslug));
-                return $entries;
-            }
-            else {
-                usort($entries,fn($a, $b) => strcmp($a->$sortingProperty, $b->$sortingProperty));
-                return $entries;
-            }
-        }
-        elseif(preg_match('/Desc/', $sort) === 1) {
-            if(preg_match('/Amount/', $sort) === 1) {
-                usort($entries,fn($a, $b) => $b->$sortingProperty > $a->$sortingProperty);
-                return $entries;
-            }
-            elseif(preg_match('/Date/', $sort) === 1) {
-                usort($entries,fn($a, $b) => strtotime($b->dateslug) - strtotime($a->dateslug));
-                return $entries;
-            }
-            else {
-                usort($entries,fn($a, $b) => strcmp($b->$sortingProperty, $a->$sortingProperty));
-                return $entries;
-            }
-        }
     }
 
     public function create(string $category, string $title, float $amount, string $date, string $comment, int $income, int $fixedentry): bool {
@@ -177,6 +146,14 @@ class EntryRepository {
         $stmt->bindValue('category', array_values($category)[0]);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
+    }
+
+    public function fetchfirstEntry() {
+        $query ='SELECT * FROM ' . "`{$this->username}" . 'entries` ORDER BY `dateslug` ASC';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
+        return ($results[0]);
     }
 
 }

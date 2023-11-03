@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Controller\WDController;
 use App\Controller\YearlyController;
 use App\Controller\EntryController;
+use App\Entry\EntryRepository;
 use App\Controller\ColorThemeController;
 
 class ChartController extends AbstractController{
@@ -13,6 +14,7 @@ class ChartController extends AbstractController{
         protected WDController $wdController,
         protected YearlyController $yearlyController,
         protected EntryController $entryController,
+        protected EntryRepository $entryRepository,
         protected ColorThemeController $colorThemeController) {}
 
     public function getStartDate($timeInterval, $year) {
@@ -20,8 +22,7 @@ class ChartController extends AbstractController{
             case 'YTD':
                 return $year . '-01-01';
             case 'YOY':
-                #TODO: was passiert beim Dezember 2022?!
-                return (int)$year -1 . '-' . date('m',strtotime("-11 month")) . '-01';
+                return date('Y-m-d', strtotime(date($year . '-m-' . '01'))-(60*60*24*365));
             case 'ALL':
                 return '1970-01-01';
             }
@@ -109,7 +110,43 @@ class ChartController extends AbstractController{
     public function savingsArray($queryDate, $startDate) {
         $array = $this->wdController->wdTrend($queryDate, $startDate, 'actual-liquid');
         return $array;
-        
     }
+
+    public function budgetbookBalances($startDate, $endDate) {
+        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $endDate);
+        $budgetbookBalancesArray = [];
+        $revenues = 0;
+        $expenditures = 0;
+        foreach($entries AS $entry) {
+            if($entry->income === 1) $revenues += $entry->amount;
+            if($entry->income === 0) $expenditures -= $entry->amount;
+        }
+        $budgetbookBalancesArray['totalCashflow'] = $revenues + $expenditures;
+        $budgetbookBalancesArray['revenues'] = $revenues;
+        $budgetbookBalancesArray['expenditures'] = $expenditures;
+        return $budgetbookBalancesArray;
+    }
+
+    public function fixedBalances($startDate, $endDate) {
+        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $endDate);
+        $budgetbookBalancesArray = [];
+        $revenues = 0;
+        $expenditures = 0;
+        foreach($entries AS $entry) {
+            if($entry->income === 1 && $entry->fixedentry === 1) $revenues += $entry->amount;
+            if($entry->income === 0 && $entry->fixedentry === 1) $expenditures -= $entry->amount;
+        }
+        $budgetbookBalancesArray['totalCashflow'] = $revenues + $expenditures;
+        $budgetbookBalancesArray['revenues'] = $revenues;
+        $budgetbookBalancesArray['expenditures'] = $expenditures;
+        return $budgetbookBalancesArray;
+    }
+
+    public function alltimeBalances() {
+        $startDate = '01-01-1970';
+        $endDate = date('Y-m-d');
+        return $this->budgetbookBalances($startDate, $endDate);
+    }
+
 
 }

@@ -119,7 +119,15 @@ $container->add('chartController', function() use($container){
         $container->get('wdController'),
         $container->get('yearlyController'),
         $container->get('entryController'),
+        $container->get('entryRepository'),
         $container->get('colorThemeController'));
+});
+
+$container->add('overviewController', function() use($container) {
+    return new \App\Controller\OverviewController(
+        $container->get('entryController'),
+        $container->get('colorThemeController'),
+        $container->get('chartController'));
 });
 
 
@@ -299,12 +307,28 @@ elseif($route === 'userSettings/changeUserData') {
 elseif($route === 'overview') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    $routingController = $container->get('routingController');
-    $routingController->render('budget-book/overview', [
-        'navRoutes' => $navRoutes,
-        'colorTheme' => $colorTheme,
-        'userShortcut' => $userShortcut
-    ]);
+    if(isset($_POST['year'])) {
+        $_SESSION['year'] = $_POST['year'];
+        $year = $_POST['year'];
+    } else {
+        if(isset($_SESSION['year'])) {
+            $year = $_SESSION['year'];
+        } else {
+            $year = date('Y');
+        }
+    }
+    if(isset($_POST['timeInterval'])) {
+        $_SESSION['timeInterval'] = $_POST['timeInterval'];
+        $timeInterval = $_POST['timeInterval'];
+    } else {
+        if(isset($_SESSION['timeInterval'])) {
+            $timeInterval = $_SESSION['timeInterval'];
+        } else {
+            $timeInterval = 'YTD';
+        }
+    }
+    $overviewController = $container->get('overviewController');
+    $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet);
 }
 elseif($route === 'monthly-page') {
     $authService = $container->get('authService');
@@ -330,7 +354,26 @@ elseif($route === 'monthly-page') {
             $perPage = 4;
         }
     }
-    #TODO: Pagination anpassen, sodass max. 5 Zahlen angezeigt werden, der Rest versteckt und mit Pfeilsymbolen navigierbar
+    if(isset($_POST['sortingProperty'])) {
+        $_SESSION['sortingProperty'] = $_POST['sortingProperty'];
+        $sortingProperty = @(string) ($_POST['sortingProperty']);
+    } else {
+        if(isset($_SESSION['sortingProperty'])) {
+            $sortingProperty = $_SESSION['sortingProperty'];
+        } else {
+            $sortingProperty = 'dateslug';
+        }
+    }
+    if(isset($_POST['sort'])) {
+        $_SESSION['sort'] = $_POST['sort'];
+        $sort = @(string) ($_POST['sort']);
+    } else {
+        if(isset($_SESSION['sort'])) {
+            $sort = $_SESSION['sort'];
+        } else {
+            $sort = 'sortDateAsc';
+        }
+    }
     if(isset($_POST['month_year'])) {
         $_SESSION['date'] = $_POST['month_year'];
         $date = $_POST['month_year'];
@@ -341,8 +384,6 @@ elseif($route === 'monthly-page') {
             $date = date('Y-m');
         }
     }
-    $sortingProperty = @(string) ($_POST['sortingProperty'] ?? 'dateslug');
-    $sort = @(string) ($_POST['sort'] ?? 'sortDateAsc');
     $entryController = $container->get('entryController');
     $entryController->showEntries($navRoutes, $colorTheme, $userShortcut, $sortingProperty, $sort, $date, $perPage, $currentPage);
 }

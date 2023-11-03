@@ -42,13 +42,13 @@
                     </ul>
                 </nav>
             </div>    
-        <aside class="userSettings">
+        <aside class="userShortcut-container">
                 <a href="./?route=userSettings" class="userShortcut"><?php echo e($userShortcut); ?></a>     
         </aside>
         <?php endif; ?> 
     </header>
         <?php echo $content; ?>
-    <footer class="footer">
+    <footer class="footer" id="footer">
         <p>Projekt: Genius Budget Book von Eric Manig</p>
     </footer>
 </body>

@@ -64,26 +64,170 @@ class DBInitialize {
     }
 
     public function sandboxEntriesFill() {
-        function createRandCurrentDateArray ($month) {
+        function createRandCurrentDateArray ($date) {
             $randCurrentDateArray = [];
             for($x = 0; $x < 9; $x++) {
                 $day = @(string) rand(1, date('d'));
-                $randCurrentDateArray[] = "'" . date('Y-' . $month . '-' . $day). "'";
+                $randCurrentDateArray[] = "'" . date($date . '-' . $day). "'";
             }
             return $randCurrentDateArray;
         }
-        $randDateArrayThisMonth = createRandCurrentDateArray(date('m'));
-        $randDateArrayLastMonth = createRandCurrentDateArray(date('m',strtotime('-1 month')));
+
+        $randDateArrayThisMonth = createRandCurrentDateArray(date('Y-m'));
+        $randDateArrayLastMonth = createRandCurrentDateArray(date('Y-m',strtotime('-1 month')));
+        $randDateArray_2Month = createRandCurrentDateArray(date('Y-m',strtotime('-2 month')));
+        $randDateArray_3Month = createRandCurrentDateArray(date('Y-m',strtotime('-3 month')));
+        $randDateArray_4Month = createRandCurrentDateArray(date('Y-m',strtotime('-4 month')));
+        $randDateArray_5Month = createRandCurrentDateArray(date('Y-m',strtotime('-5 month')));
+        $randDateArray_6Month = createRandCurrentDateArray(date('Y-m',strtotime('-6 month')));
+        $randDateArray_7Month = createRandCurrentDateArray(date('Y-m',strtotime('-7 month')));
+        $randDateArray_8Month = createRandCurrentDateArray(date('Y-m',strtotime('-8 month')));
+        $randDateArray_9Month = createRandCurrentDateArray(date('Y-m',strtotime('-9 month')));
+        $randDateArray_10Month = createRandCurrentDateArray(date('Y-m',strtotime('-10 month')));
+        $randDateArray_11Month = createRandCurrentDateArray(date('Y-m',strtotime('-11 month')));
+        $randDateArray_12Month = createRandCurrentDateArray(date('Y-m',strtotime('-12 month')));
+        $randDateArray_13Month = createRandCurrentDateArray(date('Y-m',strtotime('-13 month')));
+        $randDateArray_14Month = createRandCurrentDateArray(date('Y-m',strtotime('-14 month')));
+        $randDateArray_15Month = createRandCurrentDateArray(date('Y-m',strtotime('-15 month')));
+
         $query = "INSERT INTO `sandboxuserentries` (`id`, `category`, `title`, `amount`, `dateslug`, `comment`, `income`, `fixedentry`) VALUES 
-        (NULL, 'Passive Income', 'Interest', 125, {$randDateArrayLastMonth[0]}, '', 1, 1), 
-        (NULL, 'Bonus', 'Extra payment', 500, {$randDateArrayLastMonth[1]}, '', 1, 0),
-        (NULL, 'Rent', 'Rent flat', 750, {$randDateArrayLastMonth[2]}, '', 0, 1),
-        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArrayThisMonth[0]}, '', 1, 0), 
+
+        (NULL, 'Food', 'Aldi', 65, {$randDateArray_15Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 77, {$randDateArray_15Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Cash', 100, {$randDateArray_15Month[3]}, 'ATM', 0, 0),
+        (NULL, 'Leisure', 'Dinner', 80, {$randDateArray_15Month[3]}, '', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_15Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_15Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 55, {$randDateArray_15Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_15Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 76, {$randDateArray_14Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_14Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArray_14Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_14Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_14Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_14Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 55, {$randDateArray_14Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_14Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 112, {$randDateArray_13Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 74, {$randDateArray_13Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_13Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_13Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_13Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 55, {$randDateArray_13Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_13Month[7]}, '', 0, 1), 
+        (NULL, 'Journeys', 'Italie', 750, {$randDateArray_13Month[5]}, '', 0, 0),
+
+        (NULL, 'Food', 'Aldi', 32, {$randDateArray_12Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 68, {$randDateArray_12Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_12Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_12Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_12Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 55, {$randDateArray_12Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_12Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 65, {$randDateArray_11Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_11Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 65, {$randDateArray_11Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_11Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_11Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_11Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_11Month[6]}, 'Increase of contributions', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_11Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 88, {$randDateArray_10Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 70, {$randDateArray_10Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_10Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_10Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_10Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_10Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_10Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 65, {$randDateArray_9Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_9Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 76, {$randDateArray_9Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_9Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_9Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_9Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_9Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_9Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 112, {$randDateArray_8Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 65, {$randDateArray_8Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_8Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_8Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 1950, {$randDateArray_8Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_8Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_8Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 66, {$randDateArray_7Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_7Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 66, {$randDateArray_7Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_7Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_7Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_7Month[5]}, 'Salary increase', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_7Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_7Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 65, {$randDateArray_6Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 78, {$randDateArray_6Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_6Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 750, {$randDateArray_6Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_6Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_6Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_6Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 80, {$randDateArray_5Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 67, {$randDateArray_5Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_5Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 800, {$randDateArray_5Month[4]}, 'rent increase', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_5Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_5Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_5Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 90, {$randDateArray_4Month[0]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArray_4Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_4Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 800, {$randDateArray_4Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_4Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_4Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_4Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 101, {$randDateArray_3Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_3Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArray_3Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_3Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 800, {$randDateArray_3Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_3Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_3Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_3Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 85, {$randDateArray_2Month[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArray_2Month[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArray_2Month[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArray_2Month[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 800, {$randDateArray_2Month[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArray_2Month[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArray_2Month[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArray_2Month[7]}, '', 0, 1), 
+
+        (NULL, 'Food', 'Aldi', 90, {$randDateArrayLastMonth[0]}, '', 0, 0),
+        (NULL, 'Education', 'Books', 90, {$randDateArrayLastMonth[1]}, '', 0, 0),
+        (NULL, 'Transportation', 'Car refill', 90, {$randDateArrayLastMonth[2]}, '1,95€ per litre', 0, 0),
+        (NULL, 'Leisure', 'Party', 80, {$randDateArrayLastMonth[3]}, 'Went to the Club tonight', 0, 0),
+        (NULL, 'Rent', 'Rent flat', 800, {$randDateArrayLastMonth[4]}, '', 0, 1),
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArrayLastMonth[5]}, '', 1, 1), 
+        (NULL, 'Insurances', 'Car', 67, {$randDateArrayLastMonth[6]}, '', 0, 1),
+        (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArrayLastMonth[7]}, '', 0, 1), 
+
+
+        (NULL, 'Salary', 'Job Salary', 2300, {$randDateArrayThisMonth[0]}, '', 1, 1), 
         (NULL, 'Rent', 'Rent flat', 750, {$randDateArrayThisMonth[1]}, '', 0, 1),
         (NULL, 'Insurances', 'Car', 67, {$randDateArrayThisMonth[2]}, '', 0, 1),
         (NULL, 'Insurances', 'Household Insurance', 12, {$randDateArrayThisMonth[3]}, '', 0, 1), 
         (NULL, 'Gifts', 'Mother', 35, {$randDateArrayThisMonth[4]}, '', 0, 0), 
-        (NULL, 'Journeys', 'Italie', 750, {$randDateArrayThisMonth[5]}, '', 0, 0),
+        (NULL, 'Journeys', 'Italie', 800, {$randDateArrayThisMonth[5]}, '', 0, 0),
         (NULL, 'Leisure', 'Party', 80, {$randDateArrayThisMonth[6]}, 'Went to the Club tonight', 0, 0),
         (NULL, 'Transportation', 'Car refill', 90, {$randDateArrayThisMonth[7]}, '1,95€ per litre', 0, 0),
         (NULL, 'Gifts', 'Donation', 50, {$randDateArrayThisMonth[7]}, 'Animal Rescue Center', 0, 0),

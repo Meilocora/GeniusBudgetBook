@@ -22,8 +22,7 @@ class EntryController extends AbstractController{
 
     public function showEntries(array $navRoutes, string $colorTheme, string $userShortcut, string $sortingProperty, string $sort, string $date, int $perPage, int $currentPage) {
         $categories = $this->usersController->usersEntryCats();
-        $unsortedEntries = $this->entryRepository->fetchAllOfMonthPerPage($date, $perPage, $currentPage);
-        $entries = $this->entryRepository->sortByProperty($unsortedEntries, $sortingProperty, $sort);
+        $entries = $this->entriesSortedByProperty($date, $perPage, $currentPage, $sortingProperty, $sort);
         $balance = $this->calculateMonthlyBalanceSheet($date);
         $sortButtons = $this->sortButtons($sort);
         $datePretty = (new DateTime($date))->format('F Y');
@@ -42,6 +41,7 @@ class EntryController extends AbstractController{
             'userShortcut' => $userShortcut,
             'balance' => $balance,
             'sortButtons' => $sortButtons,
+            'date' => $date,
             'datePretty' => $datePretty,
             'numPages' => $numPages,
             'currentPage' => $currentPage,
@@ -142,6 +142,17 @@ class EntryController extends AbstractController{
         $fixedBalance = $fixedIncome + $fixedExpenses;
         $balance = $income + $expenses;
         return ['fixedIncome' => $fixedIncome, 'income' => $income, 'fixedExpenses' => $fixedExpenses, 'expenses' => $expenses, 'fixedBalance' => $fixedBalance, 'balance' =>$balance];
+    }
+
+    public function entriesSortedByProperty(string $date, int $perPage, int $currentPage, string $sortingProperty, string $sort) {
+        if(preg_match('/^.*Asc$/', $sort)) {
+            $sortMode =  'Asc';
+        } elseif (preg_match('/^.*Desc$/', $sort)) {
+            $sortMode =  'Desc';
+        }
+        $sortedEntries = $this->entryRepository->fetchAllOfMonthPerPageSortedByProperty($date, $sortingProperty, strtoupper($sortMode), $perPage, $currentPage);
+        if(empty($sortedEntries)) $sortedEntries = $this->entryRepository->fetchAllOfMonthPerPageSortedByProperty($date, $sortingProperty, strtoupper($sortMode), $perPage, 1);
+        return $sortedEntries;
     }
 
     public function sortButtons($sort) {
@@ -265,5 +276,18 @@ class EntryController extends AbstractController{
         }
         return $donationsEntries;
     }
+
+    public function fetchAllForTimeInterval($startDate, $year) {
+        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+        return $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
+    }
+
+    public function timespanFirstEntry() {
+        $firstEntry = $this->entryRepository->fetchfirstEntry();
+        $timespanDays = round((strtotime(date('Y-m-d')) - strtotime($firstEntry->dateslug)) /(60*60*24), 0);
+        return $timespanDays;
+    }
+
+
 }
 

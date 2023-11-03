@@ -19,7 +19,7 @@
         </div>
         <div class="form-row">
             <label for="date" class="label">Date</label>
-            <input type="date" name="date" id="date" class="input" value="<?php echo date('Y-m-d'); ?>" required>
+            <input type="date" name="date" id="date" class="input" value="<?php echo $date . '-' . date('d'); ?>" required>
         </div>
         <div class="form-row">
             <label for="comment" class="label">Comment</label>
@@ -77,8 +77,8 @@
         <span class="circle">Total expenses<br><?php echo e(number_format($balance['expenses'], '0', ',', '.')); ?> €</span>  
     </div>
     <div class="additional-row">
-    <span class="<?php if($balance['fixedBalance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Fixed balance<br><?php echo e(number_format($balance['fixedBalance'], '0', ',', '.')); ?> €</span>
-        <span class="<?php if($balance['balance'] >= 0) {echo 'positive';} else {echo 'negative';}?> circle">Total balance<br><?php echo e(number_format($balance['balance'], '0', ',', '.')); ?> €</span>
+    <span class="<?php if($balance['fixedBalance'] >= 0) {echo 'pos';} else {echo 'neg';}?> circle">Fixed balance<br><?php echo e(number_format($balance['fixedBalance'], '0', ',', '.')); ?> €</span>
+        <span class="<?php if($balance['balance'] >= 0) {echo 'pos';} else {echo 'neg';}?> circle">Total balance<br><?php echo e(number_format($balance['balance'], '0', ',', '.')); ?> €</span>
     </div>
 </section>
 <!-- ENTRY-LIST -->
@@ -117,7 +117,6 @@
     </div>
 
     <!-- List of Entries for this month -->
-    <!-- #TODO: shows 0 Entries, when entries are deleted ... must "refresh" with click on pagination -->
     <?php if(!empty($entries)): ?>
         <?php foreach($entries AS $entry): ?>
             <div class="table-row <?php if($entry->fixedentry === 1) echo 'fixedentry'; ?>">
@@ -199,14 +198,34 @@
     <?php endif; ?>
     <div class="table-row">
         <span class="table-span" id="pagination">
+        <a href="./?route=monthly-page&<?php echo http_build_query(['page' => 1]); ?>#monthly-table">
+            <img src="./img/arrow_left.png" alt="Arrow symbol that points to the left" id="pagination_arrow_left" class="hidden">
+        </a>
             <?php if($numPages > 1): ?>
                     <?php for($x=1; $x<= $numPages; $x++): ?>
                         <a  href="./?route=monthly-page&<?php echo http_build_query(['page' => $x]); ?>#monthly-table"
-                            class="pagination-a <?php if($currentPage === $x) echo 'pagination-active'; ?>"><?php echo e($x); ?></a>
+                            class="hidden pagination-a <?php if($currentPage === $x) echo 'pagination-active'; ?>"><?php echo e($x); ?></a>
                     <?php endfor; ?>
             <?php endif; ?>
+        <a href="./?route=monthly-page&<?php echo http_build_query(['page' => $numPages]); ?>#monthly-table">
+            <img src="./img/arrow_right.png" alt="Arrow symbol that points to the right" id="pagination_arrow_right" class="hidden">
+        </a>
         </span>
     </div>
+    <script>
+        let pages = document.querySelectorAll('.pagination-a');
+        let activePage = document.querySelector('.pagination-active');
+        let pageBefore = activePage.previousElementSibling;
+        let pageAfter = activePage.nextElementSibling;
+       
+        console.log(activePage.innerHTML);
+        
+        activePage.classList.toggle("hidden");
+        if(pageBefore !== null) pageBefore.classList.toggle("hidden");
+        if(pageAfter !== null) pageAfter.classList.toggle("hidden");
+        if(activePage.innerHTML >= 3) document.getElementById('pagination_arrow_left').classList.toggle("hidden");
+        if(<?php echo $numPages; ?> - activePage.innerHTML >=2) document.getElementById('pagination_arrow_right').classList.toggle("hidden");
+    </script>
     <span id="pagination-setting">
         <form action="./?route=monthly-page" method="POST">
             <label for="perPage">Max entries per page:</label>

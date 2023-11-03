@@ -1,15 +1,15 @@
 <div class="scroll-container">
     <div class="scroll-element">
         <a href="#header-banner-name"><img src="./img/arrow_up.png" alt="Arrow symbol that points upwards" height='20px' width='20px'></a>    
-        <a href="#wdContainer" id="scroll1">Total Wealth</a>
-        <a href="#donationsContainer" id="scroll2">Donation Goal</a>
-        <a href="#savingsContainer" id="scroll3">Saving Goal</a>
-        <a href="#savingsTrendChartActualC"><img src="./img/arrow_down.png" alt="Arrow symbol that points downwards" height='20px' width='20px'></a>
+        <a href="#wdContainer" class="scroll1">Total Wealth</a>
+        <a href="#donationsContainer" class="scroll2">Donation Goal</a>
+        <a href="#savingsContainer" class="scroll3">Saving Goal</a>
+        <a href="#footer"><img src="./img/arrow_down.png" alt="Arrow symbol that points downwards" height='20px' width='20px'></a>
     </div>
 </div>
-<div id="settings-box">
-    <img src="./img/gear.png" alt="Symbol of a gear" height='40px' width='40px' id="homepageSettingsSymbol">
-    <div id="homepageSettingsContainer">
+<div class="adjustments-container">
+    <img src="./img/gear.png" alt="Symbol of a gear" height='40px' width='40px' class="adjustmentsSymbol">
+    <div class="adjustments-box">
         <div class="settings-row">
             <span>Choose a year:</span>
         </div>
@@ -36,7 +36,7 @@
             <?php if(isset($_COOKIE['customChartColorTheme'])): ?>
             <form action="./?route=homepage" method="post" class="chartScopeForm">
                 <input type="hidden" name="chartColorSet" value="custom">
-                <input type="submit" value="custom" id="customChartColorSet" 
+                <input type="submit" value="custom"
                 class="<?php if($chartColorSet === 'custom') echo 'chosen'; ?>">
             </form>
             <?php endif; ?>
@@ -89,9 +89,9 @@
 <script type="module" defer>
     'use strict';
     import "./src/JS/jQuery/jquery.waypoints.min.js";
-    let scroll1 = document.getElementById('scroll1');
-    let scroll2 = document.getElementById('scroll2');
-    let scroll3 = document.getElementById('scroll3');
+    let scroll1 = document.querySelector('.scroll1');
+    let scroll2 = document.querySelector('.scroll2');
+    let scroll3 = document.querySelector('.scroll3');
     let waypoint1 = new Waypoint({
             element: document.getElementById('wdContainer'),
             handler: function(direction) {
@@ -117,7 +117,7 @@
             }
     });
 </script>
-<section class="homepage-container">
+<section class="chart-view-container">
     <div class="charts-container" id="wdContainer">
         <div class="charts-container-row">
             <h1>Total Wealth</h1>
