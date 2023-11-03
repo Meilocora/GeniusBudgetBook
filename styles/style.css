@@ -601,6 +601,7 @@ hr.thin-line {
     display: flex;
     justify-content: center;
     background-color: transparent;
+    width: 100%;
     height: 3rem;
     margin-left: auto;
     margin-right: auto;
