@@ -21,6 +21,7 @@ class EntryRepository {
         return;
     }
 
+    #TODO: Selbe Funktion wie die darunter ?!
     public function fetchAllOfMonth($date): array {
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');

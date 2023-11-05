@@ -85,4 +85,17 @@ class ColorThemeController extends AbstractController{
                 return $chartColors;
             }   
     }
+
+    public function giveChartColorsBudgetBook($type, $transparency) {
+        $chartColors = [];
+
+        switch ($type) {
+            case 'rev':
+                $chartColors[] = ["rgb(20,113,73,$transparency)", "rgb(25,128,83,$transparency)", "rgb(33,149,99,$transparency)", "rgb(44,175,118,$transparency)", "rgb(54,189,128,$transparency)", "rgb(75,197,133,$transparency)", "rgb(101,208,141,$transparency)", "rgb(128,218,144,$transparency)", "rgb(142,221,145,$transparency)", "rgb(207,245,191,$transparency)"];
+                return $chartColors;
+            case 'exp':
+                $chartColors[] = ["rgb(113,20,20,$transparency)", "rgb(128,25,25,$transparency)", "rgb(149,33,33,$transparency)", "rgb(175,44,44,$transparency)", "rgb(189,54,54,$transparency)", "rgb(197,75,75,$transparency)", "rgb(208,101,101,$transparency)", "rgb(218,128,128,$transparency)", "rgb(221,142,142,$transparency)", "rgb(245,191,191,$transparency)"];
+                return $chartColors;
+        }
+    }
 }

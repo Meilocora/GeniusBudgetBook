@@ -117,7 +117,7 @@ class EntryController extends AbstractController{
         }
     }
 
-    private function calculateMonthlyBalanceSheet($date): ?array {
+    public function calculateMonthlyBalanceSheet($date): ?array {
         $allEntries = $this->entryRepository->fetchAllOfMonth($date);
         $fixedIncome = 0;
         $income = 0;
@@ -154,6 +154,17 @@ class EntryController extends AbstractController{
         if(empty($sortedEntries)) $sortedEntries = $this->entryRepository->fetchAllOfMonthPerPageSortedByProperty($date, $sortingProperty, strtoupper($sortMode), $perPage, 1);
         return $sortedEntries;
     }
+
+    /* #TODO: For custom view ... list of entries with several custom settings
+    public function entriesCustomSort() {
+        // for category
+        // for title
+        // for income/ expense
+        // only fixed
+        // from ... to ...
+        // from amount ... to ...
+    }
+    */
 
     public function sortButtons($sort) {
         $sortButtonArray = [];
@@ -282,12 +293,173 @@ class EntryController extends AbstractController{
         return $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
     }
 
+    public function dateFirstEntry() {
+        $firstEntry = $this->entryRepository->fetchfirstEntry();
+        return $firstEntry->dateslug;
+    }
+
     public function timespanFirstEntry() {
         $firstEntry = $this->entryRepository->fetchfirstEntry();
         $timespanDays = round((strtotime(date('Y-m-d')) - strtotime($firstEntry->dateslug)) /(60*60*24), 0);
         return $timespanDays;
     }
 
+    public function entryTrendByEntrytype($startDate, $year, $type) {
+        $categories = $this->usersController->fetchUserCats()["{$type}cats"];
+        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
+        $Array1 = [$categories[0]];
+        $Array2 = [$categories[1]];
+        $Array3 = [$categories[2]];
+        $Array4 = [$categories[3]];
+        $Array5 = [$categories[4]];
+        $Array6 = [$categories[5]];
+        $Array7 = [$categories[6]];
+        $Array8 = [$categories[7]];
+        $Array9 = [$categories[8]];
+        $Array10 = [$categories[9]];
+        $Array = [];
+        for ($i = 0; $i < $months; $i++) {
+            $sumCat1 = 0;
+            $sumCat2 = 0;
+            $sumCat3 = 0;
+            $sumCat4 = 0;
+            $sumCat5 = 0;
+            $sumCat6 = 0;
+            $sumCat7 = 0;
+            $sumCat8 = 0;
+            $sumCat9 = 0;
+            $sumCat10 = 0;
+            $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
+            $entriesOfMonth = $this->entryRepository->fetchAllOfGivenMonth($month);
+            foreach ($entriesOfMonth as $entry) {
+                if($entry->category === $categories[0]) if($type === "exp") $sumCat1 -= $entry->amount; elseif($type === "rev") $sumCat1 += $entry->amount;
+                if($entry->category === $categories[1]) if($type === "exp") $sumCat2 -= $entry->amount; elseif($type === "rev") $sumCat2 += $entry->amount;
+                if($entry->category === $categories[2]) if($type === "exp") $sumCat3 -= $entry->amount; elseif($type === "rev") $sumCat3 += $entry->amount;
+                if($entry->category === $categories[3]) if($type === "exp") $sumCat4 -= $entry->amount; elseif($type === "rev") $sumCat4 += $entry->amount;
+                if($entry->category === $categories[4]) if($type === "exp") $sumCat5 -= $entry->amount; elseif($type === "rev") $sumCat5 += $entry->amount;
+                if($entry->category === $categories[5]) if($type === "exp") $sumCat6 -= $entry->amount; elseif($type === "rev") $sumCat6 += $entry->amount;
+                if($entry->category === $categories[6]) if($type === "exp") $sumCat7 -= $entry->amount; elseif($type === "rev") $sumCat7 += $entry->amount;
+                if($entry->category === $categories[7]) if($type === "exp") $sumCat8 -= $entry->amount; elseif($type === "rev") $sumCat8 += $entry->amount;
+                if($entry->category === $categories[8]) if($type === "exp") $sumCat9 -= $entry->amount; elseif($type === "rev") $sumCat9 += $entry->amount;
+                if($entry->category === $categories[9]) if($type === "exp") $sumCat10 -= $entry->amount; elseif($type === "rev") $sumCat10 += $entry->amount;
+            }
+            $Array1[] = $sumCat1;
+            $Array2[] = $sumCat2;
+            $Array3[] = $sumCat3;
+            $Array4[] = $sumCat4;
+            $Array5[] = $sumCat5;
+            $Array6[] = $sumCat6;
+            $Array7[] = $sumCat7;
+            $Array8[] = $sumCat8;
+            $Array9[] = $sumCat9;
+            $Array10[] = $sumCat10;
+        }
+        if($Array1[0] !== '') $Array[] = $Array1;
+        if($Array2[0] !== '') $Array[] = $Array2;
+        if($Array3[0] !== '') $Array[] = $Array3;
+        if($Array4[0] !== '') $Array[] = $Array4;
+        if($Array5[0] !== '') $Array[] = $Array5;
+        if($Array6[0] !== '') $Array[] = $Array6;
+        if($Array7[0] !== '') $Array[] = $Array7;
+        if($Array8[0] !== '') $Array[] = $Array8;
+        if($Array9[0] !== '') $Array[] = $Array9;
+        if($Array10[0] !== '') $Array[] = $Array10;    
+        return($Array);
+    }
 
+    public function entryTrendByEntrytypeFixed($startDate, $year, $type) {
+        $categories = $this->usersController->fetchUserCats()["{$type}cats"];
+        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
+        $Array1 = [];
+        $Array2 = [];
+        $Array3 = [];
+        $Array4 = [];
+        $Array5 = [];
+        $Array6 = [];
+        $Array7 = [];
+        $Array8 = [];
+        $Array9 = [];
+        $Array10 = [];
+        $Array = [];
+        $sumCat1 = 0;
+        $sumCat1fixed = 0;
+        $sumCat2 = 0;
+        $sumCat2fixed = 0;
+        $sumCat3 = 0;
+        $sumCat3fixed = 0;
+        $sumCat4 = 0;
+        $sumCat4fixed = 0;
+        $sumCat5 = 0;
+        $sumCat5fixed = 0;
+        $sumCat6 = 0;
+        $sumCat6fixed = 0;
+        $sumCat7 = 0;
+        $sumCat7fixed = 0;
+        $sumCat8 = 0;
+        $sumCat8fixed = 0;
+        $sumCat9 = 0;
+        $sumCat9fixed = 0;
+        $sumCat10 = 0;
+        $sumCat10fixed = 0;
+        for ($i = 0; $i < $months; $i++) {
+            $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
+            $entriesOfMonth = $this->entryRepository->fetchAllOfGivenMonth($month);
+            foreach ($entriesOfMonth as $entry) {
+                if($entry->category === $categories[0] & $entry->fixedentry === 0) if($type === "exp") $sumCat1 -= $entry->amount;      elseif($type === "rev") $sumCat1 += $entry->amount;
+                if($entry->category === $categories[0] & $entry->fixedentry === 1) if($type === "exp") $sumCat1fixed -= $entry->amount; elseif($type === "rev") $sumCat1fixed += $entry->amount;
+                if($entry->category === $categories[1] & $entry->fixedentry === 0) if($type === "exp") $sumCat2 -= $entry->amount;      elseif($type === "rev") $sumCat2 += $entry->amount;
+                if($entry->category === $categories[1] & $entry->fixedentry === 1) if($type === "exp") $sumCat2fixed -= $entry->amount; elseif($type === "rev") $sumCat2fixed += $entry->amount;
+                if($entry->category === $categories[2] & $entry->fixedentry === 0) if($type === "exp") $sumCat3 -= $entry->amount;      elseif($type === "rev") $sumCat3 += $entry->amount;
+                if($entry->category === $categories[2] & $entry->fixedentry === 1) if($type === "exp") $sumCat3fixed -= $entry->amount; elseif($type === "rev") $sumCat3fixed += $entry->amount;
+                if($entry->category === $categories[3] & $entry->fixedentry === 0) if($type === "exp") $sumCat4 -= $entry->amount;      elseif($type === "rev") $sumCat4 += $entry->amount;
+                if($entry->category === $categories[3] & $entry->fixedentry === 1) if($type === "exp") $sumCat4fixed -= $entry->amount; elseif($type === "rev") $sumCat4fixed += $entry->amount;
+                if($entry->category === $categories[4] & $entry->fixedentry === 0) if($type === "exp") $sumCat5 -= $entry->amount;      elseif($type === "rev") $sumCat5 += $entry->amount;
+                if($entry->category === $categories[4] & $entry->fixedentry === 1) if($type === "exp") $sumCat5fixed -= $entry->amount; elseif($type === "rev") $sumCat5fixed += $entry->amount;
+                if($entry->category === $categories[5] & $entry->fixedentry === 0) if($type === "exp") $sumCat6 -= $entry->amount;      elseif($type === "rev") $sumCat6 += $entry->amount;
+                if($entry->category === $categories[5] & $entry->fixedentry === 1) if($type === "exp") $sumCat6fixed -= $entry->amount; elseif($type === "rev") $sumCat6fixed += $entry->amount;
+                if($entry->category === $categories[6] & $entry->fixedentry === 0) if($type === "exp") $sumCat7 -= $entry->amount;      elseif($type === "rev") $sumCat7 += $entry->amount;
+                if($entry->category === $categories[6] & $entry->fixedentry === 1) if($type === "exp") $sumCat7fixed -= $entry->amount; elseif($type === "rev") $sumCat7fixed += $entry->amount;
+                if($entry->category === $categories[7] & $entry->fixedentry === 0) if($type === "exp") $sumCat8 -= $entry->amount;      elseif($type === "rev") $sumCat8 += $entry->amount;
+                if($entry->category === $categories[7] & $entry->fixedentry === 1) if($type === "exp") $sumCat8fixed -= $entry->amount; elseif($type === "rev") $sumCat8fixed += $entry->amount;
+                if($entry->category === $categories[8] & $entry->fixedentry === 0) if($type === "exp") $sumCat9 -= $entry->amount;      elseif($type === "rev") $sumCat9 += $entry->amount;
+                if($entry->category === $categories[8] & $entry->fixedentry === 1) if($type === "exp") $sumCat9fixed -= $entry->amount; elseif($type === "rev") $sumCat9fixed += $entry->amount;
+                if($entry->category === $categories[9] & $entry->fixedentry === 0) if($type === "exp") $sumCat10 -= $entry->amount;     elseif($type === "rev") $sumCat10 += $entry->amount;
+                if($entry->category === $categories[9] & $entry->fixedentry === 1) if($type === "exp") $sumCat10fixed -= $entry->amount; elseif($type === "rev") $sumCat10fixed += $entry->amount;
+            }
+            $Array1['regular'] = $sumCat1;
+            $Array1['fixed'] = $sumCat1fixed;
+            $Array2['regular'] = $sumCat2;
+            $Array2['fixed'] = $sumCat2fixed;
+            $Array3['regular'] = $sumCat3;
+            $Array3['fixed'] = $sumCat3fixed;
+            $Array4['regular'] = $sumCat4;
+            $Array4['fixed'] = $sumCat4fixed;
+            $Array5['regular'] = $sumCat5;
+            $Array5['fixed'] = $sumCat5fixed;
+            $Array6['regular'] = $sumCat6;
+            $Array6['fixed'] = $sumCat6fixed;
+            $Array7['regular'] = $sumCat7;
+            $Array7['fixed'] = $sumCat7fixed;
+            $Array8['regular'] = $sumCat8;
+            $Array8['fixed'] = $sumCat8fixed;
+            $Array9['regular'] = $sumCat9;
+            $Array9['fixed'] = $sumCat9fixed;
+            $Array10['regular'] = $sumCat10;
+            $Array10['fixed'] = $sumCat10fixed;
+        }
+        if($categories[0] !== '') $Array[] = $Array1;
+        if($categories[1] !== '') $Array[] = $Array2;
+        if($categories[2] !== '') $Array[] = $Array3;
+        if($categories[3] !== '') $Array[] = $Array4;
+        if($categories[4] !== '') $Array[] = $Array5;
+        if($categories[5] !== '') $Array[] = $Array6;
+        if($categories[6] !== '') $Array[] = $Array7;
+        if($categories[7] !== '') $Array[] = $Array8;
+        if($categories[8] !== '') $Array[] = $Array9;
+        if($categories[9] !== '') $Array[] = $Array10;    
+        return($Array);
+    }
 }
 

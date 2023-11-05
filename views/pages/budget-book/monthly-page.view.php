@@ -217,14 +217,12 @@
         let activePage = document.querySelector('.pagination-active');
         let pageBefore = activePage.previousElementSibling;
         let pageAfter = activePage.nextElementSibling;
-       
-        console.log(activePage.innerHTML);
         
         activePage.classList.toggle("hidden");
         if(pageBefore !== null) pageBefore.classList.toggle("hidden");
         if(pageAfter !== null) pageAfter.classList.toggle("hidden");
         if(activePage.innerHTML >= 3) document.getElementById('pagination_arrow_left').classList.toggle("hidden");
-        if(<?php echo $numPages; ?> - activePage.innerHTML >=2) document.getElementById('pagination_arrow_right').classList.toggle("hidden");
+        if(pages.length - activePage.innerHTML >=2) document.getElementById('pagination_arrow_right').classList.toggle("hidden");
     </script>
     <span id="pagination-setting">
         <form action="./?route=monthly-page" method="POST">

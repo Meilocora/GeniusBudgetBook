@@ -77,6 +77,7 @@ export default class ChartGenerator {
                     
                 },
                 title: {
+                    padding: 20,
                     text: titleText,
                     display: titleDisplay,
                     font: {
@@ -147,8 +148,8 @@ export default class ChartGenerator {
                         fill: '-1',
                     },
                     {
-                        data: GoalData,
-                        label: 'Total wealth goal',
+                        data: (GoalData !== 0) ? GoalData : '',
+                        label: (GoalData !== 0) ? 'Total wealth goal' : undefined,
                         fill: '-1',
                         stack: "goal",
                         borderColor: 'rgb(255,215,0)',
@@ -202,6 +203,7 @@ export default class ChartGenerator {
                 responsive: false,
                 scales: {
                     y: {    
+                            min: (lineColors.length === 2 | data1[0] < 0) ? null : 0,
                             suggestedMax: GoalData[0]*1.05,
                              grid: {
                                 lineWidth: 1.5,
@@ -233,4 +235,248 @@ export default class ChartGenerator {
             }
         });
     }
+
+    generateLineChartCashflow(selector, titleText, xAxisLabels, lineLabels, data1, data2, data3) {
+        var ctx = document.getElementById(selector);
+        let myChart = new Chart(ctx, {
+            type: 'line',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: xAxisLabels,
+                datasets: [
+                    {
+                        data: data1,
+                        label: lineLabels[0],
+                        fill: 'origin',
+                    },
+                    {
+                        data: data2,
+                        label: lineLabels[1],
+                        fill: '-1',
+                    },
+                    {
+                        data: data3,
+                        label: lineLabels[2],
+                        fill: 'origin',
+                    }
+                        ],
+            },
+            options: {
+                backgroundColor: ['rgb(0,0,255,0.5)', 'rgb(0,255,0,0.5)', 'rgb(255,0,0,0.5)'],
+                elements: {
+                    line: {
+                        borderWidth: 2,
+                        borderColor: 'black',
+                        tension: 0.5,
+                    },
+                    point: {
+                        radius: 2,
+                        hitRadius: 5,
+                        borderWidth: 1,
+                        borderColor: 'black',
+                        backgroundColor: 'white',
+                        hoverRadius: 10,
+                        hoverBorderWidth: 4,
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        font: {
+                            size: 24,
+                        },
+                        text: titleText,
+                    },
+                    datalabels: {
+                        display: false,
+                    },
+                    legend: {
+                        labels: {
+                            filter: (legendItem, data) => (typeof legendItem.text !== 'undefined'),
+                            lineWidth: 1,
+                            borderColor: 'black',
+                            color: 'black',
+                            font: {
+                                size: 16
+                            },
+                        },
+                        position: 'bottom',
+                        reverse: false,
+                    }
+                },
+                responsive: false,
+                scales: {
+                    y: {    
+                        grid: {
+                        lineWidth: 1.5,
+                        },
+                        ticks: {
+                            font: {
+                                size: 16,
+                            },
+                            color: 'black',
+                            callback: function(value) {
+                                return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` €`;
+                                },
+                        },
+                        stacked: false,
+                        },
+                    x: {
+                        grid: {
+                            clineWidth: 1.5,
+                            display: false,
+                        },
+                        ticks: {
+                            font: {
+                                size: 16,
+                            },
+                            color: 'black',
+                        },
+                    }
+                }
+            }
+        });
+    }
+
+    generateBarChart(selector, yScale, xLabels, titleText, revColors, expColors, categories, revdataregular, revdatafixed, expdataregular, expdatafixed) {
+        var ctx = document.getElementById(selector);
+        let myChart = new Chart(ctx, {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: categories,
+                datasets: [
+                    {
+                        data: revdatafixed,
+                        label: xLabels[0],
+                        fill: '-1',
+                        backgroundColor: revColors[0], 
+                        datalabels: {
+                            display: (revdatafixed > revdataregular) ? true : 'auto',
+                            color: (yScale === 'logarithmic') ? 'white' : 'black',
+                        }
+                    },
+                    {
+                        data: revdataregular,
+                        label: xLabels[1],
+                        fill: '-1',
+                        backgroundColor: revColors[9],
+                        datalabels: {
+                            display: (revdataregular > revdatafixed) ? true : 'auto',
+                            color: 'black',
+                        }
+                    },
+                    {
+                        data: expdatafixed,
+                        label: xLabels[2],
+                        fill: '-1',
+                        backgroundColor: expColors[0], 
+                        datalabels: {
+                            display: (expdatafixed > expdataregular) ? true : 'auto',
+                            color: (yScale === 'logarithmic') ? 'white' : 'black',
+                        }
+                    },
+                    {
+                        data: expdataregular,
+                        label: xLabels[3],
+                        fill: '-1',
+                        backgroundColor: expColors[9],
+                        datalabels: {
+                            display: (expdataregular > expdatafixed) ? true : 'auto',
+                            color: 'black',
+                        }
+                    },
+                    ],
+            },
+            options: {
+                layout: {
+                    padding: 20
+                },
+                borderColor: 'rgb(0,0,0)',
+                borderWidth: 2,
+                hoverBackgroundColor: 'gold',
+                hoverBorderWidth: 2,
+                plugins: {
+                    title: {
+                        display: true,
+                        font: {
+                            size: 24,
+                        },
+                        text: titleText,
+                    },
+                    datalabels: {
+                        anchor: (yScale === 'logarithmic') ? 'end' : 'start',
+                        align: (yScale === 'logarithmic') ? 'start' : 'start',
+                        offset: (yScale === 'logarithmic') ? 0 : -30,
+                        padding: 10,
+                        margin: 10,
+                        font: {
+                            size: 14,
+                            weight: 'bold',
+                        },
+                        formatter: function(value) {
+                            if(value !== 0) {
+                                return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` €`;
+                            } else {
+                                return '';
+                            }
+                         },
+                    },
+                    legend: {
+                        labels: {
+                            // filter: (legendItem, data) => (typeof legendItem.text !== 'undefined'),
+                            lineWidth: 1,
+                            borderColor: 'black',
+                            color: 'black',
+                            font: {
+                                size: 16
+                            },
+                        },
+                        position: 'bottom',
+                        reverse: false,
+                    }
+                },
+                responsive: false,
+                interaction: {
+                intersect: false,
+                },
+                scales: {
+                y: {
+                    type: yScale,
+                    grid: {
+                        lineWidth: 1.5,
+                    },
+                    ticks: {
+                        font: {
+                            size: 16,
+                        },
+                        color: 'black',
+                        callback: function(value) {
+                            return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + ` €`;
+                            },
+                    },
+                    stacked: true,
+                },
+                x: {
+                    grid: {
+                        clineWidth: 1.5,
+                        display: false,
+                    },
+                    ticks: {
+                        font: {
+                            size: 16,
+                        },
+                        color: 'black',
+                    },
+                    stacked: true,
+                },
+                }
+            }
+        });
+    }
+    
+
+
+    
+
 }

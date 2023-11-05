@@ -22,7 +22,7 @@
     --text-shadow-standard: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     --text-shadow-small: -0.6px -0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px 0.6px 0 #000;
     --container-transition: box-shadow .5s ease-in-out;
-    --container-hover: 0 0 1000px white inset;
+    --container-hover: 0 0 100px white inset;
 
     --transition-input: box-shadow .5s ease-in-out, outline .5s ease-in-out;
     --transition-button: background-color .2s ease-in-out, border .2s ease-in-out, color .2s ease-in-out;
@@ -391,14 +391,14 @@ section.chart-view-container {
 
 .neutral {
     box-shadow: 0px 0px 20px black, 0px 0px 10px black inset;
-    color: white;
-    text-shadow: var(--text-shadow-standard);
+    color: black;
     transition: all .5s ease-in-out;
 }
 
 .neutral:hover {
     box-shadow: 0px 0px 40px blue, 0px 0px 20px blue inset;
     border-color: blue;
+    color: blue;
     transition: all .5s ease-in-out;
 }
 

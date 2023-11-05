@@ -39,3 +39,8 @@ function calculateRemainingDays($year) {
     $daysleft = round((($timeleft/24)/60)/60); 
     return $daysleft;
 }
+
+function calculateTimespanDays($startDate, $endDate) {
+    $timespan = strtotime($endDate) - strtotime($startDate);
+    return round((($timespan/24)/60)/60); 
+}

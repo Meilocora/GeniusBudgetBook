@@ -14,28 +14,36 @@ class OverviewController extends AbstractController{
         protected ChartController $chartController
     ) {}
 
-    public function showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet) {
-        $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12';
+    public function showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $barchartScale) {
         $startDate = $this->chartController->getStartDate($timeInterval, $year);
         $daysleft = calculateRemainingDays($year);
         $timespanAccount = $this->entryController->timespanFirstEntry();
-        $backgroundColor10 = $this->colorThemeController->giveChartColors($chartColorSet, 1)[0];
-        $backgroundColor2 = $this->colorThemeController->giveChartColors($chartColorSet, 1)[1];
-        $backgroundColorTransp10 = $this->colorThemeController->giveChartColors($chartColorSet, 0.75)[0];
-        $backgroundColorTransp2 = $this->colorThemeController->giveChartColors($chartColorSet, 0.75)[1];
+        $revColors = $this->colorThemeController->giveChartColorsBudgetBook('rev', 1);
+        $expColors = $this->colorThemeController->giveChartColorsBudgetBook('exp', 1);
+        $revColorsTransparent = $this->colorThemeController->giveChartColorsBudgetBook('rev', 0.75);
+        $expColorsTransparent = $this->colorThemeController->giveChartColorsBudgetBook('exp', 0.75);
 
+        $dateArray = $this->chartController->dateArray($startDate, $year);
         $balances = $this->chartController->budgetbookBalances($startDate, $year);
         $fixedBalances = $this->chartController->fixedBalances($startDate, $year);
         $alltimeBalances = $this->chartController->alltimeBalances();
         
-        // all fixed revenues entries
-        // all revenue entries
-        // all fixed expenditure entries
-        // all expenditure entries
+        $cashflowOverTimeinterval = $this->chartController->cashflowOverTimeinterval($startDate, $year);
 
-        // median of totalbalance, revenues, expenditures by timeframe
-
-        // all entries by timeframe
+        $revenuesTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $year, 'rev');
+        $revenuesByCatC = $this->chartController->summedEntryDataC($revenuesTrendByCatC);
+        $revenuesByCatP = calculatePercentagesArray($revenuesByCatC);
+        $revenuesByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($year, 'rev');
+        $revenuesByCatMonthlyAverageP = calculatePercentagesArray($revenuesByCatMonthlyAverageC);
+        $revenueCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $year, 'rev');
+        
+        $expendituresTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $year, 'exp');
+        $expendituresByCatC = $this->chartController->summedEntryDataC($expendituresTrendByCatC);
+        $expendituresByCatP = calculatePercentagesArray($expendituresByCatC);
+        $expendituresByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($year, 'exp');
+        $expendituresByCatMonthlyAverageP = calculatePercentagesArray($expendituresByCatMonthlyAverageC);
+        $expenditureCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $year, 'exp');
+       
         $this->render('budget-book/overview', [
             'year' => $year,
             'timeInterval' => $timeInterval,
@@ -44,15 +52,31 @@ class OverviewController extends AbstractController{
             'userShortcut' => $userShortcut,
             'daysleft' => $daysleft,
             'timespanAccount' => $timespanAccount,
-            'chartColorSet' => $chartColorSet,
-            'backgroundColor10' => $backgroundColor10,
-            'backgroundColorTransp10' => $backgroundColorTransp10,
-            'backgroundColor2' => $backgroundColor2,
-            'backgroundColorTransp2' => $backgroundColorTransp2,
+            'barchartScale' => $barchartScale,
+            'revColors' => $revColors,
+            'expColors' => $expColors,
+            'revColorsTransparent' => $revColorsTransparent,
+            'expColorsTransparent' => $expColorsTransparent,
             'startDate' => $startDate,
+            'dateArray' => $dateArray,
             'balances' => $balances,
             'fixedBalances' => $fixedBalances,
             'alltimeBalances' => $alltimeBalances,
+            'cashflowOverTimeinterval' => $cashflowOverTimeinterval,
+
+            'revenuesTrendByCatC' => $revenuesTrendByCatC,
+            'revenuesByCatC' => $revenuesByCatC,
+            'revenuesByCatP' => $revenuesByCatP,
+            'revenuesByCatMonthlyAverageC' => $revenuesByCatMonthlyAverageC,
+            'revenuesByCatMonthlyAverageP' => $revenuesByCatMonthlyAverageP,
+            'revenueCatsFixed' => $revenueCatsFixed,
+
+            'expendituresTrendByCatC' => $expendituresTrendByCatC,
+            'expendituresByCatC' => $expendituresByCatC,
+            'expendituresByCatP' => $expendituresByCatP,
+            'expendituresByCatMonthlyAverageC' => $expendituresByCatMonthlyAverageC,
+            'expendituresByCatMonthlyAverageP' => $expendituresByCatMonthlyAverageP,
+            'expenditureCatsFixed' => $expenditureCatsFixed,
             
         ]);
     }

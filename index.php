@@ -120,7 +120,8 @@ $container->add('chartController', function() use($container){
         $container->get('yearlyController'),
         $container->get('entryController'),
         $container->get('entryRepository'),
-        $container->get('colorThemeController'));
+        $container->get('colorThemeController'),
+        $container->get('usersController'));
 });
 
 $container->add('overviewController', function() use($container) {
@@ -327,8 +328,18 @@ elseif($route === 'overview') {
             $timeInterval = 'YTD';
         }
     }
+    if(isset($_POST['barchartScale'])) {
+        $_SESSION['barchartScale'] = $_POST['barchartScale'];
+        $barchartScale = $_POST['barchartScale'];
+    } else {
+        if(isset($_SESSION['timeInterval'])) {
+            $barchartScale = $_SESSION['barchartScale'];
+        } else {
+            $barchartScale = 'linear';
+        }
+    }
     $overviewController = $container->get('overviewController');
-    $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet);
+    $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $barchartScale);
 }
 elseif($route === 'monthly-page') {
     $authService = $container->get('authService');
