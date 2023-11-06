@@ -34,7 +34,7 @@
                 class="<?php if($barchartScale === 'logarithmic') echo 'chosen'; ?>">
             </form>
         </div>
-
+<!-- #TODO: Custom time interval -->
         <div class="settings-row">
             <span>Change timeinterval:</span>
         </div>
@@ -126,7 +126,7 @@
                     Compared to avg.
                 </span>
                 <span class="report-content">
-                    <?php if (($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*(365-$daysleft))-1)*100 > 0) echo "+"; ?>
+                    <?php if(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*(365-$daysleft))-1)*100 > 0) echo "+"; ?>
                     <?php echo number_format(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*(365-$daysleft))-1)*100, '2', ',', '.') . '% '; ?>
                 </span>
             </div>

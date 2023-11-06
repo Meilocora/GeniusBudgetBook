@@ -41,6 +41,7 @@
             </form>
             <?php endif; ?>
         </div>
+        <!-- #TODO: Custom time interval -->
         <div class="settings-row">
             <span>Change timeinterval:</span>
         </div>

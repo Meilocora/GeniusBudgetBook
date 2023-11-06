@@ -160,7 +160,6 @@ if(isset($_POST['colorTheme'])) {
         setcookie('colorTheme', $colorTheme);
     }
 }
-
 if(isset($_POST['chartColorSet'])) {
     setcookie('chartColorSet', $_POST['chartColorSet']);
     $chartColorSet = $_POST['chartColorSet'];
@@ -169,6 +168,26 @@ if(isset($_POST['chartColorSet'])) {
         $chartColorSet = $_COOKIE['chartColorSet'];
     } else {
         $chartColorSet = 'default';
+    }
+}
+if(isset($_POST['timeInterval'])) {
+    $_SESSION['timeInterval'] = $_POST['timeInterval'];
+    $timeInterval = $_POST['timeInterval'];
+} else {
+    if(isset($_SESSION['timeInterval'])) {
+        $timeInterval = $_SESSION['timeInterval'];
+    } else {
+        $timeInterval = 'YTD';
+    }
+}
+if(isset($_POST['barchartScale'])) {
+    $_SESSION['barchartScale'] = $_POST['barchartScale'];
+    $barchartScale = $_POST['barchartScale'];
+} else {
+    if(isset($_SESSION['barchartScale'])) {
+        $barchartScale = $_SESSION['barchartScale'];
+    } else {
+        $barchartScale = 'linear';
     }
 }
 
@@ -253,16 +272,6 @@ elseif($route === 'homepage') {
             $year = date('Y');
         }
     }
-    if(isset($_POST['timeInterval'])) {
-        $_SESSION['timeInterval'] = $_POST['timeInterval'];
-        $timeInterval = $_POST['timeInterval'];
-    } else {
-        if(isset($_SESSION['timeInterval'])) {
-            $timeInterval = $_SESSION['timeInterval'];
-        } else {
-            $timeInterval = 'YTD';
-        }
-    }
     $homepageController = $container->get('homepageController');
     $homepageController->showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet);
 }
@@ -316,26 +325,6 @@ elseif($route === 'overview') {
             $year = $_SESSION['year'];
         } else {
             $year = date('Y');
-        }
-    }
-    if(isset($_POST['timeInterval'])) {
-        $_SESSION['timeInterval'] = $_POST['timeInterval'];
-        $timeInterval = $_POST['timeInterval'];
-    } else {
-        if(isset($_SESSION['timeInterval'])) {
-            $timeInterval = $_SESSION['timeInterval'];
-        } else {
-            $timeInterval = 'YTD';
-        }
-    }
-    if(isset($_POST['barchartScale'])) {
-        $_SESSION['barchartScale'] = $_POST['barchartScale'];
-        $barchartScale = $_POST['barchartScale'];
-    } else {
-        if(isset($_SESSION['timeInterval'])) {
-            $barchartScale = $_SESSION['barchartScale'];
-        } else {
-            $barchartScale = 'linear';
         }
     }
     $overviewController = $container->get('overviewController');

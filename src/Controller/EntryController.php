@@ -295,13 +295,21 @@ class EntryController extends AbstractController{
 
     public function dateFirstEntry() {
         $firstEntry = $this->entryRepository->fetchfirstEntry();
-        return $firstEntry->dateslug;
+        if (!empty($firstEntry)) {
+            return $firstEntry->dateslug;
+        } else {
+            return date('Y-m-d');
+        }
     }
 
     public function timespanFirstEntry() {
         $firstEntry = $this->entryRepository->fetchfirstEntry();
-        $timespanDays = round((strtotime(date('Y-m-d')) - strtotime($firstEntry->dateslug)) /(60*60*24), 0);
-        return $timespanDays;
+        if (!empty($firstEntry)) {
+            $timespanDays = round((strtotime(date('Y-m-d')) - strtotime($firstEntry->dateslug)) /(60*60*24), 0);
+            return $timespanDays;
+        } else {
+            return 1;
+        }
     }
 
     public function entryTrendByEntrytype($startDate, $year, $type) {

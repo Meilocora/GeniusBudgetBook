@@ -126,6 +126,7 @@ class ChartController extends AbstractController{
         $budgetbookBalancesArray['totalCashflow'] = $revenues + $expenditures;
         $budgetbookBalancesArray['revenues'] = $revenues;
         $budgetbookBalancesArray['expenditures'] = $expenditures;
+        if($budgetbookBalancesArray['revenues'] === 0 & $budgetbookBalancesArray['expenditures'] === 0) return ['totalCashflow' => 1, 'revenues' => 1, 'expenditures' => 1];
         return $budgetbookBalancesArray;
     }
 
@@ -141,6 +142,7 @@ class ChartController extends AbstractController{
         $budgetbookBalancesArray['totalCashflow'] = $revenues + $expenditures;
         $budgetbookBalancesArray['revenues'] = $revenues;
         $budgetbookBalancesArray['expenditures'] = $expenditures;
+        if($budgetbookBalancesArray['revenues'] === 0 & $budgetbookBalancesArray['expenditures'] === 0) return ['totalCashflow' => 1, 'revenues' => 1, 'expenditures' => 1];
         return $budgetbookBalancesArray;
     }
 
@@ -209,8 +211,8 @@ class ChartController extends AbstractController{
         $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $timespanDays = calculateTimespanDays($startDate, $endDate);
         $resultArray = [];
-        foreach ($summedData AS $kay => $value) {
-            $resultArray[$kay] = round($value/$timespanDays*30, 0);
+        foreach ($summedData AS $key => $value) {
+            if($value !== 0) $resultArray[$key] = round($value/$timespanDays*30, 0);
         }
         return $resultArray;
     }

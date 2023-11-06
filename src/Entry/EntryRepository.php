@@ -154,7 +154,7 @@ class EntryRepository {
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
-        return ($results[0]);
+        if(isset($results[0])) return $results[0]; else return null;
     }
 
 }
