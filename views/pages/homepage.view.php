@@ -9,7 +9,7 @@
 </div>
 <div class="adjustments-container">
     <img src="./img/gear.png" alt="Symbol of a gear" height='40px' width='40px' class="adjustmentsSymbol">
-    <div class="adjustments-box">
+    <div class="adjustments-box" id="homepageBox">
         <div class="settings-row">
             <span>Choose a year:</span>
         </div>
@@ -41,7 +41,6 @@
             </form>
             <?php endif; ?>
         </div>
-        <!-- #TODO: Custom time interval -->
         <div class="settings-row">
             <span>Change timeinterval:</span>
         </div>
@@ -61,6 +60,20 @@
                 <input type="submit" value="All" 
                 class="<?php if($timeInterval === 'ALL') echo 'chosen'; ?>">
             </form>
+        </div>
+        <div class="customDatesBox">
+            <div class="settings-row">
+                <form action="./?route=homepage" method="post" class="chartScopeForm">
+                    <span>Custom date</span>
+            </div>
+            <div class="settings-row">
+                    <input type="hidden" name="timeInterval" value="Custom">
+                    <input type="month" name="customStartMonth" max="<?php echo date('Y-m'); ?>" value="<?php if(isset($_SESSION['customStartMonth'])) echo $_SESSION['customStartMonth']; else echo date('Y-m'); ?>" required>
+                    <span>-</span>
+                    <input type="month" name="customEndMonth" max="<?php echo date('Y-m'); ?>" value="<?php if(isset($_SESSION['customEndMonth'])) echo $_SESSION['customEndMonth']; else echo date('Y-m'); ?>" required>
+                    <input type='image' src='./img/checkmark.png' alt='Checkmark symbol' height='30px' width='30px'>
+                </form>
+            </div>
         </div>
         <div class="settings-row">
             <span>Adjust goals:</span>

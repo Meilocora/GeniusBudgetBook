@@ -17,9 +17,14 @@ class HomepageController extends AbstractController{
         protected ColorThemeController $colorThemeController,
         protected ChartController $chartController) {}
 
-    public function showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $chartColorSet) {
-        $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12';
+    public function showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $customStartMonth, $customEndMonth, $timeInterval, $chartColorSet) {
         $startDate = $this->chartController->getStartDate($timeInterval, $year);
+        if($startDate === null) $startDate = $customStartMonth . '-01'; 
+        $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12'; 
+        if ($customEndMonth !== null) {
+            $queryDate = $customEndMonth;
+            $year = date('Y', strtotime($queryDate));
+        }
         $currentWDTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target'); 
         $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
         $currentWDActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual');
@@ -35,9 +40,9 @@ class HomepageController extends AbstractController{
         $backgroundColorTransp2 = $this->colorThemeController->giveChartColors($chartColorSet, 0.75)[1];
         $wdYC = $this->chartController->wdTrendArray('actual', $queryDate, $startDate);
         $wdYTargetActualC = $this->chartController->wdTrendArray('total-target-actual', $queryDate, $startDate);
-        $donationsArrayC = $this->chartController->donationsValuesArray($year, $startDate);
+        $donationsArrayC = $this->chartController->donationsValuesArray($year, $startDate, $queryDate);
         $donationsArrayP = calculatePercentagesArray($donationsArrayC);
-        $donationEntries = $this->entryController->donationsTrend($startDate, $year);
+        $donationEntries = $this->entryController->donationsTrend($startDate, $queryDate);
         $savingsArrayC = $this->chartController->wdTrendArray('actual-liquid', $queryDate, $startDate);
         $currentSavingsTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target-liquid'); 
         $currentSavingsTargetArrayP = calculatePercentagesArray($currentSavingsTargetArrayC);

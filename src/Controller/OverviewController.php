@@ -14,8 +14,15 @@ class OverviewController extends AbstractController{
         protected ChartController $chartController
     ) {}
 
-    public function showOverview($navRoutes, $colorTheme, $userShortcut, $year, $timeInterval, $barchartScale) {
+    public function showOverview($navRoutes, $colorTheme, $userShortcut, $year, $customStartDate, $customEndDate, $timeInterval, $barchartScale) {
         $startDate = $this->chartController->getStartDate($timeInterval, $year);
+        if($startDate === null) $startDate = $customStartDate; 
+        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+        if ($customEndDate !== null) {
+            $endDate = $customEndDate;
+            $year = date('Y', strtotime($endDate));
+        }
+
         $daysleft = calculateRemainingDays($year);
         $timespanAccount = $this->entryController->timespanFirstEntry();
         $revColors = $this->colorThemeController->giveChartColorsBudgetBook('rev', 1);
@@ -23,27 +30,27 @@ class OverviewController extends AbstractController{
         $revColorsTransparent = $this->colorThemeController->giveChartColorsBudgetBook('rev', 0.75);
         $expColorsTransparent = $this->colorThemeController->giveChartColorsBudgetBook('exp', 0.75);
 
-        $dateArray = $this->chartController->dateArray($startDate, $year);
-        $balances = $this->chartController->budgetbookBalances($startDate, $year);
-        $fixedBalances = $this->chartController->fixedBalances($startDate, $year);
+        $dateArray = $this->chartController->dateArray($startDate, $endDate);
+        $balances = $this->chartController->budgetbookBalances($startDate, $endDate);
+        $fixedBalances = $this->chartController->fixedBalances($startDate, $endDate);
         $alltimeBalances = $this->chartController->alltimeBalances();
         
-        $cashflowOverTimeinterval = $this->chartController->cashflowOverTimeinterval($startDate, $year);
+        $cashflowOverTimeinterval = $this->chartController->cashflowOverTimeinterval($startDate, $endDate);
 
-        $revenuesTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $year, 'rev');
+        $revenuesTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $endDate, 'rev');
         $revenuesByCatC = $this->chartController->summedEntryDataC($revenuesTrendByCatC);
         $revenuesByCatP = calculatePercentagesArray($revenuesByCatC);
-        $revenuesByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($year, 'rev');
+        $revenuesByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($endDate, 'rev');
         $revenuesByCatMonthlyAverageP = calculatePercentagesArray($revenuesByCatMonthlyAverageC);
-        $revenueCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $year, 'rev');
+        $revenueCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $endDate, 'rev');
         
-        $expendituresTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $year, 'exp');
+        $expendituresTrendByCatC = $this->chartController->entryDataByTypeC($startDate, $endDate, 'exp');
         $expendituresByCatC = $this->chartController->summedEntryDataC($expendituresTrendByCatC);
         $expendituresByCatP = calculatePercentagesArray($expendituresByCatC);
-        $expendituresByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($year, 'exp');
+        $expendituresByCatMonthlyAverageC = $this->chartController->summedEntryDataCAveragePerMonth($endDate, 'exp');
         $expendituresByCatMonthlyAverageP = calculatePercentagesArray($expendituresByCatMonthlyAverageC);
-        $expenditureCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $year, 'exp');
-       
+        $expenditureCatsFixed = $this->entryController->entryTrendByEntrytypeFixed($startDate, $endDate, 'exp');
+
         $this->render('budget-book/overview', [
             'year' => $year,
             'timeInterval' => $timeInterval,
@@ -77,7 +84,6 @@ class OverviewController extends AbstractController{
             'expendituresByCatMonthlyAverageC' => $expendituresByCatMonthlyAverageC,
             'expendituresByCatMonthlyAverageP' => $expendituresByCatMonthlyAverageP,
             'expenditureCatsFixed' => $expenditureCatsFixed,
-            
         ]);
     }
 }

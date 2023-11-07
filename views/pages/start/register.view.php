@@ -1,4 +1,3 @@
-<!-- #TODO: wont work, when there is no users databank yet -->
 <script type="module" src="./src/JS/registermain.php"></script>
 <section class="container-register">
     <form action="./?route=register/newUser" class="form-register" method="POST">

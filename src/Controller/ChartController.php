@@ -27,6 +27,10 @@ class ChartController extends AbstractController{
                 return date('Y-m-d', strtotime(date($year . '-m-' . '01'))-(60*60*24*365));
             case 'ALL':
                 return $this->entryController->dateFirstEntry();
+            case 'Custom':
+                return null;
+                case 'CustomMonth':
+                    return null;
             }
     }
 
@@ -96,8 +100,8 @@ class ChartController extends AbstractController{
         
     }
 
-    public function donationsValuesArray($year, $startDate) {
-        $donationEntries = $this->entryController->donationsTrend($startDate, $year);
+    public function donationsValuesArray($year, $startDate, $queryDate) {
+        $donationEntries = $this->entryController->donationsTrend($startDate, $queryDate);
         $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $donationsValuesArray = [];
         $donationsActual = 0;
@@ -114,8 +118,8 @@ class ChartController extends AbstractController{
         return $array;
     }
 
-    public function budgetbookBalances($startDate, $year) {
-        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $year);
+    public function budgetbookBalances($startDate, $endDate) {
+        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $endDate);
         $budgetbookBalancesArray = [];
         $revenues = 0;
         $expenditures = 0;
@@ -130,8 +134,8 @@ class ChartController extends AbstractController{
         return $budgetbookBalancesArray;
     }
 
-    public function fixedBalances($startDate, $year) {
-        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $year);
+    public function fixedBalances($startDate, $endDate) {
+        $entries = $this->entryController->fetchAllForTimeInterval($startDate, $endDate);
         $budgetbookBalancesArray = [];
         $revenues = 0;
         $expenditures = 0;
@@ -152,8 +156,7 @@ class ChartController extends AbstractController{
         return $this->budgetbookBalances($startDate, $endDate);
     }
 
-    public function cashflowOverTimeinterval($startDate, $year) {
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+    public function cashflowOverTimeinterval($startDate, $endDate) {
         $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
         $balanceArray = ['Cashflow'];
         $revenuesArray = ['Revenues'];
@@ -172,8 +175,7 @@ class ChartController extends AbstractController{
         return $cashflowArray;
     }
 
-    public function dateArray($startDate, $year) {
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+    public function dateArray($startDate, $endDate) {
         $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
         $dateArray = [];
         for ($i = 0; $i < $months; $i++) {
@@ -204,11 +206,10 @@ class ChartController extends AbstractController{
        return $summedEntryData;
     }
 
-    public function summedEntryDataCAveragePerMonth($year, $type) {
+    public function summedEntryDataCAveragePerMonth($endDate, $type) {
         $startDate = $this->entryController->dateFirstEntry();
-        $trendData = $this->entryDataByTypeC($startDate, $year, $type);
+        $trendData = $this->entryDataByTypeC($startDate, $endDate, $type);
         $summedData = $this->summedEntryDataC($trendData);
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $timespanDays = calculateTimespanDays($startDate, $endDate);
         $resultArray = [];
         foreach ($summedData AS $key => $value) {

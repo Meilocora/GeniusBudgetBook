@@ -466,11 +466,20 @@ a.scrollActive,
 
 .adjustments-container:hover .adjustments-box {
     width: 450px;
-    height: 450px;
     opacity: 1;
     padding: 1rem;
     border: 2px solid black;
-    transition: border 1s linear, padding 1.2s linear, height 1s linear 0s, width .9s ease-in-out 0s;
+    transition: border 1s linear, padding 1.2s linear, width .9s ease-in-out 0s;
+}
+
+.adjustments-container:hover .adjustments-box#homepageBox {
+    height: 600px;
+    transition: border 1s linear, padding 1.2s linear, width .9s ease-in-out 0s, height 1s linear 0s;
+}
+
+.adjustments-container:hover .adjustments-box#overviewBox {
+    height: 350px;
+    transition: border 1s linear, padding 1.2s linear, width .9s ease-in-out 0s, height 1s linear 0s;
 }
 
 .adjustments-container>.adjustments-box * {
@@ -495,7 +504,7 @@ a.scrollActive,
 
 .chartScopeForm>input[type="submit"] {
     color: white;
-    width: 7rem;
+    min-width: 5rem;
     height: 2.5rem;
     padding: .25rem 1rem;
     font-size: 1rem;
@@ -549,6 +558,31 @@ a.scrollActive,
 
 .adjustments-box input[type="number"].change-goals {
     width: 6rem;
+}
+
+.adjustments-box .customDatesBox input[type="date"], 
+.adjustments-box .customDatesBox input[type="month"]{
+    border: 1px solid white;
+    margin: 0 .2rem;
+    padding: .25rem .5rem;
+    background-color: transparent;
+    font-size: 1.1rem;
+    font-family: inherit;
+    font-weight: bold;
+    color: var(--theme-color-neon);
+    min-width: 8rem;
+    max-width: 10rem;
+}
+
+/* #TODO: Why 2nd and 3rd instead of 1st and 2nd?! */
+.adjustments-box .customDatesBox input[type="date"]:nth-of-type(2),
+.adjustments-box .customDatesBox input[type="month"]:nth-of-type(2) {
+    border-radius: 20px 0px 0px 20px;
+}
+
+.adjustments-box .customDatesBox input[type="date"]:nth-of-type(3),
+.adjustments-box .customDatesBox input[type="month"]:nth-of-type(3) {
+    border-radius: 0px 20px 20px 0px;
 }
 
 /* === TRANSITIONS === */

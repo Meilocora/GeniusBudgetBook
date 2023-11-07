@@ -9,7 +9,7 @@
 </div>
 <div class="adjustments-container">
     <img src="./img/gear.png" alt="Symbol of a gear" height='40px' width='40px' class="adjustmentsSymbol">
-    <div class="adjustments-box">
+    <div class="adjustments-box" id="overviewBox">
         <div class="settings-row">
             <span>Choose a year:</span>
         </div>
@@ -34,7 +34,6 @@
                 class="<?php if($barchartScale === 'logarithmic') echo 'chosen'; ?>">
             </form>
         </div>
-<!-- #TODO: Custom time interval -->
         <div class="settings-row">
             <span>Change timeinterval:</span>
         </div>
@@ -55,8 +54,23 @@
                 class="<?php if($timeInterval === 'ALL') echo 'chosen'; ?>">
             </form>
         </div>
+        <div class="customDatesBox">
+            <div class="settings-row">
+                <form action="./?route=overview" method="post" class="chartScopeForm">
+                    <span>Custom date</span>
+            </div>
+            <div class="settings-row">
+                    <input type="hidden" name="timeInterval" value="Custom">
+                    <input type="date" name="customStartDate" max="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($_SESSION['customStartDate'])) echo $_SESSION['customStartDate']; else  echo date('Y-m-d'); ?>" required>
+                    <span>-</span>
+                    <input type="date" name="customEndDate" max="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($_SESSION['customEndDate'])) echo $_SESSION['customEndDate']; else echo date('Y-m-d'); ?>" required>
+                    <input type='image' src='./img/checkmark.png' alt='Checkmark symbol' height='30px' width='30px'>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
+
 <script type="text/javascript" src="./src/JS/jQuery/jQuery.js" defer></script>
 <script type="text/javascript" src="./src/JS/jQuery/jquery.waypoints.min.js" defer></script>
 <script type="module">
@@ -159,7 +173,7 @@
                 <span class="report-content">
                     <?php echo number_format($fixedBalances['revenues'], '0', ',', '.') . '€ '; ?>
                     &nbsp / &nbsp
-                    <?php echo number_format(($fixedBalances['revenues']/$balances['revenues'])*100, '2', ',', '.') . '% '; ?>
+                    <?php if($balances['revenues'] !== 0) echo number_format(($fixedBalances['revenues']/$balances['revenues'])*100, '2', ',', '.') . '% '; ?>
                 </span>
             </div>
             <div class="report positive">

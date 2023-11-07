@@ -4,7 +4,7 @@
 
 import Register from "./Classes/Register.js";
 
-<?php $usernames = explode(',' , $_COOKIE['name']); ?>
+<?php if(isset($_COOKIE['name'])) $usernames = explode(',' , $_COOKIE['name']); else $usernames = ['sandboxuser']; ?>
 
 let usernames = [<?php foreach($usernames AS $username) echo "`{$username}`, "; ?>];
 

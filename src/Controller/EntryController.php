@@ -276,8 +276,8 @@ class EntryController extends AbstractController{
         return $untransferedFixedEntries;
     }
 
-    public function donationsTrend($startDate, $year) {
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+    public function donationsTrend($startDate, $queryDate) {
+        $endDate = date('Y-m-t', strtotime($queryDate));
         $entryCollectionraw = $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
         $donationsEntries = [];
         foreach($entryCollectionraw AS $entry) {
@@ -288,8 +288,7 @@ class EntryController extends AbstractController{
         return $donationsEntries;
     }
 
-    public function fetchAllForTimeInterval($startDate, $year) {
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
+    public function fetchAllForTimeInterval($startDate, $endDate) {
         return $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
     }
 
@@ -312,9 +311,8 @@ class EntryController extends AbstractController{
         }
     }
 
-    public function entryTrendByEntrytype($startDate, $year, $type) {
+    public function entryTrendByEntrytype($startDate, $endDate, $type) {
         $categories = $this->usersController->fetchUserCats()["{$type}cats"];
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
         $Array1 = [$categories[0]];
         $Array2 = [$categories[1]];
@@ -376,9 +374,8 @@ class EntryController extends AbstractController{
         return($Array);
     }
 
-    public function entryTrendByEntrytypeFixed($startDate, $year, $type) {
+    public function entryTrendByEntrytypeFixed($startDate, $endDate, $type) {
         $categories = $this->usersController->fetchUserCats()["{$type}cats"];
-        $endDate = $year === date('Y') ? date('Y-m-d') : date($year . '-12-31');
         $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
         $Array1 = [];
         $Array2 = [];
