@@ -8,7 +8,8 @@ The "genius budget book" can be used by hosting a local server via XAMPP.
 To use it via XAMPP:
 1) download XAMPP (https://www.apachefriends.org/de/download.html)
 2) install XAMPP with all extensions into
-3) move "Genius-Budget-Book" folder into ...\xampp\htdocs
+3) move "GeniusBudgetBook" folder into ...\xampp\htdocs
+IMPORTANT: Make sure the folder is called "GeniusBudgetBook" !
 4) start xampp-control.exe at ...\xampp\xampp.control.exe
 5) first start Apache, the start MySQL
 6) open browser (Google Chrome if possible)
