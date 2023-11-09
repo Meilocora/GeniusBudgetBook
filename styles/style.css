@@ -390,8 +390,8 @@ section.chart-view-container {
 }
 
 .neutral {
-    box-shadow: 0px 0px 20px black, 0px 0px 10px black inset;
-    color: black;
+    box-shadow: 0px 0px 20px blue, 0px 0px 10px blue inset;
+    color: blue;
     transition: all .5s ease-in-out;
 }
 

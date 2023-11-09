@@ -181,6 +181,49 @@ if(isset($_POST['timeInterval'])) {
         $timeInterval = 'YTD';
     }
 }
+// ----------------------------------------------------------------------------------
+if(isset($_POST['year'])) {
+    $_SESSION['year'] = $_POST['year'];
+    $year = $_POST['year'];
+    $timeInterval = 'YTD';
+    $_SESSION['customStartMonth'] = null;
+    $_SESSION['customEndMonth'] = null;
+    $customStartMonth = null;
+    $customEndMonth = null;
+} else {
+    if(isset($_SESSION['year'])) {
+        $year = $_SESSION['year'];
+    } else {
+        $year = date('Y');
+    }
+}
+if($timeInterval == 'Custom') { 
+    if(isset($_POST['customStartMonth']) & isset($_POST['customEndMonth'])) {
+        $_SESSION['customStartMonth'] = $_POST['customStartMonth'];
+        $_SESSION['customEndMonth'] = $_POST['customEndMonth'];
+    }
+} else {
+    $_SESSION['customStartMonth'] = null;
+    $_SESSION['customEndMonth'] = null;
+    $customStartMonth = null;
+    $customEndMonth = null;
+}
+
+if($_SESSION['customStartMonth'] !== null & $_SESSION['customEndMonth'] !== null) {
+    if(strtotime($_SESSION['customStartMonth']) < strtotime($_SESSION['customEndMonth'])) {
+        $customStartMonth = $_SESSION['customStartMonth'];
+        $customEndMonth = $_SESSION['customEndMonth'];
+    } elseif (strtotime($_SESSION['customStartMonth']) > strtotime($_SESSION['customEndMonth'])) {
+        $_SESSION['customStartMonth'] = null;
+        $_SESSION['customEndMonth'] = null;
+        $customStartMonth = null;
+        $customEndMonth = null;
+    }
+} elseif($_SESSION['customStartMonth'] === null & $_SESSION['customEndMonth'] === null) {
+    $customStartMonth = null;
+    $customEndMonth = null;
+}
+// ----------------------------------------------------------------------------------
 if(isset($_POST['barchartScale'])) {
     $_SESSION['barchartScale'] = $_POST['barchartScale'];
     $barchartScale = $_POST['barchartScale'];
@@ -263,40 +306,8 @@ elseif($route === 'register/newUser') {
 elseif($route === 'homepage') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    if(isset($_POST['year'])) {
-        $_SESSION['year'] = $_POST['year'];
-        $year = $_POST['year'];
-    } else {
-        if(isset($_SESSION['year'])) {
-            $year = $_SESSION['year'];
-        } else {
-            $year = date('Y');
-        }
-    }
-    if(isset($_POST['customStartMonth'])) {
-        $_SESSION['customStartMonth'] = $_POST['customStartMonth'];
-        $_SESSION['customEndMonth'] = $_POST['customEndMonth'];
-        $customStartMonth = $_POST['customStartMonth'];
-        $customEndMonth = $_POST['customEndMonth'];
-    } else {
-        if(isset($_SESSION['customStartMonth'] )& $_SESSION['timeInterval'] === 'CustomMonth') {
-            $customStartMonth = $_SESSION['customStartMonth'];
-            $customEndMonth = $_SESSION['customEndMonth'];
-        } else {
-            $_SESSION['customStartMonth'] = date('Y-m');
-            $_SESSION['customEndMonth'] = date('Y-m');
-            $customStartMonth = null;
-            $customEndMonth = null;
-        }
-    }
     $homepageController = $container->get('homepageController');
-    if(strtotime($customEndMonth) < strtotime($customStartMonth)) {
-        $_SESSION['customStartMonth'] = date('Y-m');
-        $_SESSION['customEndMonth'] = date('Y-m');
-        $homepageController->showHomepage($navRoutes, $colorTheme, $userShortcut, $year, null, null, 'YTD', $chartColorSet);
-    } else {
-        $homepageController->showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $customStartMonth, $customEndMonth, $timeInterval, $chartColorSet);
-    }
+    $homepageController->showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $customStartMonth, $customEndMonth, $timeInterval, $chartColorSet);
 }
 elseif($route === 'homepage/adjustgoals') {
     $authService = $container->get('authService');
@@ -340,42 +351,8 @@ elseif($route === 'userSettings/changeUserData') {
 elseif($route === 'overview') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    if(isset($_POST['customStartDate'])) {
-        $_SESSION['customStartDate'] = $_POST['customStartDate'];
-        $_SESSION['customEndDate'] = $_POST['customEndDate'];
-        $customStartDate = $_POST['customStartDate'];
-        $customEndDate = $_POST['customEndDate'];
-    } else {
-        if(isset($_SESSION['customStartDate'] )& $_SESSION['timeInterval'] === 'Custom') {
-            $customStartDate = $_SESSION['customStartDate'];
-            $customEndDate = $_SESSION['customEndDate'];
-        } else {
-            $_SESSION['customStartDate'] = date('Y-m-d');
-            $_SESSION['customEndDate'] = date('Y-m-d');
-            $customStartDate = null;
-            $customEndDate = null;
-        }
-    }
-    if(isset($_POST['year'])) {
-        $_SESSION['year'] = $_POST['year'];
-        $year = $_POST['year'];
-    } else {
-        if(isset($_SESSION['year'])) {
-            $year = $_SESSION['year'];
-        } else {
-            $year = date('Y');
-        }
-    }
     $overviewController = $container->get('overviewController');
-    if(strtotime($customEndDate) < strtotime($customStartDate)) {
-        $_SESSION['customStartDate'] = date('Y-m-d');
-        $_SESSION['customEndDate'] = date('Y-m-d');
-        $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, null, null, 'YTD', $barchartScale);
-    } else {
-        $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, $customStartDate, $customEndDate, $timeInterval, $barchartScale);
-    }
-
-    
+    $overviewController->showOverview($navRoutes, $colorTheme, $userShortcut, $year, $customStartMonth, $customEndMonth, $timeInterval, $barchartScale);
 }
 elseif($route === 'monthly-page') {
     $authService = $container->get('authService');

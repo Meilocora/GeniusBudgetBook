@@ -19,12 +19,13 @@ class HomepageController extends AbstractController{
 
     public function showHomepage($navRoutes, $colorTheme, $userShortcut, $year, $customStartMonth, $customEndMonth, $timeInterval, $chartColorSet) {
         $startDate = $this->chartController->getStartDate($timeInterval, $year);
-        if($startDate === null) $startDate = $customStartMonth . '-01'; 
-        $queryDate = $year === date('Y') ? date('Y-m') : $year . '-12'; 
+        if($startDate === false & $customStartMonth !== null) $startDate = $customStartMonth . '-01'; elseif($startDate === false & $customStartMonth === null) $startDate = date('Y-m', strtotime("-1 month")) . '-01';
+        $queryDate = $year === date('Y') ? date('Y-m') : date($year . '-m'); 
         if ($customEndMonth !== null) {
             $queryDate = $customEndMonth;
             $year = date('Y', strtotime($queryDate));
         }
+
         $currentWDTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target'); 
         $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
         $currentWDActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual');
@@ -55,6 +56,8 @@ class HomepageController extends AbstractController{
         $this->render('homepage', [
             'year' => $year,
             'timeInterval' => $timeInterval,
+            'startDate' => $startDate,
+            'queryDate' => $queryDate,
             'navRoutes' => $navRoutes,
             'colorTheme' => $colorTheme,
             'userShortcut' => $userShortcut,
@@ -72,7 +75,6 @@ class HomepageController extends AbstractController{
             'backgroundColorTransp10' => $backgroundColorTransp10,
             'backgroundColor2' => $backgroundColor2,
             'backgroundColorTransp2' => $backgroundColorTransp2,
-            'startDate' => $startDate,
             'wdYC' => $wdYC,
             'wdYTargetActualC' => $wdYTargetActualC,
             'donationsArrayC' => $donationsArrayC,

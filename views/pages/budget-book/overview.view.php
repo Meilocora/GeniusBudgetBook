@@ -2,8 +2,8 @@
     <div class="scroll-element">
         <a href="#header-banner-name"><img src="./img/arrow_up.png" alt="Arrow symbol that points upwards" height='20px' width='20px'></a>    
         <a href="#cashflowContainer" class="scroll1">Total Cashflow</a>
-        <a href="#donationsContainer" class="scroll2">Revenues</a>
-        <a href="#savingsContainer" class="scroll3">Expenditures</a>
+        <a href="#revenuesContainer" class="scroll2">Revenues</a>
+        <a href="#expendituresContainer" class="scroll3">Expenditures</a>
         <a href="#footer"><img src="./img/arrow_down.png" alt="Arrow symbol that points downwards" height='20px' width='20px'></a>
     </div>
 </div>
@@ -18,21 +18,6 @@
                 <input type="number" name="year" min="1970" max="<?php echo date('Y'); ?>" value="<?php echo $year; ?>">
                 <input type='image' src='./img/checkmark.png' alt='Checkmark symbol' height='20px' width='20px'>
             </form> 
-        </div>
-        <div class="settings-row">
-            <span>Change bar-chart scale:</span>
-        </div>
-        <div class="settings-row">
-            <form action="./?route=overview" method="post" class="chartScopeForm">
-                <input type="hidden" name="barchartScale" value="linear">
-                <input type="submit" value="linear" 
-                class="<?php if($barchartScale === 'linear') echo 'chosen'; ?>">
-            </form>
-            <form action="./?route=overview" method="post" class="chartScopeForm">
-                <input type="hidden" name="barchartScale" value="logarithmic">
-                <input type="submit" value="log" 
-                class="<?php if($barchartScale === 'logarithmic') echo 'chosen'; ?>">
-            </form>
         </div>
         <div class="settings-row">
             <span>Change timeinterval:</span>
@@ -61,12 +46,27 @@
             </div>
             <div class="settings-row">
                     <input type="hidden" name="timeInterval" value="Custom">
-                    <input type="date" name="customStartDate" max="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($_SESSION['customStartDate'])) echo $_SESSION['customStartDate']; else  echo date('Y-m-d'); ?>" required>
+                    <input type="month" name="customStartMonth" max="<?php echo date('Y-m', strtotime("-1 month")); ?>" value="<?php echo date('Y-m', strtotime($startDate)); ?>" required>
                     <span>-</span>
-                    <input type="date" name="customEndDate" max="<?php echo date('Y-m-d'); ?>" value="<?php if(isset($_SESSION['customEndDate'])) echo $_SESSION['customEndDate']; else echo date('Y-m-d'); ?>" required>
+                    <input type="month" name="customEndMonth" max="<?php echo date('Y-m'); ?>" value="<?php echo date('Y-m', strtotime($endDate)); ?>" required>
                     <input type='image' src='./img/checkmark.png' alt='Checkmark symbol' height='30px' width='30px'>
                 </form>
             </div>
+        </div>
+        <div class="settings-row">
+            <span>Change bar-chart scale:</span>
+        </div>
+        <div class="settings-row">
+            <form action="./?route=overview" method="post" class="chartScopeForm">
+                <input type="hidden" name="barchartScale" value="linear">
+                <input type="submit" value="linear" 
+                class="<?php if($barchartScale === 'linear') echo 'chosen'; ?>">
+            </form>
+            <form action="./?route=overview" method="post" class="chartScopeForm">
+                <input type="hidden" name="barchartScale" value="logarithmic">
+                <input type="submit" value="log" 
+                class="<?php if($barchartScale === 'logarithmic') echo 'chosen'; ?>">
+            </form>
         </div>
     </div>
 </div>
@@ -111,7 +111,7 @@
             <h1>Total Cashflow</h1>
         </div>
         <div class="charts-container-row">
-            <div class="report neutral">
+            <div class="report <?php if($balances['totalCashflow'] > 0) echo "positive"; else echo "negative" ?>">
                 <span class="report-label">
                     Total cashflow
                 </span>
@@ -119,7 +119,7 @@
                     <?php echo number_format($balances['totalCashflow'], '0', ',', '.') . '€ '; ?>
                 </span>
             </div>
-            <div class="report neutral">
+            <div class="report <?php if($fixedBalances['revenues']+$fixedBalances['expenditures'] > 0) echo "positive"; else echo "negative" ?>">
                 <span class="report-label">
                     Fixed cashflow
                 </span>
@@ -127,21 +127,29 @@
                     <?php echo number_format($fixedBalances['revenues']+$fixedBalances['expenditures'], '0', ',', '.') . '€ '; ?>
                 </span>
             </div>
-            <div class="report neutral">
+            <div class="report <?php if($balances['totalCashflow']/$timespanQuery > 0) echo "positive"; else echo "negative" ?>">
                 <span class="report-label">
                     Cashflow p.d.
                 </span>
                 <span class="report-content">
-                    <?php echo number_format($balances['totalCashflow']/(365- $daysleft), '2', ',', '.') . '€ '; ?>
+                    <?php echo number_format($balances['totalCashflow']/$timespanQuery, '2', ',', '.') . '€ '; ?>
                 </span>
             </div>
             <div class="report neutral">
                 <span class="report-label">
+                    Avg cashflow
+                </span>
+                <span class="report-content">
+                    <?php echo number_format(($alltimeBalances['totalCashflow']/$timespanAccount*$timespanQuery), '2', ',', '.') . '€ '; ?>
+                </span>
+            </div>
+            <div class="report <?php if(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "positive"; else echo "negative" ?>">
+                <span class="report-label">
                     Compared to avg.
                 </span>
                 <span class="report-content">
-                    <?php if(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*(365-$daysleft))-1)*100 > 0) echo "+"; ?>
-                    <?php echo number_format(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*(365-$daysleft))-1)*100, '2', ',', '.') . '% '; ?>
+                    <?php if(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "+"; ?>
+                    <?php echo number_format(($balances['totalCashflow']/($alltimeBalances['totalCashflow']/$timespanAccount*$timespanQuery)-1)*100, '2', ',', '.') . '% '; ?>
                 </span>
             </div>
         </div>
@@ -181,16 +189,24 @@
                     Revenues p.d.
                 </span>
                 <span class="report-content">
-                    <?php echo number_format($balances['revenues']/(365- $daysleft), '2', ',', '.') . '€ '; ?>
+                    <?php echo number_format($balances['revenues']/$timespanQuery, '2', ',', '.') . '€ '; ?>
                 </span>
             </div>
             <div class="report neutral">
                 <span class="report-label">
+                    Avg revenues
+                </span>
+                <span class="report-content">
+                    <?php echo number_format($alltimeBalances['revenues']/$timespanAccount*$timespanQuery, '2', ',', '.') . '€ '; ?>
+                </span>
+            </div>
+            <div class="report <?php if(($balances['revenues']/($alltimeBalances['revenues']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "positive"; else echo "negative"; ?>">
+                <span class="report-label">
                     Compared to avg.
                 </span>
                 <span class="report-content">
-                    <?php if(($balances['revenues']/($alltimeBalances['revenues']/$timespanAccount*(365-$daysleft))-1)*100 > 0) echo "+"; ?>
-                    <?php echo number_format(($balances['revenues']/($alltimeBalances['revenues']/$timespanAccount*(365-$daysleft))-1)*100, '2', ',', '.') . '% '; ?>
+                    <?php if(($balances['revenues']/($alltimeBalances['revenues']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "+"; ?>
+                    <?php echo number_format(($balances['revenues']/($alltimeBalances['revenues']/$timespanAccount*$timespanQuery)-1)*100, '2', ',', '.') . '% '; ?>
                 </span>
             </div>
         </div>
@@ -226,7 +242,7 @@
                 <span class="report-content">
                     <?php echo number_format($fixedBalances['expenditures'], '0', ',', '.') . '€ '; ?>
                     &nbsp / &nbsp
-                    <?php echo number_format(($fixedBalances['expenditures']/$balances['expenditures'])*100, '2', ',', '.') . '% '; ?>
+                    <?php if($fixedBalances['expenditures'] !== $balances['expenditures']) echo number_format(($fixedBalances['expenditures']/$balances['expenditures'])*100, '2', ',', '.') . '% '; else echo '100%'; ?>
                 </span>
             </div>
             <div class="report negative">
@@ -234,16 +250,24 @@
                     Expenditures p.d.
                 </span>
                 <span class="report-content">
-                    <?php echo number_format($balances['expenditures']/(365- $daysleft), '2', ',', '.') . '€ '; ?>
+                    <?php echo number_format($balances['expenditures']/$timespanQuery, '2', ',', '.') . '€ '; ?>
                 </span>
             </div>
             <div class="report neutral">
                 <span class="report-label">
+                    Avg expenditures
+                </span>
+                <span class="report-content">
+                    <?php echo number_format($alltimeBalances['expenditures']/$timespanAccount*$timespanQuery, '2', ',', '.') . '€ '; ?>
+                </span>
+            </div>
+            <div class="report <?php if(($balances['expenditures']/($alltimeBalances['expenditures']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "negative"; else echo "positive" ?>">
+                <span class="report-label">
                     Compared to avg.
                 </span>
                 <span class="report-content">
-                    <?php if(($balances['expenditures']/($alltimeBalances['expenditures']/$timespanAccount*(365-$daysleft))-1)*100 > 0) echo "+"; ?>
-                    <?php echo number_format(($balances['expenditures']/($alltimeBalances['expenditures']/$timespanAccount*(365-$daysleft))-1)*100, '2', ',', '.') . '% '; ?>
+                    <?php if(($balances['expenditures']/($alltimeBalances['expenditures']/$timespanAccount*$timespanQuery)-1)*100 > 0) echo "+"; ?>
+                    <?php echo number_format(($balances['expenditures']/($alltimeBalances['expenditures']/$timespanAccount*$timespanQuery)-1)*100, '2', ',', '.') . '% '; ?>
                 </span>
             </div>
         </div>

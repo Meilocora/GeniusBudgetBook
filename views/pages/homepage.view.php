@@ -68,9 +68,9 @@
             </div>
             <div class="settings-row">
                     <input type="hidden" name="timeInterval" value="Custom">
-                    <input type="month" name="customStartMonth" max="<?php echo date('Y-m'); ?>" value="<?php if(isset($_SESSION['customStartMonth'])) echo $_SESSION['customStartMonth']; else echo date('Y-m'); ?>" required>
+                    <input type="month" name="customStartMonth" max="<?php echo date('Y-m', strtotime("-1 month")); ?>" value="<?php echo date('Y-m', strtotime($startDate)); ?>" required>
                     <span>-</span>
-                    <input type="month" name="customEndMonth" max="<?php echo date('Y-m'); ?>" value="<?php if(isset($_SESSION['customEndMonth'])) echo $_SESSION['customEndMonth']; else echo date('Y-m'); ?>" required>
+                    <input type="month" name="customEndMonth" max="<?php echo date('Y-m'); ?>" value="<?php echo $queryDate; ?>" required>
                     <input type='image' src='./img/checkmark.png' alt='Checkmark symbol' height='30px' width='30px'>
                 </form>
             </div>

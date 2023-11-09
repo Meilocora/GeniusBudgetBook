@@ -424,7 +424,7 @@ export default class ChartGenerator {
                     },
                     legend: {
                         labels: {
-                            // filter: (legendItem, data) => (typeof legendItem.text !== 'undefined'),
+                            filter: (legendItem, data) => (typeof legendItem.text !== 'undefined'),
                             lineWidth: 1,
                             borderColor: 'black',
                             color: 'black',

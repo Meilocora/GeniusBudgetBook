@@ -28,10 +28,13 @@ class ChartController extends AbstractController{
             case 'ALL':
                 return $this->entryController->dateFirstEntry();
             case 'Custom':
-                return null;
-                case 'CustomMonth':
-                    return null;
+                return false;
             }
+    }
+
+    #TODO: auslagern in functions
+    public function getTimespanQueryDates($startDate, $endDate) {
+        return (int) round(((strtotime($endDate)) - strtotime($startDate)) /(60*60*24), 0);
     }
 
     public function currentGoalShares($year, $queryDate, $dataset) {
@@ -176,11 +179,16 @@ class ChartController extends AbstractController{
     }
 
     public function dateArray($startDate, $endDate) {
-        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0)+1;
+        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0);
         $dateArray = [];
         for ($i = 0; $i < $months; $i++) {
             $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
             $dateArray [] = date('Y M', strtotime($month));
+        }
+        if (date('Y-m', strtotime($endDate)) === date('Y-m')) {
+            
+            if(!in_array(date('Y M'), $dateArray)) $dateArray [] = date('Y M');
+
         }
         return $dateArray;
     }
