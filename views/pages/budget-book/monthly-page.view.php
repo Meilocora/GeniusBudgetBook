@@ -198,31 +198,43 @@
     <?php endif; ?>
     <div class="table-row">
         <span class="table-span" id="pagination">
-        <a href="./?route=monthly-page&<?php echo http_build_query(['page' => 1]); ?>#monthly-table">
-            <img src="./img/arrow_left.png" alt="Arrow symbol that points to the left" id="pagination_arrow_left" class="hidden">
-        </a>
+            <?php if($numPages > 1): ?>
+                <a href="./?route=monthly-page&<?php echo http_build_query(['page' => 1]); ?>#monthly-table">
+                    <img src="./img/arrow_end_left.png" alt="Arrow symbol that points to the left" id="pagination_arrow_left">
+                </a>
+                <a href="./?route=monthly-page&<?php echo http_build_query(['page' => max([1, $currentPage-1])]); ?>#monthly-table">
+                    <img src="./img/arrow_one_left.png" alt="Arrow symbol that points to the left" id="pagination_arrow_left">
+                </a>
+            <?php endif; ?>
             <?php if($numPages > 1): ?>
                     <?php for($x=1; $x<= $numPages; $x++): ?>
                         <a  href="./?route=monthly-page&<?php echo http_build_query(['page' => $x]); ?>#monthly-table"
                             class="hidden pagination-a <?php if($currentPage === $x) echo 'pagination-active'; ?>"><?php echo e($x); ?></a>
                     <?php endfor; ?>
             <?php endif; ?>
-        <a href="./?route=monthly-page&<?php echo http_build_query(['page' => $numPages]); ?>#monthly-table">
-            <img src="./img/arrow_right.png" alt="Arrow symbol that points to the right" id="pagination_arrow_right" class="hidden">
-        </a>
+            <?php if($numPages > 1): ?>
+                <a href="./?route=monthly-page&<?php echo http_build_query(['page' => min([$numPages, $currentPage+1])]); ?>#monthly-table">
+                    <img src="./img/arrow_one_right.png" alt="Arrow symbol that points to the left" id="pagination_arrow_left">
+                </a>
+                <a href="./?route=monthly-page&<?php echo http_build_query(['page' => $numPages]); ?>#monthly-table">
+                    <img src="./img/arrow_end_right.png" alt="Arrow symbol that points to the right" id="pagination_arrow_right">
+                </a>
+            <?php endif; ?>
         </span>
     </div>
     <script>
         let pages = document.querySelectorAll('.pagination-a');
         let activePage = document.querySelector('.pagination-active');
         let pageBefore = activePage.previousElementSibling;
+        let twoBefore = pageBefore.previousElementSibling;
         let pageAfter = activePage.nextElementSibling;
+        let twoAfter = pageAfter.nextElementSibling;
         
         activePage.classList.toggle("hidden");
-        if(pageBefore !== null) pageBefore.classList.toggle("hidden");
-        if(pageAfter !== null) pageAfter.classList.toggle("hidden");
-        if(activePage.innerHTML >= 3) document.getElementById('pagination_arrow_left').classList.toggle("hidden");
-        if(pages.length - activePage.innerHTML >=2) document.getElementById('pagination_arrow_right').classList.toggle("hidden");
+        if(pageBefore.classList.contains('pagination-a')) pageBefore.classList.toggle("hidden");
+        if(pageAfter.classList.contains('pagination-a')) pageAfter.classList.toggle("hidden");
+        if(!pageBefore.classList.contains('pagination-a') & twoAfter.classList.contains('pagination-a')) twoAfter.classList.toggle("hidden");
+        if(!pageAfter.classList.contains('pagination-a') & twoBefore.classList.contains('pagination-a')) twoBefore.classList.toggle("hidden");
     </script>
     <span id="pagination-setting">
         <form action="./?route=monthly-page" method="POST">

@@ -24,7 +24,7 @@ class EntryController extends AbstractController{
         $categories = $this->usersController->usersEntryCats();
         $entries = $this->entriesSortedByProperty($date, $perPage, $currentPage, $sortingProperty, $sort);
         $balance = $this->calculateMonthlyBalanceSheet($date);
-        $sortButtons = $this->sortButtons($sort);
+        $sortButtons = $this->sortButtons($sort, 'monthly-page');
         $datePretty = (new DateTime($date))->format('F Y');
         $numPages = ceil($this->entryRepository->countEntriesOfMonth($date) / $perPage);
         $wdcategories = $this->wdController->wdCategoriesOfMonth($date);
@@ -155,68 +155,56 @@ class EntryController extends AbstractController{
         return $sortedEntries;
     }
 
-    /* #TODO: For custom view ... list of entries with several custom settings
-    public function entriesCustomSort() {
-        // for category
-        // for title
-        // for income/ expense
-        // only fixed
-        // from ... to ...
-        // from amount ... to ...
-    }
-    */
-
-    public function sortButtons($sort) {
+    public function sortButtons($sort, $route) {
         $sortButtonArray = [];
-
         switch ($sort) {
             case 'sortCategoryAsc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryAsc();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryAsc($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortCategoryDesc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryDesc();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryDesc($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortTitleAsc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleAsc();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleAsc($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortTitleDesc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleDesc();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleDesc($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortAmountAsc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountAsc();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountAsc($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortAmountDesc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountDesc();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountDesc($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateNoSort($route);
                 return $sortButtonArray;
             case 'sortDateAsc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateAsc();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateAsc($route);
                 return $sortButtonArray;
             case 'sortDateDesc':
-                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort();
-                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort();
-                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort();
-                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateDesc();
+                $sortButtonArray[0] = $this->monthlyPageWizard->sortButtonCategoryNoSort($route);
+                $sortButtonArray[1] = $this->monthlyPageWizard->sortButtonTitleNoSort($route);
+                $sortButtonArray[2] = $this->monthlyPageWizard->sortButtonAmountNoSort($route);
+                $sortButtonArray[3] = $this->monthlyPageWizard->sortButtonDateDesc($route);
                 return $sortButtonArray;
             }
     }
@@ -465,6 +453,11 @@ class EntryController extends AbstractController{
         if($categories[8] !== '') $Array[] = $Array9;
         if($categories[9] !== '') $Array[] = $Array10;    
         return($Array);
+    }
+
+    public function highestAmount() {
+        $entry = $this->entryRepository->fetchByHighestAmount();
+        return $entry['amount'];
     }
 }
 

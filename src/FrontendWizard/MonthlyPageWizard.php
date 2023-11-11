@@ -5,8 +5,8 @@ namespace App\FrontendWizard;
 class MonthlyPageWizard {
     // ===> SORTING BUTTONS
     // CATEGORY
-    public function sortButtonCategoryNoSort(): string {
-        return "<form action='./?route=monthly-page' method='POST'>
+    public function sortButtonCategoryNoSort($route): string {
+        return "<form action='./?route={$route}' method='POST'>
         <input type='hidden' name='sort' value='sortCategoryAsc'><input type='hidden' name='sortingProperty' value='category'>
         <div class='image-box'>
         <input type='image' src='./img/box.png' alt='Box symbol to sort the list' height='13px' width='13px' class='sortbutton fadeout'>
@@ -14,15 +14,15 @@ class MonthlyPageWizard {
         </form>";
     }
 
-    public function sortButtonCategoryAsc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortCategoryDesc'><input type='hidden' name='sortingProperty' value='category'>
+    public function sortButtonCategoryAsc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortCategoryDesc'><input type='hidden' name='sortingProperty' value='category'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_down.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
     
-    public function sortButtonCategoryDesc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortCategoryAsc'><input type='hidden' name='sortingProperty' value='category'>
+    public function sortButtonCategoryDesc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortCategoryAsc'><input type='hidden' name='sortingProperty' value='category'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_up.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
@@ -30,8 +30,8 @@ class MonthlyPageWizard {
     }
 
     // TITLE
-    public function sortButtonTitleNoSort(): string {
-        return "<form action='./?route=monthly-page' method='POST'>
+    public function sortButtonTitleNoSort($route): string {
+        return "<form action='./?route={$route}' method='POST'>
         <input type='hidden' name='sort' value='sortTitleAsc'><input type='hidden' name='sortingProperty' value='title'>
         <div class='image-box'>
         <input type='image' src='./img/box.png' alt='Box symbol to sort the list' height='13px' width='13px' class='sortbutton fadeout'>
@@ -39,23 +39,23 @@ class MonthlyPageWizard {
         </form>";
     }
 
-    public function sortButtonTitleAsc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortTitleDesc'><input type='hidden' name='sortingProperty' value='title'>
+    public function sortButtonTitleAsc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortTitleDesc'><input type='hidden' name='sortingProperty' value='title'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_down.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
     
-    public function sortButtonTitleDesc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortTitleAsc'><input type='hidden' name='sortingProperty' value='title'>
+    public function sortButtonTitleDesc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortTitleAsc'><input type='hidden' name='sortingProperty' value='title'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_up.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
 
     // AMOUNT
-    public function sortButtonAmountNoSort(): string {
-        return "<form action='./?route=monthly-page' method='POST'>
+    public function sortButtonAmountNoSort($route): string {
+        return "<form action='./?route={$route}' method='POST'>
         <input type='hidden' name='sort' value='sortAmountAsc'><input type='hidden' name='sortingProperty' value='amount'>
         <div class='image-box'>
         <input type='image' src='./img/box.png' alt='Box symbol to sort the list' height='13px' width='13px' class='sortbutton fadeout'>
@@ -63,23 +63,23 @@ class MonthlyPageWizard {
         </form>";
     }
 
-    public function sortButtonAmountAsc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortAmountDesc'><input type='hidden' name='sortingProperty' value='amount'>
+    public function sortButtonAmountAsc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortAmountDesc'><input type='hidden' name='sortingProperty' value='amount'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_down.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
     
-    public function sortButtonAmountDesc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortAmountAsc'><input type='hidden' name='sortingProperty' value='amount'>
+    public function sortButtonAmountDesc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortAmountAsc'><input type='hidden' name='sortingProperty' value='amount'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_up.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
 
     // DATE
-    public function sortButtonDateNoSort(): string {
-        return "<form action='./?route=monthly-page' method='POST'>
+    public function sortButtonDateNoSort($route): string {
+        return "<form action='./?route={$route}' method='POST'>
         <input type='hidden' name='sort' value='sortDateAsc'><input type='hidden' name='sortingProperty' value='dateslug'>
         <div class='image-box'>
         <input type='image' src='./img/box.png' alt='Box symbol to sort the list' height='13px' width='13px' class='sortbutton fadeout'>
@@ -87,15 +87,15 @@ class MonthlyPageWizard {
         </form>";
     }
 
-    public function sortButtonDateAsc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortDateDesc'><input type='hidden' name='sortingProperty' value='dateslug'>
+    public function sortButtonDateAsc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortDateDesc'><input type='hidden' name='sortingProperty' value='dateslug'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_down.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";
     }
     
-    public function sortButtonDateDesc(): string {
-        return "<form action='./?route=monthly-page' method='POST'><input type='hidden' name='sort' value='sortDateAsc'><input type='hidden' name='sortingProperty' value='dateslug'>
+    public function sortButtonDateDesc($route): string {
+        return "<form action='./?route={$route}' method='POST'><input type='hidden' name='sort' value='sortDateAsc'><input type='hidden' name='sortingProperty' value='dateslug'>
         <div class='image-box'>
         <input type='image' src='./img/arrow_up.png' alt='Small arrow to sort the list' height='13px' width='13px' class='sortbutton'></div>
         </form>";

@@ -102,6 +102,7 @@
         </div>
     </article>
     <!-- ++++++++++ COLOR-THEME ++++++++++ -->
+    <!-- #TODO: Randomize Button -->
     <div class="userSettings-row">
         <h3 id="title_colorTheme">
             Create a custom color theme
@@ -149,6 +150,7 @@
         </div>  
     </article>
     <!-- ++++++++++ CHART COLOR-THEME ++++++++++ -->
+    <!-- #TODO: Randomize Button -->
     <div class="userSettings-row">
         <h3 id="title_chartColorTheme">
             Create a custom chart color theme

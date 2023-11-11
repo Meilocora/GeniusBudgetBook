@@ -80,17 +80,17 @@
             <h3 class="row-register">Please set your personal yearly donation goal</h3>
             <div class="row-register">
                 <label for="donationgoal">Donation goal for <?php echo ((new DateTime())->format('Y')); ?>:</label>
-                <input type="number" name="donationgoal" id="donationgoal" min="0" step="10" required>
+                <input type="number" name="donationgoal" id="donationgoal" min="0" step="10" max="999999999" required>
             </div>
             <h3 class="row-register">Please set your personal yearly saving goal (only tracks liquid assets)</h3>
             <div class="row-register">
                 <label for="savinggoal">Saving goal for <?php echo ((new DateTime())->format('Y')); ?>:</label>
-                <input type="number" name="savinggoal" id="savinggoal" min="0" step="10" required>
+                <input type="number" name="savinggoal" id="savinggoal" min="0" step="10" max="999999999" required>
             </div>
             <h3 class="row-register">Please set your personal yearly total wealth goal</h3>
             <div class="row-register">
                 <label for="totalwealthgoal">Wealth goal for <?php echo ((new DateTime())->format('Y')); ?>:</label>
-                <input type="number" name="totalwealthgoal" id="totalwealthgoal" min="0" step="100" required>
+                <input type="number" name="totalwealthgoal" id="totalwealthgoal" min="0" step="100" max="999999999" required>
             </div>
             <div class="btn-row">
                 <input type="submit" value="Complete registration" class="btn">

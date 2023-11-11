@@ -300,6 +300,48 @@ tbody tr:last-of-type td:last-of-type {
     color: var(--theme-color-neon);
 }
 
+/* === SORTI BUTTONS === */
+.image-box {
+    position: relative;
+}
+
+.image-box>input[type="image"] {
+    position: absolute;
+    top: -7px;
+    margin-left: .5rem;
+}
+
+.fadeout {
+    opacity: 1;
+    height: 13px;
+    width: 13px;
+    z-index: 3;
+    transition: all .7s ease-in-out;
+}
+
+.fadeout:hover {
+    transform: rotateZ(180deg);
+    opacity: 0;
+    z-index: 3;
+    transition: all .7s ease-in-out;
+}
+
+input[type="image"].fadein {
+    position: absolute;
+    top: -13px;
+    margin-left: .5rem;
+    opacity: 0;
+    transition: all .7s ease-in-out;
+}
+
+.fadeout:hover+.fadein {
+    transform: rotateZ(180deg);
+    opacity: 1;
+    height: 26px;
+    width: 13px;
+    transition: all .7s ease-in-out;
+}
+
 /* === CHARTS AREA === */
 section.chart-view-container {
     position: relative;
@@ -669,7 +711,7 @@ hr.thin-line {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
 }
 
 .nav-container>ul>li{
@@ -1632,47 +1674,6 @@ span>.additional-input:last-of-type {
     margin-bottom: 1rem;
 }
 
-.image-box {
-    position: relative;
-}
-
-.image-box>input[type="image"] {
-    position: absolute;
-    top: -7px;
-    margin-left: .5rem;
-}
-
-.table-row:nth-of-type(2) .fadeout {
-    opacity: 1;
-    height: 13px;
-    width: 13px;
-    z-index: 4;
-    transition: all .7s ease-in-out;
-}
-
-.table-row:nth-of-type(2) .fadeout:hover {
-    transform: rotateZ(180deg);
-    opacity: 0;
-    z-index: 4;
-    transition: all .7s ease-in-out;
-}
-
-.table-row:nth-of-type(2) .fadein {
-    position: absolute;
-    top: -13px;
-    margin-left: .5rem;
-    opacity: 0;
-    transition: all .7s ease-in-out;
-}
-
-.table-row:nth-of-type(2) .fadeout:hover+.fadein {
-    transform: rotateZ(180deg);
-    opacity: 1;
-    height: 26px;
-    width: 13px;
-    transition: all .7s ease-in-out;
-}
-
 .table-row>h1 {
     font-size: 1.5rem;
 }
@@ -1824,10 +1825,15 @@ input.edit {
 }
 
 /* Pagination */
-#pagination {
+#pagination,
+#cPagination {
+    display: inline-flex;
     width: 100%;
+    height: 40px;
     border-radius: 0px 0px 20px 20px;
     background-color: var(--theme-color-medium);
+    align-items: center;
+    justify-content: center;
 }
 
 .pagination-a {
@@ -1855,6 +1861,7 @@ img[id^='pagination'] {
     font-weight: bold;
 }
 
+#cPagination-setting,
 #pagination-setting {
     width: 100%;
     height: 0px;
@@ -1864,11 +1871,13 @@ img[id^='pagination'] {
     transition: height .5s linear, opacity .5s ease-in-out;
 }
 
+.custom-list-container:hover #cPagination-setting,
 .list-container:hover #pagination-setting {
     height: 1.5rem;
     opacity: 1;
 }
 
+.custom-list-container tfoot input[type="number"],
 .list-container input[type="number"] {
     border: 0;
     background-color: transparent;
@@ -1877,6 +1886,7 @@ img[id^='pagination'] {
     width: 2.5rem;
 }
 
+#cPagination-setting,
 #pagination-setting input[type="image"] {
     display: none;
 }
@@ -1886,3 +1896,258 @@ img[id^='pagination'] {
     position: absolute;
     left: 480px;
 }
+
+#cPagination-setting {
+    display: inline-block;
+    border: none;
+}
+
+/* xxxxxxxxxxxxxxxxxxxxxCUSTOM-OVERVIEW-VIEW xxxxxxxxxxxxxxxxxxxxx */
+
+.custom-additional-container {
+    grid-area: additional;
+    padding: 1rem 1rem;
+    border-radius: var(--border-radius);
+    margin-right: 7rem;
+    transition: var(--container-transition);
+    background: var(--background-standard);
+    border: var(--border-container);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 35rem;
+    max-height: 850px;
+}
+
+.custom-additional-container:hover {
+    box-shadow: var(--container-hover);
+}
+
+.custom-list-container {
+    -ms-grid-column-span: 3;
+    grid-area: main;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    background: var(--background-standard);
+    border: var(--border-container);
+    border-radius: var(--border-radius);
+    padding: .5rem 1rem;
+    flex-direction: column;
+    width: 60rem;
+    margin: 0rem 3rem 0rem 7rem;
+    transition: var(--container-transition);
+    position: relative;
+    justify-content: center;
+    min-height: 700px;
+}
+
+.custom-list-container:hover {
+    box-shadow: var(--container-hover);
+}
+
+#searchSettingsForm {
+    height: 540px;
+}
+
+.custom-list-container h2:not([class="titleSelected"])  {
+    cursor: grab;
+    align-self: center;
+    color: black;
+    width: 100%;
+    text-shadow: none;
+    font-weight: bold;
+    transition: width 1s ease-in-out, color .2s ease-in-out, text-shadow .2s ease-in-out;
+}
+
+.custom-list-container h2:hover {
+    color: white;
+    text-shadow: var(--text-shadow-standard);
+    font-weight: bold;
+    transition: all .3s ease-in-out;
+}
+
+.custom-list-container h2.titleSelected {
+    align-self: center;
+    color: white;
+    text-shadow: var(--text-shadow-standard);
+    transition: color .2s ease-in-out, text-shadow .2s ease-in-out;
+}
+
+.custom-list-container h2:not([class="titleSelected"])>input[type="image"] {
+    transition: transform .3s ease-in-out;
+}
+
+.custom-list-container h2.titleSelected>input[type="image"] {
+    transition: transform 1s ease-in-out;
+    transform: rotate(90deg);
+}
+
+#cTitle.titleSelected {
+    width: 240px;
+    transition: width 1s ease-in-out;
+}
+.options-box {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: var(--grey-heavy);
+    border: var(--border-container);
+    border-radius: var(--border-radius);
+    padding: .5rem .25rem;
+    margin: .5rem auto;
+    width: 100%;
+    max-width: 1000px;
+    color: white
+}
+
+.options-box .btn-row {
+    width: 100%;
+    text-align: center;
+}
+
+.option {
+    display: flex;
+    flex-direction: column;
+    margin: .5rem 1rem;
+    border: 1px solid white;
+    border-radius: var(--border-radius);
+    padding: .25rem 1rem;
+}
+
+.option-span {
+    text-align: center;
+    margin: .25rem 0rem;
+    text-wrap: nowrap;
+}
+
+.option-span:first-of-type {
+    text-decoration: underline;
+    font-size: 1.15rem;
+}
+
+.option-span>label {
+    display: flex;
+    width: 80%;
+    padding: 0rem .25rem;
+    float: right;
+}
+
+.option-span>label.dateLabel {
+    width: 40px;
+    float: left;
+}
+
+input[type="radio"]:checked+label {
+    color: var(--theme-color-neon);
+}
+
+.option-span>input[type="date"],
+.option-span>input[type="text"],
+.option-span>input[type="number"],
+.option-span>select {
+    background-color: transparent;
+    color: var(--theme-color-neon);
+    border: 1px solid white;
+    border-radius: var(--border-radius);
+    padding: .2rem .5rem;
+}
+
+.option-span>select option {
+    background-color: var(--grey-heavy);
+    color: var(--theme-color-neon);
+}
+
+.custom-list-container caption {
+    font-size: 1.5rem;
+    margin-bottom: .5rem;
+    font-weight: bold;
+}
+
+.custom-list-container thead td {
+    background-color: var(--theme-color-medium) !important;
+    color: black !important;
+}
+
+.custom-list-container tr {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    font-size: 0;
+    height: 2.25rem;
+}
+
+.custom-list-container td {
+    position: relative;
+    font-size: 1.15rem;
+    padding: .25rem .5rem;
+    text-overflow: ellipsis;
+    height: 2rem;
+    border: 1px solid black;
+    transition: border-color .5s ease-in-out, box-shadow .5s ease-in-out, color .5s ease-in-out, text-shadow .5s ease-in-out;
+}
+
+.custom-list-container .image-box>input[type="image"] {
+    top: -16px;
+    right: 30px;
+}
+
+.custom-list-container input[type="image"].fadein {
+    position: absolute;
+    top: -22px;
+    right: 30px;
+    margin-left: .5rem;
+    opacity: 0;
+    transition: all .7s ease-in-out;
+}
+
+.custom-list-container .fadeout:hover+.fadein {
+    transform: rotateZ(180deg);
+    opacity: 1;
+    height: 26px;
+    width: 13px;
+    transition: all .7s ease-in-out;
+}
+
+.custom-list-container tr>td{
+    display: inline-block;
+    margin: 0;
+    font-size: 1rem;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+}
+
+.custom-list-container tr>td:nth-of-type(1) {
+    width:10%;
+}
+.custom-list-container tr>td:nth-of-type(2) {
+    width:18%;
+}
+.custom-list-container tr>td:nth-of-type(3) {
+    width:18%;
+}
+.custom-list-container tr>td:nth-of-type(4) {
+    width:18%;
+}
+.custom-list-container tr>td:nth-of-type(5) {
+    width:18%;
+}
+.custom-list-container tr>td:nth-of-type(6) {
+    width:18%;
+}
+.custom-list-container tr.revenue td {
+    background-color: rgba(151, 198, 131, 0.5);
+    /* color: white; */
+}
+
+.custom-list-container tr.expenditure td{
+    background-color: rgba(184, 93, 93, 0.5);
+}
+
+

@@ -317,20 +317,22 @@
     let lGoalDataArrayPercentages = [<?php foreach($currentSavingGoalSharesP AS $data) echo "'$data', "; ?>];
     chartGenerator.generateDoughnutChart('savingsDoughnutGoal', lGoalLabelArray, lGoalDataArrayCurrency, lGoalDataArrayPercentages, backgroundColor2, 'right', 'Most current saving goal data of <?php echo $year; ?>', true);
 
-    <?php if(array_sum($savingsArrayC[0]) + array_sum($savingsArrayC[1]) !== 0): ?>
-        let savingsTrendYLabels = [<?php foreach(end($savingsArrayC) AS $date) echo "'$date', "; ?>];
-        let savingsTrendYCategoryLabels = [<?php for($x=0; $x<sizeof($savingsArrayC)-1; $x++) echo "'{$savingsArrayC[$x][0]}', "; ?>];
-        let savingsGoalData = [<?php for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$goalsArray["savinggoal"]}, "; ?>];
-        let savingsTrendYDataCat1 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[0][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$savingsArrayC[0][$x]}, "; ?>];
-        let savingsTrendYDataCat2 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[1][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[1][$x]}', "; ?>];
-        let savingsTrendYDataCat3 = [<?php if(isset($savingsArrayC[2][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[2][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[2][$x]}', "; ?>];
-        let savingsTrendYDataCat4 = [<?php if(isset($savingsArrayC[3][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[3][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[3][$x]}', "; ?>];
-        let savingsTrendYDataCat5 = [<?php if(isset($savingsArrayC[4][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[4][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[4][$x]}', "; ?>];
-        let savingsTrendYDataCat6 = [<?php if(isset($savingsArrayC[5][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[5][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[5][$x]}', "; ?>];
-        let savingsTrendYDataCat7 = [<?php if(isset($savingsArrayC[6][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[6][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[6][$x]}', "; ?>];
-        let savingsTrendYDataCat8 = [<?php if(isset($savingsArrayC[7][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[7][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[7][$x]}', "; ?>];
-        let savingsTrendYDataCat9 = [<?php if(isset($savingsArrayC[8][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[8][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[8][$x]}', "; ?>];
-        let savingsTrendYDataCat10 = [<?php if(isset($savingsArrayC[9][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[9][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[9][$x]}', "; ?>];
-        chartGenerator.generateLineChart('savingsTrendChartActualC', 'Cumulative trend of savings', backgroundColorTransp10, savingsGoalData, savingsTrendYLabels, savingsTrendYCategoryLabels, savingsTrendYDataCat1, savingsTrendYDataCat2, savingsTrendYDataCat3, savingsTrendYDataCat4, savingsTrendYDataCat5, savingsTrendYDataCat6, savingsTrendYDataCat7, savingsTrendYDataCat8, savingsTrendYDataCat9, savingsTrendYDataCat10);
+    <?php if(isset($savingsArrayC[1])): ?>
+        <?php if(array_sum($savingsArrayC[0]) + array_sum($savingsArrayC[1]) !== 0): ?>
+            let savingsTrendYLabels = [<?php foreach(end($savingsArrayC) AS $date) echo "'$date', "; ?>];
+            let savingsTrendYCategoryLabels = [<?php for($x=0; $x<sizeof($savingsArrayC)-1; $x++) echo "'{$savingsArrayC[$x][0]}', "; ?>];
+            let savingsGoalData = [<?php for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$goalsArray["savinggoal"]}, "; ?>];
+            let savingsTrendYDataCat1 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[0][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "{$savingsArrayC[0][$x]}, "; ?>];
+            let savingsTrendYDataCat2 = [<?php if(isset($savingsArrayC[1][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[1][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[1][$x]}', "; ?>];
+            let savingsTrendYDataCat3 = [<?php if(isset($savingsArrayC[2][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[2][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[2][$x]}', "; ?>];
+            let savingsTrendYDataCat4 = [<?php if(isset($savingsArrayC[3][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[3][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[3][$x]}', "; ?>];
+            let savingsTrendYDataCat5 = [<?php if(isset($savingsArrayC[4][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[4][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[4][$x]}', "; ?>];
+            let savingsTrendYDataCat6 = [<?php if(isset($savingsArrayC[5][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[5][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[5][$x]}', "; ?>];
+            let savingsTrendYDataCat7 = [<?php if(isset($savingsArrayC[6][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[6][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[6][$x]}', "; ?>];
+            let savingsTrendYDataCat8 = [<?php if(isset($savingsArrayC[7][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[7][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[7][$x]}', "; ?>];
+            let savingsTrendYDataCat9 = [<?php if(isset($savingsArrayC[8][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[8][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[8][$x]}', "; ?>];
+            let savingsTrendYDataCat10 = [<?php if(isset($savingsArrayC[9][0]) && !preg_match('/^(.*\s+.*)+$/', $savingsArrayC[9][1])) for($x=1; $x<sizeof($savingsArrayC[0]); $x++) echo "'{$savingsArrayC[9][$x]}', "; ?>];
+            chartGenerator.generateLineChart('savingsTrendChartActualC', 'Cumulative trend of savings', backgroundColorTransp10, savingsGoalData, savingsTrendYLabels, savingsTrendYCategoryLabels, savingsTrendYDataCat1, savingsTrendYDataCat2, savingsTrendYDataCat3, savingsTrendYDataCat4, savingsTrendYDataCat5, savingsTrendYDataCat6, savingsTrendYDataCat7, savingsTrendYDataCat8, savingsTrendYDataCat9, savingsTrendYDataCat10);
+        <?php endif; ?>
     <?php endif; ?>
 </script>

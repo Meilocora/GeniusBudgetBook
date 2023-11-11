@@ -131,6 +131,13 @@ $container->add('overviewController', function() use($container) {
         $container->get('chartController'));
 });
 
+$container->add('customOverviewController', function() use($container) {
+    return new \App\Controller\CustomOverviewController(
+        $container->get('entryController'),
+        $container->get('entryRepository'),
+        $container->get('usersController'));
+});
+
 
 // ++++++++++ GLOBAL VARIABLES ++++++++++\\
 $navRoutes = [
@@ -362,7 +369,7 @@ elseif($route === 'monthly-page') {
         $currentPage = max(1, @(int) ($_GET['page']));
     } else {
         if(isset($_SESSION['page'])) {
-            $currentPage = $_SESSION['page'];
+            $currentPage = (int) $_SESSION['page'];
         } else {
             $currentPage = 1;
         }
@@ -447,12 +454,158 @@ else if($route === 'monthly-page/fixedentries') {
 else if($route === 'custom-overview') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    $routingController = $container->get('routingController');
-    $routingController->render('budget-book/custom-overview', [
-        'navRoutes' => $navRoutes,
-        'colorTheme' => $colorTheme,
-        'userShortcut' => $userShortcut
-    ]);
+    if(isset($_GET['page'])) {
+        $_SESSION['cPage'] = $_GET['page'];
+        $currentPage = max(1, @(int) ($_GET['page']));
+    } else {
+        if(isset($_SESSION['cPage'])) {
+            $currentPage = (int) $_SESSION['cPage'];
+        } else {
+            $currentPage = 1;
+        }
+    }
+    if(isset($_POST['perPage'])) {
+        $_SESSION['cPerPage'] = $_POST['perPage'];
+        $perPage = @(int) ($_POST['perPage']);
+        $currentPage = 1;
+    } else {
+        if(isset($_SESSION['cPerPage'])) {
+            $perPage = $_SESSION['cPerPage'];
+        } else {
+            $perPage = 5;
+        }
+    }
+    if(isset($_POST['sortingProperty'])) {
+        $_SESSION['cSortingProperty'] = $_POST['sortingProperty'];
+        $cSortingProperty = @(string) ($_POST['sortingProperty']);
+    } else {
+        if(isset($_SESSION['sortingProperty'])) {
+            $cSortingProperty = $_SESSION['cSortingProperty'];
+        } else {
+            $cSortingProperty = 'dateslug';
+        }
+    }
+    if(isset($_POST['sort'])) {
+        $_SESSION['cSort'] = $_POST['sort'];
+        $cSort = @(string) ($_POST['sort']);
+    } else {
+        if(isset($_SESSION['cSort'])) {
+            $cSort = $_SESSION['cSort'];
+        } else {
+            $cSort = 'sortDateAsc';
+        }
+    }
+    if(isset($_POST['cTimeinterval'])) {
+        $_SESSION['cTimeinterval'] = $_POST['cTimeinterval'];
+        $cTimeinterval = $_POST['cTimeinterval'];
+    } else {
+        if(isset($_SESSION['cTimeinterval'])) {
+            $cTimeinterval = $_SESSION['cTimeinterval'];
+        } else {
+            $cTimeinterval = 'YTD';
+        }
+    }
+    if($cTimeinterval === 'Custom') {
+        if(isset($_POST['cStartDate']) & isset($_POST['cEndDate'])) {
+            $cStartDate = $_POST['cStartDate'];
+            $cEndDate = $_POST['cEndDate'];
+            $_SESSION['cStartDate'] = $_POST['cStartDate'];
+            $_SESSION['cEndDate'] = $_POST['cEndDate'];
+        } elseif(isset($_SESSION['cStartDate']) & isset($_SESSION['cEndDate'])) {
+            $cStartDate = $_SESSION['cStartDate'];
+            $cEndDate = $_SESSION['cEndDate'];
+        } else {
+            $cStartDate = null;
+            $cEndDate = null;
+        }
+    } else {
+        $cStartDate = null;
+        $cEndDate = null;
+    }
+    if(isset($_POST['cEntryType'])) {
+        $_SESSION['cEntryType'] = $_POST['cEntryType'];
+        $cEntryType = $_POST['cEntryType'];
+    } else {
+        if(isset($_SESSION['cEntryType'])) {
+            $cEntryType = $_SESSION['cEntryType'];
+        } else {
+            $cEntryType = 'AllTypes';
+        }
+    }
+    if(isset($_POST['cFixation'])) {
+        $_SESSION['cFixation'] = $_POST['cFixation'];
+        $cFixation = $_POST['cFixation'];
+    } else {
+        if(isset($_SESSION['cFixation'])) {
+            $cFixation = $_SESSION['cFixation'];
+        } else {
+            $cFixation = 'AllFixations';
+        }
+    }
+    if(isset($_POST['cCategories'])) {
+        $_SESSION['cCategories'] = $_POST['cCategories'];
+        $cCategories = $_POST['cCategories'];
+    } else {
+        if(isset($_SESSION['cCategories'])) {
+            $cCategories = $_SESSION['cCategories'];
+        } else {
+            $cCategories = 'allCategories';
+        }
+    }
+    if($cCategories === 'certainCategory') {
+        $cCategoryQuery = $_POST['cCategoryQuery'];
+    } else {
+        $cCategoryQuery = null;
+    }
+    if(isset($_POST['cTitles'])) {
+        $_SESSION['cTitles'] = $_POST['cTitles'];
+        $cTitles = $_POST['cTitles'];
+    } else {
+        if(isset($_SESSION['cTitles'])) {
+            $cTitles = $_SESSION['cTitles'];
+        } else {
+            $cTitles = 'allTitles';
+        }
+    }
+    if($cTitles === 'certainTitle') {
+        $cTitleQuery = isset($_POST['cTitleQuery']) ? $_POST['cTitleQuery'] : '';
+    } else {
+        $cTitleQuery = null;
+    }
+    if(isset($_POST['cAmounts'])) {
+        $_SESSION['cAmounts'] = $_POST['cAmounts'];
+        $cAmounts = $_POST['cAmounts'];
+    } else {
+        if(isset($_SESSION['cAmounts'])) {
+            $cAmounts = $_SESSION['cAmounts'];
+        } else {
+            $cAmounts = 'allAmounts';
+        }
+    }
+    if($cAmounts === 'Custom') {
+        $fromAmount = $_POST['fromAmount'];
+        $toAmount = $_POST['toAmount'];
+    } else {
+        $fromAmount = null;
+        $toAmount = null;
+    }
+    if(isset($_POST['cComments'])) {
+        $_SESSION['cComments'] = $_POST['cComments'];
+        $cComments = $_POST['cComments'];
+    } else {
+        if(isset($_SESSION['cComments'])) {
+            $cComments = $_SESSION['cComments'];
+        } else {
+            $cComments = 'allComments';
+        }
+    }
+    if($cComments === 'certainComment') {
+        $cCommentQuery = $_POST['cCommentQuery'];
+    } else {
+        $cCommentQuery = null;
+    }
+    $customOverviewController = $container->get('customOverviewController');
+    $customOverviewController->showCustomOverview($navRoutes, $colorTheme, $userShortcut, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage);
 }
 else if($route === 'tools') {
     $authService = $container->get('authService');

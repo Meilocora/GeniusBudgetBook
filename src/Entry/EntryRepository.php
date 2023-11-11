@@ -157,4 +157,25 @@ class EntryRepository {
         if(isset($results[0])) return $results[0]; else return null;
     }
 
+    public function fetchByHighestAmount() {
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` ORDER BY `amount` DESC';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function fetchCustomQuery($queryString) {
+        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries`' . $queryString;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
+    }
+
+    public function countCustomEntries($queryString) {
+        $query = 'SELECT COUNT(*) AS `count` FROM ' . "`{$this->username}" . 'entries`' . $queryString;
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC)['count'];
+    }
+
 }
