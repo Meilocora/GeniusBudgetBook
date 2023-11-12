@@ -43,12 +43,11 @@
                     <input type="radio" name="cTimeinterval" value="Custom" id="cCustom" <?php if($cTimeinterval === 'Custom') echo 'checked'; ?>>
                     <label for="cCustom">Custom interval</label>
                 </span> 
-                <!-- #TODO: hidden until custom ist selected -->
-                <span class="option-span">
+                <span class="option-span hidden" id="fromDateSpan">
                     <label for="cStartDate" class="dateLabel">from:</label>
                     <input type="date" name="cStartDate" id="cStartDate" max="<?php date('Y-m-d'); ?>" value="<?php echo $startDate; ?>">
                 </span>
-                <span class="option-span">
+                <span class="option-span hidden" id="toDateSpan">
                     <label for="cStartDate" class="dateLabel">to:</label>
                     <input type="date" name="cEndDate" id="cEndDate" max="<?php date('Y-m-d'); ?>" value="<?php echo $endDate; ?>">
                 </span>
@@ -99,8 +98,7 @@
                     <input type="radio" name="cCategories" value="certainCategory" id="cCertainCategory" <?php if($cCategories === 'certainCategory') echo 'checked'; ?>>
                     <label for="cCertainCategory">Certain category</label>
                 </span> 
-                <!-- #TODO: hidden until custom ist selected -->
-                <span class="option-span">
+                <span class="option-span hidden" id="categorySpan">
                     <select name="cCategoryQuery">
                         <?php if($cCategoryQuery !== null): ?>
                             <option value="<?php echo e($cCategoryQuery); ?>"><?php echo e($cCategoryQuery); ?></option>
@@ -125,8 +123,7 @@
                     <input type="radio" name="cTitles" value="certainTitle" id="cCertainTitle" <?php if($cTitles === 'certainTitle') echo 'checked'; ?>>
                     <label for="cCertainTitle">Certain title</label>
                 </span> 
-                <!-- #TODO: hidden until custom ist selected -->
-                <span class="option-span"> 
+                <span class="option-span hidden" id="titleSpan"> 
                     <input type="text" name="cTitleQuery" maxlength="50" placeholder="title" value="<?php echo e($cTitleQuery); ?>">
                 </span> 
             </div>
@@ -142,13 +139,12 @@
                     <input type="radio" name="cAmounts" value="Custom" id="cCustomAmount" <?php if($cAmounts === 'Custom') echo 'checked'; ?>>
                     <label for="cCustomAmount">Custom amount</label>
                 </span> 
-                <!-- #TODO: hidden until custom ist selected -->
                 <!-- #TODO: nouislider -->
-                <span class="option-span">
+                <span class="option-span hidden" id="fromAmountSpan">
                     <input type="number" name="fromAmount" id="cFromAmount" min="0" max="<?php echo $maxAmount; ?>" step="1" value="<?php echo $fromAmount; ?>">
                     <label for="cFromAmount" class="dateLabel">from:</label>
                 </span>
-                <span class="option-span">
+                <span class="option-span hidden" id="toAmountSpan">
                     <input type="number" name="toAmount" id="cToAmount" min="0" max="<?php echo $maxAmount; ?>" step="1" value="<?php echo $toAmount; ?>">
                     <label for="cToAmount" class="dateLabel">to:</label>
                 </span>
@@ -169,8 +165,7 @@
                     <input type="radio" name="cComments" value="certainComment" id="cCertainComment" <?php if($cComments === 'certainComment') echo 'checked'; ?>>
                     <label for="cCertainComment">Certain comment</label>
                 </span> 
-                <!-- #TODO: hidden until custom ist selected -->
-                <span class="option-span"> 
+                <span class="option-span hidden" id="commentSpan"> 
                     <input type="text" name="cCommentQuery" maxlength="1024" placeholder="comment" value="<?php echo e($cCommentQuery); ?>">
                 </span> 
             </div>
@@ -180,18 +175,128 @@
         </div>
     </form>
     </article>
+    <!-- #TODO: Outsource JS -->
     <script defer>
         document.getElementById('cTitle').addEventListener("click", e => {
             document.getElementById('searchSettingsForm').classList.toggle("hide");
             document.getElementById('cTitle').classList.toggle("titleSelected");
-         });
+        });
+
+        // DEFAULT FOR WINDOW
+        window.addEventListener("load", e => {
+            if(document.getElementById('cCustom').checked & document.getElementById('fromDateSpan').classList.contains('hidden') & document.getElementById('toDateSpan').classList.contains('hidden')) {
+                document.getElementById('fromDateSpan').classList.toggle("hidden");
+                document.getElementById('toDateSpan').classList.toggle("hidden");
+            }
+            if(document.getElementById('cCertainCategory').checked & document.getElementById('categorySpan').classList.contains('hidden')) {
+                document.getElementById('categorySpan').classList.toggle("hidden");
+            }
+            if(document.getElementById('cCertainTitle').checked & document.getElementById('titleSpan').classList.contains('hidden')) {
+                document.getElementById('titleSpan').classList.toggle("hidden");
+            }
+            if(document.getElementById('cCustomAmount').checked & document.getElementById('fromAmountSpan').classList.contains('hidden') & document.getElementById('toAmountSpan').classList.contains('hidden')) {
+                document.getElementById('fromAmountSpan').classList.toggle("hidden");
+                document.getElementById('toAmountSpan').classList.toggle("hidden");
+            }
+            if(document.getElementById('cCertainComment').checked & document.getElementById('commentSpan').classList.contains('hidden')) {
+                document.getElementById('commentSpan').classList.toggle("hidden");
+            }
+        });
+
+        // TIMEINTERVAL
+        document.getElementById('cCustom').addEventListener("click", e => {
+            if(document.getElementById('cCustom').checked & document.getElementById('fromDateSpan').classList.contains('hidden') & document.getElementById('toDateSpan').classList.contains('hidden')) {
+                document.getElementById('fromDateSpan').classList.toggle("hidden");
+                document.getElementById('toDateSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cAll').addEventListener("click", e => {
+            if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
+                document.getElementById('fromDateSpan').classList.toggle("hidden");
+                document.getElementById('toDateSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cYoY').addEventListener("click", e => {
+            if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
+                document.getElementById('fromDateSpan').classList.toggle("hidden");
+                document.getElementById('toDateSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cYTD').addEventListener("click", e => {
+            if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
+                document.getElementById('fromDateSpan').classList.toggle("hidden");
+                document.getElementById('toDateSpan').classList.toggle("hidden");
+            }
+        });
+
+        // CATEGORY
+        document.getElementById('cCertainCategory').addEventListener("click", e => {
+            if(document.getElementById('cCertainCategory').checked & document.getElementById('categorySpan').classList.contains('hidden')) {
+                document.getElementById('categorySpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cAllCategories').addEventListener("click", e => {
+            if(!document.getElementById('categorySpan').classList.contains('hidden')) {
+                document.getElementById('categorySpan').classList.toggle("hidden");
+            }
+        });
+
+        // TITLE
+        document.getElementById('cCertainTitle').addEventListener("click", e => {
+            if(document.getElementById('cCertainTitle').checked & document.getElementById('titleSpan').classList.contains('hidden')) {
+                document.getElementById('titleSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cAllTitles').addEventListener("click", e => {
+            if(!document.getElementById('titleSpan').classList.contains('hidden')) {
+                document.getElementById('titleSpan').classList.toggle("hidden");
+            }
+        });
+
+        // AMOUNT
+        document.getElementById('cCustomAmount').addEventListener("click", e => {
+            if(document.getElementById('cCustomAmount').checked & document.getElementById('fromAmountSpan').classList.contains('hidden') & document.getElementById('toAmountSpan').classList.contains('hidden')) {
+                document.getElementById('fromAmountSpan').classList.toggle("hidden");
+                document.getElementById('toAmountSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cAllAmounts').addEventListener("click", e => {
+            if(!document.getElementById('fromAmountSpan').classList.contains('hidden') & !document.getElementById('toAmountSpan').classList.contains('hidden')) {
+                document.getElementById('fromAmountSpan').classList.toggle("hidden");
+                document.getElementById('toAmountSpan').classList.toggle("hidden");
+            }
+        });
+
+        // COMMENT
+        document.getElementById('cCertainComment').addEventListener("click", e => {
+            if(document.getElementById('cCertainComment').checked & document.getElementById('commentSpan').classList.contains('hidden')) {
+                document.getElementById('commentSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cNoComments').addEventListener("click", e => {
+            if(!document.getElementById('commentSpan').classList.contains('hidden')) {
+                document.getElementById('commentSpan').classList.toggle("hidden");
+            }
+        });
+
+        document.getElementById('cAllComments').addEventListener("click", e => {
+            if(!document.getElementById('commentSpan').classList.contains('hidden')) {
+                document.getElementById('commentSpan').classList.toggle("hidden");
+            }
+        });
     </script>
     
     <table id="customOverviewTable">
-        <caption>List of all entries</caption>
+        <caption>List of all <?php echo $countEntries; ?> matching entries</caption>
         <thead>
             <tr>
-                <td>No.</td>
                 <td>
                     Category
                     <?php echo $sortButtons[0]; ?>
@@ -212,11 +317,9 @@
             </tr>
         </thead>
         <tbody>
-            <?php $x = 0; ?>
+            <!-- #TODO: implement some general filter settings here aswell -->
             <?php foreach($entries AS $entry): ?>
-                <?php $x++; ?>
                 <tr class="<?php if($entry->income === 1) echo 'revenue'; else echo 'expenditure'; ?>">
-                    <td><?php echo e($x); ?></td>
                     <td><?php echo e($entry->category); ?></td>
                     <td><?php echo e($entry->title); ?></td>
                     <td><?php echo number_format(e($entry->amount), '0', ',', '.') . ' €'; ?></td>

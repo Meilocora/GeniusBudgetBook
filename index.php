@@ -479,7 +479,7 @@ else if($route === 'custom-overview') {
         $_SESSION['cSortingProperty'] = $_POST['sortingProperty'];
         $cSortingProperty = @(string) ($_POST['sortingProperty']);
     } else {
-        if(isset($_SESSION['sortingProperty'])) {
+        if(isset($_SESSION['cSortingProperty'])) {
             $cSortingProperty = $_SESSION['cSortingProperty'];
         } else {
             $cSortingProperty = 'dateslug';
@@ -553,7 +553,12 @@ else if($route === 'custom-overview') {
         }
     }
     if($cCategories === 'certainCategory') {
-        $cCategoryQuery = $_POST['cCategoryQuery'];
+        if(isset($_POST['cCategoryQuery'])) {
+            $_SESSION['cCategoryQuery'] = $_POST['cCategoryQuery'];
+            $cCategoryQuery = $_POST['cCategoryQuery'];
+        } else {
+            $cCategoryQuery = $_SESSION['cCategoryQuery'];
+        }
     } else {
         $cCategoryQuery = null;
     }
@@ -568,7 +573,12 @@ else if($route === 'custom-overview') {
         }
     }
     if($cTitles === 'certainTitle') {
-        $cTitleQuery = isset($_POST['cTitleQuery']) ? $_POST['cTitleQuery'] : '';
+        if(isset($_POST['cTitleQuery'])) {
+            $_SESSION['cTitleQuery'] = $_POST['cTitleQuery'];
+            $cTitleQuery = $_POST['cTitleQuery'];
+        } else {
+            $cTitleQuery = $_SESSION['cTitleQuery'];
+        }
     } else {
         $cTitleQuery = null;
     }
@@ -583,8 +593,15 @@ else if($route === 'custom-overview') {
         }
     }
     if($cAmounts === 'Custom') {
-        $fromAmount = $_POST['fromAmount'];
-        $toAmount = $_POST['toAmount'];
+        if(isset($_POST['fromAmount']) & isset($_POST['toAmount'])) {
+            $_SESSION['fromAmount'] = $_POST['fromAmount'];
+            $fromAmount = $_POST['fromAmount'];
+            $_SESSION['toAmount'] = $_POST['toAmount'];
+            $toAmount = $_POST['toAmount'];
+        } else {
+            $fromAmount = $_SESSION['fromAmount'];
+            $toAmount = $_SESSION['toAmount'];
+        }
     } else {
         $fromAmount = null;
         $toAmount = null;
@@ -600,7 +617,13 @@ else if($route === 'custom-overview') {
         }
     }
     if($cComments === 'certainComment') {
-        $cCommentQuery = $_POST['cCommentQuery'];
+        if(isset($_POST['cCommentQuery'])) {
+            $_SESSION['cCommentQuery'] = $_POST['cCommentQuery'];
+            $cCommentQuery = $_POST['cCommentQuery'];
+        } else {
+            $cCommentQuery = $_SESSION['cCommentQuery'];
+        }
+        
     } else {
         $cCommentQuery = null;
     }

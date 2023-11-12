@@ -22,7 +22,8 @@ class CustomOverviewController extends AbstractController{
 
         $entries = $this->giveEntries($startDate, $endDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $cTitles, $cTitleQuery, $cComments, $cCommentQuery, $perPage, $currentPage, $cSortingProperty, $cSort);
         $sortButtons = $this->entryController->sortButtons($cSort, 'custom-overview');
-        $countEntries = $this->countEntries($startDate, $endDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $perPage, $currentPage, $cSortingProperty, $cSort);
+        $countEntries = $this->countEntries($startDate, $endDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $cTitles, $cTitleQuery, $cComments, $cCommentQuery, $perPage, $currentPage, $cSortingProperty, $cSort);
+        
         $numPages = (int) ceil($countEntries / $perPage);
 
         $this->render('budget-book/custom-overview', [
@@ -51,6 +52,7 @@ class CustomOverviewController extends AbstractController{
             'numPages' => $numPages,
             'currentPage' => $currentPage,
             'perPage' => $perPage,
+            'countEntries' => $countEntries,
         ]);
     }
 
@@ -86,30 +88,12 @@ class CustomOverviewController extends AbstractController{
     }
 
     public function giveEntries($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $titles, $titleQuery, $comments, $commentQuery, $perPage, $currentPage, $sortingProperty, $sort) {
-        $queryArray = $this->generateQueryArray($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $perPage, $currentPage, $sortingProperty, $sort);
-        $queryString = implode("", $queryArray);
-        $entries = $this->entryRepository->fetchCustomQuery($queryString);
-        if($titles === 'certainTitle') {
-            $entries = $this->filterEntries($entries, 'title', $titleQuery);
-        }
-        if($comments === 'noComments') {
-            $entries = $this->filterEntries($entries, 'noComment', '');
-        }
-        if($comments === 'certainComment') {
-            $entries = $this->filterEntries($entries, 'comment', $commentQuery);
-        }
-        return $entries;
+        $queryArray = $this->generateQueryArray($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $titles, $titleQuery, $comments, $commentQuery, $perPage, $currentPage, $sortingProperty, $sort);
+        $queryString = implode('', $queryArray);
+        return $this->entryRepository->fetchCustomQuery($queryString);
     }
 
-    public function countEntries($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $perPage, $currentPage, $sortingProperty, $sort) {
-        $queryArray = $this->generateQueryArray($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $perPage, $currentPage, $sortingProperty, $sort);
-        array_pop($queryArray);
-        $queryString = implode("", $queryArray);
-        $countEntries = $this->entryRepository->countCustomEntries($queryString);
-        return $countEntries;
-    }
-
-    public function generateQueryArray($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $perPage, $currentPage, $sortingProperty, $sort) {
+    public function generateQueryArray($startDate, $endDate, $entryType, $fixation, $entryCategory, $categoryQuery, $amounts, $fromAmount, $toAmount, $titles, $titleQuery, $comments, $commentQuery, $perPage, $currentPage, $sortingProperty, $sort) {
         $queryArray = [];
         $queryArray[] = "WHERE `dateslug` BETWEEN '{$startDate}' AND '{$endDate}'";
         switch ($entryType) {
@@ -146,6 +130,16 @@ class CustomOverviewController extends AbstractController{
                 $queryArray[] = " AND `amount` BETWEEN {$fromAmount} AND {$toAmount} ";
                 break;
         }
+        switch ($titles) {
+            case 'certainTitle':
+                $queryArray[] = " AND `title` REGEXP '.*{$titleQuery}.*'";
+        }
+        switch ($comments) {
+            case 'noComments': 
+                $queryArray[] = " AND `comment` = ''";
+            case 'certainComment': 
+                $queryArray[] = " AND `comment` REGEXP '.*{$commentQuery}.*'";
+        }
         if(preg_match('/^.*Asc$/', $sort)) {
             $sortMode =  'Asc';
         } elseif (preg_match('/^.*Desc$/', $sort)) {
@@ -155,6 +149,13 @@ class CustomOverviewController extends AbstractController{
         $offset = ($currentPage - 1) * $perPage;
         $queryArray[] = " ORDER BY `{$sortingProperty}` {$sortMode} LIMIT {$limit} OFFSET {$offset}";
         return $queryArray;
+    }
+
+    public function countEntries($startDate, $endDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $cTitles, $cTitleQuery, $cComments, $cCommentQuery, $perPage, $currentPage, $cSortingProperty, $cSort) {
+        $queryArray = $this->generateQueryArray($startDate, $endDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $cTitles, $cTitleQuery, $cComments, $cCommentQuery, $perPage, $currentPage, $cSortingProperty, $cSort);
+        array_pop($queryArray);
+        $queryString = implode("", $queryArray);
+        return $this->entryRepository->countCustomEntries($queryString);
     }
 
     public function filterEntries($rawEntries, $filterCriteria, $regex) {

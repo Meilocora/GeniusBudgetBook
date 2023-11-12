@@ -457,7 +457,8 @@ class EntryController extends AbstractController{
 
     public function highestAmount() {
         $entry = $this->entryRepository->fetchByHighestAmount();
-        return $entry['amount'];
+        if(!empty($entry['amount'])) return $entry['amount']; else return 0;
+        
     }
 }
 
