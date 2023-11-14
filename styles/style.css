@@ -198,7 +198,8 @@ tbody tr:last-of-type td:last-of-type {
 .btn {
     color: black;
     margin: 0 .5rem;
-    padding: .5rem 1rem;
+    /* padding: .5rem 1rem; */
+    padding: .25rem 1rem;
     font-size: 1rem;
     border-radius: var(--border-radius);
     background-color: var(--theme-color-light);
@@ -483,6 +484,23 @@ section.chart-view-container {
     transition: all .5s ease-in-out;
 }
 
+.report-small {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    margin: .25rem .5rem;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: var(--border-radius);
+    border-color: black;
+    font-weight: bold;
+    height: 55px;
+    width: 260px;
+    transition: all .5s ease-in-out;
+}
+
 .positive {
     box-shadow: 0px 0px 20px #4efd54, 0px 0px 10px #4efd54 inset;
     color: #4efd54;
@@ -524,9 +542,6 @@ section.chart-view-container {
 
 .report-label {
     margin: 0rem 1rem;
-}
-
-.report-content {
 }
 
 /* === SCROLL-ELEMENT === */
@@ -1914,16 +1929,16 @@ input.edit {
     border: var(--border-container);
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    width: 35rem;
-    max-height: 850px;
+    /* justify-content: center; */
+    width: 40rem;
+    height: 700px;
 }
 
 .custom-additional-container:hover {
     box-shadow: var(--container-hover);
 }
 
-.custom-list-container {
+.custom-main-container {
     -ms-grid-column-span: 3;
     grid-area: main;
     display: -webkit-box;
@@ -1931,17 +1946,29 @@ input.edit {
     display: flex;
     -webkit-box-pack: center;
     -ms-flex-pack: center;
+    flex-direction: column;
+    min-height: 700px;
+    position: relative;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    padding: 2rem 3.5rem;
+    border-radius: var(--border-radius);
+    background: rgba(73,80,87,0.15);
+    align-items: center;
+}
+
+.custom-main-container>div {
+    width: 60rem;
+}
+
+.custom-list-container {
     background: var(--background-standard);
     border: var(--border-container);
     border-radius: var(--border-radius);
-    padding: .5rem 1rem;
     flex-direction: column;
-    width: 60rem;
-    margin: 0rem 3rem 0rem 7rem;
     transition: var(--container-transition);
     position: relative;
-    justify-content: center;
-    min-height: 700px;
+    padding: .5rem 1rem;
 }
 
 .custom-list-container:hover {
@@ -2063,6 +2090,12 @@ input[type="radio"]:checked+label {
     color: var(--theme-color-neon);
 }
 
+#customOverviewTable {
+    margin-left: auto;
+    margin-right: auto;
+    width: 98%;
+}
+
 .custom-list-container caption {
     font-size: 1.5rem;
     margin-bottom: .5rem;
@@ -2141,13 +2174,84 @@ input[type="radio"]:checked+label {
     width:25%;
 }
 
+.searchSettings td {
+    position: relative;
+    background-color: var(--grey-heavy);
+    color: var(--theme-color-neon);
+}
+
+.searchSettings input[type="text"],
+.searchSettings input[type="number"],
+.searchSettings select {
+    background-color: inherit;
+    color: inherit;
+    border: 1px solid var(--theme-color-neon);
+    padding: 2px 2px;
+    border-radius: var(--border-radius);
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+.searchSettings input::placeholder {
+    color: var(--theme-color-neon);
+}
+
+.searchSettings select option {
+    background-color: var(--grey-heavy);
+}
+
+.searchSettings input[type="image"] {
+    position: absolute;
+    display: none;
+    right: -15px;
+    top: 0px;
+    z-index: 4;
+    background-color: black;
+    border-radius: 100%;
+}
+
+.searchSettings form:hover>input[type="image"] {
+    display: block;
+}
+
 .custom-list-container tr.revenue td {
     background-color: rgba(151, 198, 131, 0.5);
-    /* color: white; */
 }
 
 .custom-list-container tr.expenditure td{
     background-color: rgba(184, 93, 93, 0.5);
 }
 
+#cChartForm {
+    width: 50%;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--grey-heavy);
+    padding: .5rem 1rem;
+    border: 2px solid var(--theme-color-neon);
+    border-radius: var(--border-radius);
+    color: white;
+}
 
+#cChartForm input[type="text"],
+#cChartForm input[type="month"],
+#cChartForm select {
+    background-color: var(--grey-heavy);
+    color: var(--theme-color-neon);
+    border: 1px solid var(--theme-color-neon);
+    padding: 2px 2px;
+    border-radius: var(--border-radius);
+    height: 100%;
+    width: 30%;
+    text-align: center;
+}
+
+#cChartForm label {
+    width: 40%;
+}
+
+#cChartForm input[type="radio"] {
+    position: absolute;
+    left: 35px;
+}

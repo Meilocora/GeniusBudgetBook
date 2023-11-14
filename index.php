@@ -135,7 +135,8 @@ $container->add('customOverviewController', function() use($container) {
     return new \App\Controller\CustomOverviewController(
         $container->get('entryController'),
         $container->get('entryRepository'),
-        $container->get('usersController'));
+        $container->get('usersController'),
+        $container->get('chartController'));
 });
 
 
@@ -472,7 +473,7 @@ else if($route === 'custom-overview') {
         if(isset($_SESSION['cPerPage'])) {
             $perPage = $_SESSION['cPerPage'];
         } else {
-            $perPage = 5;
+            $perPage = 15;
         }
     }
     if(isset($_POST['sortingProperty'])) {
@@ -627,8 +628,52 @@ else if($route === 'custom-overview') {
     } else {
         $cCommentQuery = null;
     }
+    if(isset($_POST['cChartSearch'])) {
+        $_SESSION['cChartSearch'] = $_POST['cChartSearch'];
+        $cChartSearch = $_POST['cChartSearch'];
+    } else {
+        if(isset($_SESSION['cChartSearch'])) {
+            $cChartSearch = $_SESSION['cChartSearch'];
+        } else {
+            $cChartSearch = 'category';
+        }
+    }
+    if(isset($_POST['cChartSearchRegex'])) {
+        $_SESSION['cChartSearchRegex'] = $_POST['cChartSearchRegex'];
+        $cChartSearchRegex = $_POST['cChartSearchRegex'];
+    } else {
+        if(isset($_SESSION['cChartSearchRegex'])) {
+            $cChartSearchRegex = $_SESSION['cChartSearchRegex'];
+        } else {
+            $cChartSearchRegex = null;
+        }
+    }
+    if(isset($_POST['cChartSearchCategory'])) {
+        $_SESSION['cChartSearchCategory'] = $_POST['cChartSearchCategory'];
+        $cChartSearchCategory = $_POST['cChartSearchCategory'];
+    } else {
+        if(isset($_SESSION['cChartSearchCategory'])) {
+            $cChartSearchCategory = $_SESSION['cChartSearchCategory'];
+        } else {
+            $cChartSearchCategory = null;
+        }
+    }
+    if(isset($_POST['cChartStartDate']) & isset($_POST['cChartEndDate'])) {
+        $_SESSION['cChartStartDate'] = $_POST['cChartStartDate'];
+        $cChartStartDate = $_POST['cChartStartDate'];
+        $_SESSION['cChartEndDate'] = $_POST['cChartEndDate'];
+        $cChartEndDate = $_POST['cChartEndDate'];
+    } else {
+        if(isset($_SESSION['cChartStartDate']) & isset($_SESSION['cChartEndDate'])) {
+            $cChartStartDate = $_SESSION['cChartStartDate'];
+            $cChartEndDate = $_SESSION['cChartEndDate'];
+        } else {
+            $cChartStartDate = date('Y-m',strtotime('-12 months'));
+            $cChartEndDate = date('Y-m');
+        }
+    }
     $customOverviewController = $container->get('customOverviewController');
-    $customOverviewController->showCustomOverview($navRoutes, $colorTheme, $userShortcut, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage);
+    $customOverviewController->showCustomOverview($navRoutes, $colorTheme, $userShortcut, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate);
 }
 else if($route === 'tools') {
     $authService = $container->get('authService');
