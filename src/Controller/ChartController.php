@@ -185,10 +185,11 @@ class ChartController extends AbstractController{
             $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
             $dateArray [] = date('Y M', strtotime($month));
         }
+        if(!in_array(date(('Y M'), strtotime($endDate)), $dateArray)) $dateArray [] = date(('Y M'), strtotime($endDate));
+        
+        #TODO: still necessary?!
         if (date('Y-m', strtotime($endDate)) === date('Y-m')) {
-            
             if(!in_array(date('Y M'), $dateArray)) $dateArray [] = date('Y M');
-
         }
         return $dateArray;
     }
@@ -225,4 +226,27 @@ class ChartController extends AbstractController{
         }
         return $resultArray;
     }
+
+    public function entriesTrend($search, $dateArray, $entries) {
+        $entriesTrend = [];
+        switch ($search) {
+            case 'category':
+                $entriesTrend = [$entries[0]->category];
+                break;
+            case 'title':
+                $entriesTrend = [$entries[0]->title];
+                break;
+        }
+        foreach ($dateArray AS $date) {
+            $localSum = 0;
+            foreach ($entries AS $entry) {
+                if (date('Y-m', strtotime($date)) === date('Y-m', strtotime($entry->dateslug))) {
+                    if($entry->income === 1)$localSum += $entry->amount; else $localSum -= $entry->amount;
+                }
+            }
+            $entriesTrend[] = $localSum;
+        }
+        return $entriesTrend;
+    }
+
 }

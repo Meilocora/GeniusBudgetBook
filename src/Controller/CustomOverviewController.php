@@ -6,6 +6,7 @@ use App\Controller\EntryController;
 use App\Entry\EntryRepository;
 use App\Controller\UsersController;
 use App\Controller\ChartController;
+use App\Controller\ColorThemeController;
 
 class CustomOverviewController extends AbstractController{
 
@@ -13,9 +14,10 @@ class CustomOverviewController extends AbstractController{
         protected EntryController $entryController,
         protected EntryRepository $entryRepository,
         protected UsersController $usersController,
-        protected ChartController $chartController) {}
+        protected ChartController $chartController,
+        protected ColorThemeController $colorThemeController) {}
 
-    public function showCustomOverview($navRoutes, $colorTheme, $userShortcut, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate) {
+    public function showCustomOverview($navRoutes, $colorTheme, $userShortcut, $chartColorSet, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate) {
         $startDate = $this->giveInterval($cTimeinterval, $cStartDate, $cEndDate)[0];
         $endDate = $this->giveInterval($cTimeinterval, $cStartDate, $cEndDate)[1];
         $timespan = calculateTimespanDays($startDate, $endDate);
@@ -36,8 +38,25 @@ class CustomOverviewController extends AbstractController{
         $fixedAlltimeBalances = $this->giveFixedAlltimeBalances($cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cAmounts, $fromAmount, $toAmount, $cTitles, $cTitleQuery, $cComments, $cCommentQuery, $perPage, $currentPage, $cSortingProperty, $cSort);
         $averagePercentages = $this->giveAveragePercentages($timespan, $timespanAccount, array_values($balances), array_values($fixedBalances), array_values($alltimeBalances), array_values($fixedAlltimeBalances));
 
+        $lineColors = ["rgb(20,113,73,0.5)", "rgb(200,20,20,0.5)"];
         $chartEntries = $this->giveChartEntries($cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate);
-        #TODO: FIll Line Chart with these values + months array
+        if(!empty($chartEntries)) {
+            $dateArray = $this->chartController->dateArray($cChartStartDate, $cChartEndDate);
+            $entryTrend = $this->chartController->entriesTrend($cChartSearch, $dateArray, $chartEntries);
+        } else {
+            $dateArray = [null];
+            $entryTrend = [null];
+        }
+        $chartTimespan = calculateTimespanDays($cChartStartDate, $cChartEndDate);
+        $chartSum = $this->giveChartSum($chartEntries);
+        $numChartEntries = $this->countChartEntries($chartEntries);
+        if($chartSum !== 0) {
+            $chartEntryAverage = $chartSum / $numChartEntries;
+        } else {
+            $chartEntryAverage = 0;
+        }
+        
+        $chartEntryIncrease = $this->entryIncrease($chartEntries);
 
         $this->render('budget-book/custom-overview', [
             'navRoutes' => $navRoutes,
@@ -78,6 +97,14 @@ class CustomOverviewController extends AbstractController{
             'cChartSearchRegex' => $cChartSearchRegex,
             'cChartStartDate' => $cChartStartDate, 
             'cChartEndDate' => $cChartEndDate,
+            'lineColors' => $lineColors,
+            'dateArray' => $dateArray,
+            'entryTrend' => $entryTrend,
+            'chartTimespan' => $chartTimespan,
+            'chartSum' => $chartSum,
+            'numChartEntries' => $numChartEntries,
+            'chartEntryAverage' => $chartEntryAverage,
+            'chartEntryIncrease' => $chartEntryIncrease,
         ]);
     }
 
@@ -295,5 +322,45 @@ class CustomOverviewController extends AbstractController{
         }
         $queryString = implode('', $queryArray);
         return $this->entryRepository->fetchCustomQuery($queryString);
+    }
+
+    public function giveChartSum($entries) {
+        $sum = 0;
+        foreach ($entries as $entry) {
+            if(gettype($entry) !== 'string') {
+                if($entry->income === 1) $sum += $entry->amount; else $sum -= $entry->amount;
+            }
+        }
+        return $sum;
+    }
+
+    public function countChartEntries($entries) {
+        $count = 0;
+        foreach ($entries as $entry) {
+            if(gettype($entry) !== 'string') $count ++;
+        }
+        return $count;
+    }
+
+    public function entryIncrease($entries) {
+        $fstEntry = [];
+        $lastEntry = [];
+        for ($i=1; $i<sizeof($entries)-1; $i++) {
+            if($entries[$i]->amount !== 0) {
+                $fstEntry = $entries[$i];
+                break;
+            }
+        }
+        for ($i=sizeof($entries)-1; $i>1; $i--) {
+            if($entries[$i]->amount !== 0) {
+                $lastEntry = $entries[$i];
+                break;
+            }
+        }
+        if(!empty($lastEntry) & !empty($fstEntry)) {
+            return (($lastEntry->amount/$fstEntry->amount)-1)*100;
+        } else {
+            return 0;
+        }
     }
 }

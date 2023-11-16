@@ -136,7 +136,8 @@ $container->add('customOverviewController', function() use($container) {
         $container->get('entryController'),
         $container->get('entryRepository'),
         $container->get('usersController'),
-        $container->get('chartController'));
+        $container->get('chartController'),
+        $container->get('colorThemeController'));
 });
 
 
@@ -673,7 +674,7 @@ else if($route === 'custom-overview') {
         }
     }
     $customOverviewController = $container->get('customOverviewController');
-    $customOverviewController->showCustomOverview($navRoutes, $colorTheme, $userShortcut, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate);
+    $customOverviewController->showCustomOverview($navRoutes, $colorTheme, $userShortcut, $chartColorSet, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate);
 }
 else if($route === 'tools') {
     $authService = $container->get('authService');

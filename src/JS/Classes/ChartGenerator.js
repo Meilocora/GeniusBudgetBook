@@ -203,7 +203,9 @@ export default class ChartGenerator {
                 responsive: false,
                 scales: {
                     y: {    
+                            // min: (lineColors.length === 2 | data1[0] < 0) ? null : 0,
                             min: (lineColors.length === 2 | data1[0] < 0) ? null : 0,
+                            max: (data1[0] < 0) ? 0 : null,
                             suggestedMax: GoalData[0]*1.05,
                              grid: {
                                 lineWidth: 1.5,
