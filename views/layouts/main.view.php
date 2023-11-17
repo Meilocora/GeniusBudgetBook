@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="./styles/<?php echo e($colorTheme); ?>.css">
     <?php endif; ?>
     <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/nouislider.css"> 
     <title>Genius Budget Book</title>
 </head>
 <body> 

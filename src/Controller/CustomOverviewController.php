@@ -343,20 +343,14 @@ class CustomOverviewController extends AbstractController{
     }
 
     public function entryIncrease($entries) {
-        $fstEntry = [];
-        $lastEntry = [];
-        for ($i=1; $i<sizeof($entries)-1; $i++) {
-            if($entries[$i]->amount !== 0) {
-                $fstEntry = $entries[$i];
-                break;
-            }
+        if(!empty($entries)) {
+            $fstEntry = $entries[0];
+            $lastEntry = $entries[sizeof($entries)-1];
+        } else {
+            $fstEntry = [];
+            $lastEntry = [];
         }
-        for ($i=sizeof($entries)-1; $i>1; $i--) {
-            if($entries[$i]->amount !== 0) {
-                $lastEntry = $entries[$i];
-                break;
-            }
-        }
+       
         if(!empty($lastEntry) & !empty($fstEntry)) {
             return (($lastEntry->amount/$fstEntry->amount)-1)*100;
         } else {

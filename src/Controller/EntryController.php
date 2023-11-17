@@ -212,7 +212,7 @@ class EntryController extends AbstractController{
     public function transferFixedEntries($date) {
         $date = $date . '-01';
         $lastMonth = date("Y-m-d",strtotime("-1 month", strtotime($date . '-01')));
-        $entriesLastMonth = $this->entryRepository->fetchAllOfGivenMonth($lastMonth);
+        $entriesLastMonth = $this->entryRepository->fetchAllOfMonth($lastMonth);
         $untransferedFixedEntries = $this->checkUntransferedFixedEntries($date);
         foreach($entriesLastMonth AS $entryLastMonth) {
             foreach($untransferedFixedEntries AS $untransferedFixedEntry) {
@@ -229,8 +229,8 @@ class EntryController extends AbstractController{
 
     public function checkUntransferedFixedEntries($date) {
         $lastMonth = date("Y-m-d",strtotime("-1 month", strtotime($date)));
-        $entriesLastMonth = $this->entryRepository->fetchAllOfGivenMonth($lastMonth);
-        $entriesThisMonth = $this->entryRepository->fetchAllOfGivenMonth($date);
+        $entriesLastMonth = $this->entryRepository->fetchAllOfMonth($lastMonth);
+        $entriesThisMonth = $this->entryRepository->fetchAllOfMonth($date);
         $compareArrayLastMonth = [];
         $compareArrayThisMonth = [];
         foreach($entriesLastMonth AS $entry) {
@@ -325,7 +325,7 @@ class EntryController extends AbstractController{
             $sumCat9 = 0;
             $sumCat10 = 0;
             $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
-            $entriesOfMonth = $this->entryRepository->fetchAllOfGivenMonth($month);
+            $entriesOfMonth = $this->entryRepository->fetchAllOfMonth($month);
             foreach ($entriesOfMonth as $entry) {
                 if($entry->category === $categories[0]) if($type === "exp") $sumCat1 -= $entry->amount; elseif($type === "rev") $sumCat1 += $entry->amount;
                 if($entry->category === $categories[1]) if($type === "exp") $sumCat2 -= $entry->amount; elseif($type === "rev") $sumCat2 += $entry->amount;
@@ -398,7 +398,7 @@ class EntryController extends AbstractController{
         $sumCat10fixed = 0;
         for ($i = 0; $i < $months; $i++) {
             $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
-            $entriesOfMonth = $this->entryRepository->fetchAllOfGivenMonth($month);
+            $entriesOfMonth = $this->entryRepository->fetchAllOfMonth($month);
             foreach ($entriesOfMonth as $entry) {
                 if($entry->category === $categories[0] & $entry->fixedentry === 0) if($type === "exp") $sumCat1 -= $entry->amount;      elseif($type === "rev") $sumCat1 += $entry->amount;
                 if($entry->category === $categories[0] & $entry->fixedentry === 1) if($type === "exp") $sumCat1fixed -= $entry->amount; elseif($type === "rev") $sumCat1fixed += $entry->amount;

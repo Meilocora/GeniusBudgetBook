@@ -1,3 +1,4 @@
+<script type="module" src="./src/JS/customoverviewmain.js"></script>
 <section class="custom-overview-container">
 <!-- ==================== ENTRY-LIST ==================== -->
     <div class="custom-list-area-container">
@@ -125,14 +126,10 @@
                             <input type="radio" name="cAmounts" value="Custom" id="cCustomAmount" <?php if($cAmounts === 'Custom') echo 'checked'; ?>>
                             <label for="cCustomAmount">Custom amount</label>
                         </span> 
-                        <!-- #TODO: nouislider -->
-                        <span class="option-span hidden" id="fromAmountSpan">
-                            <input type="number" name="fromAmount" id="cFromAmount" min="0" max="<?php echo $maxAmount; ?>" step="1" value="<?php if($fromAmount !== null) echo $fromAmount; else echo 0; ?>">
-                            <label for="cFromAmount" class="dateLabel">from:</label>
-                        </span>
-                        <span class="option-span hidden" id="toAmountSpan">
-                            <input type="number" name="toAmount" id="cToAmount" min="0" max="<?php echo $maxAmount; ?>" step="1" value="<?php if($toAmount !== null) echo $toAmount; else echo 0; ?>">
-                            <label for="cToAmount" class="dateLabel">to:</label>
+                        <span class="slider-span hidden" id="amountSpan">
+                            <div id="slider"></div>
+                            <input type="hidden" name="fromAmount" id="cFromAmount">
+                            <input type="hidden" name="toAmount" id="cToAmount">
                         </span>
                     </div>
                     <div class="option">
@@ -161,13 +158,7 @@
                 </div>
             </form>
             </article>
-            <!-- #TODO: Outsource JS -->
             <script defer>
-                document.getElementById('cTitle').addEventListener("click", e => {
-                    document.getElementById('searchSettingsForm').classList.toggle("hide");
-                    document.getElementById('cTitle').classList.toggle("titleSelected");
-                });
-
                 // DEFAULT FOR WINDOW
                 window.addEventListener("load", e => {
                     if(document.getElementById('cCustom').checked & document.getElementById('fromDateSpan').classList.contains('hidden') & document.getElementById('toDateSpan').classList.contains('hidden')) {
@@ -180,100 +171,10 @@
                     if(document.getElementById('cCertainTitle').checked & document.getElementById('titleSpan').classList.contains('hidden')) {
                         document.getElementById('titleSpan').classList.toggle("hidden");
                     }
-                    if(document.getElementById('cCustomAmount').checked & document.getElementById('fromAmountSpan').classList.contains('hidden') & document.getElementById('toAmountSpan').classList.contains('hidden')) {
-                        document.getElementById('fromAmountSpan').classList.toggle("hidden");
-                        document.getElementById('toAmountSpan').classList.toggle("hidden");
+                    if(document.getElementById('cCustomAmount').checked & document.getElementById('amountSpan').classList.contains('hidden')) {
+                        document.getElementById('amountSpan').classList.toggle("hidden");
                     }
                     if(document.getElementById('cCertainComment').checked & document.getElementById('commentSpan').classList.contains('hidden')) {
-                        document.getElementById('commentSpan').classList.toggle("hidden");
-                    }
-                });
-
-                // TIMEINTERVAL
-                document.getElementById('cCustom').addEventListener("click", e => {
-                    if(document.getElementById('cCustom').checked & document.getElementById('fromDateSpan').classList.contains('hidden') & document.getElementById('toDateSpan').classList.contains('hidden')) {
-                        document.getElementById('fromDateSpan').classList.toggle("hidden");
-                        document.getElementById('toDateSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cAll').addEventListener("click", e => {
-                    if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
-                        document.getElementById('fromDateSpan').classList.toggle("hidden");
-                        document.getElementById('toDateSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cYoY').addEventListener("click", e => {
-                    if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
-                        document.getElementById('fromDateSpan').classList.toggle("hidden");
-                        document.getElementById('toDateSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cYTD').addEventListener("click", e => {
-                    if(!document.getElementById('fromDateSpan').classList.contains('hidden') & !document.getElementById('toDateSpan').classList.contains('hidden')) {
-                        document.getElementById('fromDateSpan').classList.toggle("hidden");
-                        document.getElementById('toDateSpan').classList.toggle("hidden");
-                    }
-                });
-
-                // CATEGORY
-                document.getElementById('cCertainCategory').addEventListener("click", e => {
-                    if(document.getElementById('cCertainCategory').checked & document.getElementById('categorySpan').classList.contains('hidden')) {
-                        document.getElementById('categorySpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cAllCategories').addEventListener("click", e => {
-                    if(!document.getElementById('categorySpan').classList.contains('hidden')) {
-                        document.getElementById('categorySpan').classList.toggle("hidden");
-                    }
-                });
-
-                // TITLE
-                document.getElementById('cCertainTitle').addEventListener("click", e => {
-                    if(document.getElementById('cCertainTitle').checked & document.getElementById('titleSpan').classList.contains('hidden')) {
-                        document.getElementById('titleSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cAllTitles').addEventListener("click", e => {
-                    if(!document.getElementById('titleSpan').classList.contains('hidden')) {
-                        document.getElementById('titleSpan').classList.toggle("hidden");
-                    }
-                });
-
-                // AMOUNT
-                document.getElementById('cCustomAmount').addEventListener("click", e => {
-                    if(document.getElementById('cCustomAmount').checked & document.getElementById('fromAmountSpan').classList.contains('hidden') & document.getElementById('toAmountSpan').classList.contains('hidden')) {
-                        document.getElementById('fromAmountSpan').classList.toggle("hidden");
-                        document.getElementById('toAmountSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cAllAmounts').addEventListener("click", e => {
-                    if(!document.getElementById('fromAmountSpan').classList.contains('hidden') & !document.getElementById('toAmountSpan').classList.contains('hidden')) {
-                        document.getElementById('fromAmountSpan').classList.toggle("hidden");
-                        document.getElementById('toAmountSpan').classList.toggle("hidden");
-                    }
-                });
-
-                // COMMENT
-                document.getElementById('cCertainComment').addEventListener("click", e => {
-                    if(document.getElementById('cCertainComment').checked & document.getElementById('commentSpan').classList.contains('hidden')) {
-                        document.getElementById('commentSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cNoComments').addEventListener("click", e => {
-                    if(!document.getElementById('commentSpan').classList.contains('hidden')) {
-                        document.getElementById('commentSpan').classList.toggle("hidden");
-                    }
-                });
-
-                document.getElementById('cAllComments').addEventListener("click", e => {
-                    if(!document.getElementById('commentSpan').classList.contains('hidden')) {
                         document.getElementById('commentSpan').classList.toggle("hidden");
                     }
                 });
@@ -324,7 +225,7 @@
                         <td>
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cTitles" value="certainTitle">
-                                <input type="text" name="cTitleQuery" maxlength="50" placeholder="search title" value="<?php echo e($cTitleQuery); ?>" required>
+                                <input type="text" name="cTitleQuery" maxlength="50" placeholder="search title" value="<?php echo e($cTitleQuery); ?>">
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>
@@ -353,7 +254,7 @@
                         <td>
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cComments" value="certainComment">
-                                <input type="text" name="cCommentQuery" maxlength="1024" placeholder="search comment" value="<?php echo e($cCommentQuery); ?>" required>
+                                <input type="text" name="cCommentQuery" maxlength="1024" placeholder="search comment" value="<?php echo e($cCommentQuery); ?>">
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>
@@ -752,7 +653,7 @@
                 </div>
             </form>
             <div class="value-container">
-                <div class="report neutral">
+                    <div class="report neutral">
                         <span class="report-label">
                             Days
                         </span>
@@ -760,12 +661,12 @@
                             <?php echo $chartTimespan; ?>
                         </span>
                     </div>
-                    <div class="report <?php if($chartSum > 0) echo "positive"; else echo "negative" ?>">
+                    <div class="report neutral">
                         <span class="report-label">
-                            Sum of Entries
+                            Months
                         </span>
                         <span class="report-content">
-                            <?php echo number_format($chartSum, '2', ',', '.') . '€ '; ?>
+                            <?php echo sizeof($dateArray); ?>
                         </span>
                     </div>
                     <div class="report neutral">
@@ -776,7 +677,15 @@
                             <?php echo $numChartEntries; ?>
                         </span>
                     </div>
-                    <div class="report <?php if($chartEntryAverage > 0) echo "positive"; else echo "negative" ?>">
+                    <div class="report <?php if($chartSum >= 0) echo "positive"; else echo "negative" ?>">
+                        <span class="report-label">
+                            Sum of Entries
+                        </span>
+                        <span class="report-content">
+                            <?php echo number_format($chartSum, '2', ',', '.') . '€ '; ?>
+                        </span>
+                    </div>
+                    <div class="report <?php if($chartEntryAverage >= 0) echo "positive"; else echo "negative" ?>">
                         <span class="report-label">
                             Average amount
                         </span>
@@ -784,7 +693,7 @@
                             <?php echo number_format($chartEntryAverage, '2', ',', '.') . '€ '; ?>
                         </span>
                     </div>
-                    <div class="report <?php if($chartEntryIncrease > 0) echo "positive"; else echo "negative" ?>">
+                    <div class="report <?php if($chartEntryIncrease >= 0) echo "positive"; else echo "negative" ?>">
                         <span class="report-label">
                             Increase of amounts
                         </span>
@@ -812,4 +721,50 @@
         let data = [<?php for($x=1; $x<sizeof($entryTrend); $x++) echo "{$entryTrend[$x]}, "; ?>];
         chartGenerator.generateLineChart('customTrend', 'Cumulative trend <?php echo $entryTrend[0]; ?>', lineColors, 0, xLabels, lineLabel, data);
     <?php endif; ?>
+</script>
+<script src="./src/JS/NoUiSlider/nouislider.min.js" type="text/javascript"></script>
+<script type="module">
+    
+    let slider = document.getElementById('slider');
+
+    noUiSlider.create(slider, {
+        range: {
+            'min': 0,
+            'max': <?php echo $maxAmount; ?>
+        },
+
+        start: [ <?php if($fromAmount !== null) echo $fromAmount; else echo 0 ?>, <?php if($toAmount !== null) echo $toAmount; else echo $maxAmount; ?>],
+        step: <?php echo round($maxAmount/10, 0); ?>,
+        // Display colored bars between handles
+        connect: true,
+        direction: 'ltr',
+        orientation: 'horizontal',
+        // Move handle on tap, bars are draggable
+        behaviour: 'drag',
+        tooltips: true,
+        format: {
+            // 'to' the formatted value. Receives a number.
+            to: function (value) {
+                return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ".") + '€';
+            },
+            // 'from' the formatted value.
+            // Receives a string, should return a number.
+            from: function (value) {
+                return Number(value.replace('', ''));
+            }
+        },
+    });
+
+    console.log(document.getElementById('cFromAmount').value = 0);
+    console.log(document.getElementById('cToAmount').value = <?php echo $maxAmount; ?>);
+
+    slider.noUiSlider.set([<?php echo $fromAmount; ?>, <?php echo $toAmount; ?>]);
+    document.getElementById("slider").addEventListener("click", e => {
+            console.log(slider.noUiSlider.get([1]));
+            let amountArray = slider.noUiSlider.get([1]);
+            document.getElementById('cFromAmount').value = amountArray[0];
+            document.getElementById('cToAmount').value = amountArray[1];
+            console.log(document.getElementById('cFromAmount').value = amountArray[0]);
+            console.log(document.getElementById('cToAmount').value = amountArray[1]);
+        });
 </script>

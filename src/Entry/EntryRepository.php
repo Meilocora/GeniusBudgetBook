@@ -21,20 +21,8 @@ class EntryRepository {
         return;
     }
 
-    #TODO: Selbe Funktion wie die darunter ?!
+    
     public function fetchAllOfMonth($date): array {
-        $dateClass = new DateTime($date);
-        $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
-        $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');
-        $query = 'SELECT * FROM ' . "`{$this->username}" . 'entries` WHERE `dateslug` BETWEEN :monthFstDay AND :monthLstDay ORDER BY `dateslug` ASC';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindValue(':monthFstDay', $monthFstDay);
-        $stmt->bindValue(':monthLstDay', $monthLstDay);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_CLASS, EntryModel::class);
-    }
-
-    public function fetchAllOfGivenMonth($date): array {
         $dateClass = new DateTime($date);
         $monthFstDay = $dateClass->modify('first day of this month')->format('Y-m-d');
         $monthLstDay = $dateClass->modify('last day of this month')->format('Y-m-d');

@@ -3,6 +3,7 @@
 - chart.js-plugin-datalabels
 - jQuery.js
 - jquery.waypoints.min.js
+- nouislider.js
 
 The "genius budget book" can be used by hosting a local server via XAMPP.
 To use it via XAMPP:
@@ -16,7 +17,7 @@ IMPORTANT: Make sure the folder is called "GeniusBudgetBook" !
 7) open following URL: http://localhost/GeniusBudgetBook/
 
 +++++++++++ ADDITIONAL INFOS +++++++++++
-Because of missing responsetivety it is recommended to view on the 1920x1080 px display format.
+Frontend is not responsive, please set your screen to 1920x1080 px format.
 
 You can manually view, edit, save and delete the database at:
 http://localhost/phpmyadmin/

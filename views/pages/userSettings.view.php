@@ -102,7 +102,6 @@
         </div>
     </article>
     <!-- ++++++++++ COLOR-THEME ++++++++++ -->
-    <!-- #TODO: Randomize Button -->
     <div class="userSettings-row">
         <h3 id="title_colorTheme">
             Create a custom color theme
@@ -145,12 +144,12 @@
         <hr class="thin-line">
         <div class="userSettings-row">
             <input type="hidden" name="colorTheme" value="customTheme"></input>
+            <input type="submit" value="Randomize" class="btn" id="ranBtnColorTheme">
             <input type="submit" value="Send" class="btn">
             </form>
         </div>  
     </article>
     <!-- ++++++++++ CHART COLOR-THEME ++++++++++ -->
-    <!-- #TODO: Randomize Button -->
     <div class="userSettings-row">
         <h3 id="title_chartColorTheme">
             Create a custom chart color theme
@@ -200,10 +199,42 @@
         </div>
         <hr class="thin-line">
         <div class="userSettings-row">
+            <input type="submit" value="Randomize" class="btn" id="ranBtnChartColor">
             <input type="submit" value="Send" class="btn">
             </form>
         </div>
     </article>
+    <script>
+        const colorArray = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
+
+        function randomNumber() {
+            return Math.floor(Math.random() * 16) + 0;
+        }
+        function randomColor() {
+            let randomColorsString = "";
+            for (let i=0; i<6; i++) {
+                randomColorsString += colorArray[randomNumber()];
+            }
+            return "#" + randomColorsString;
+        }
+
+        document.getElementById('ranBtnColorTheme').addEventListener("click", e => {
+            e.preventDefault();
+            document.getElementById('theme-color-light').value = randomColor();
+            document.getElementById('theme-color-medium').value = randomColor();
+            document.getElementById('theme-color-heavy').value = randomColor();
+            document.getElementById('theme-color-neon').value = randomColor();
+            document.getElementById('theme-color-background-2').value = randomColor();
+            document.getElementById('theme-color-background-1').value = randomColor();
+        });
+
+        document.getElementById('ranBtnChartColor').addEventListener("click", e => {
+            e.preventDefault();
+            for (let x=1; x<11; x++) {
+                document.getElementById(`color${x}`).value = randomColor();
+            }
+        });
+    </script>
     <!-- ++++++++++ Edit WEALTH DISTRIBUTIONS ++++++++++ -->
     <div class="userSettings-row">
         <h3 id="title_wdcats">

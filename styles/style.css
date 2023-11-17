@@ -86,6 +86,11 @@ a {
     text-decoration: none;
 }
 
+input[type="text"],
+input[type="textaera"] {
+    text-overflow: ellipsis;
+}
+
 /* === GENERAL === */
 .clearfix::after {
     content: "";
@@ -618,7 +623,7 @@ a.scrollActive,
 }
 
 .adjustments-container:hover .adjustments-box#homepageBox {
-    height: 600px;
+    height: 530px;
     transition: border 1s linear, padding 1.2s linear, width .9s ease-in-out 0s, height 1s linear 0s;
 }
 
@@ -1969,7 +1974,7 @@ input.edit {
     border: var(--border-container);
     border-radius: var(--border-radius);
     transition: var(--container-transition);
-    max-height: 816px;
+    max-height: 700px;
 }
 
 .custom-list-container:hover,
@@ -2048,9 +2053,19 @@ input.edit {
     min-width: 20%;
 }
 
+.option:nth-of-type(6) {
+    min-width: 40%;
+}
+
 .option-span {
     text-align: center;
     margin: .25rem 0rem;
+    text-wrap: nowrap;
+}
+
+.slider-span {
+    text-align: center;
+    margin: 2.5rem 1rem;
     text-wrap: nowrap;
 }
 
@@ -2154,9 +2169,11 @@ input[type="radio"]:checked+label {
 
 .custom-list-container tr>td{
     display: inline-block;
+    white-space: nowrap;
     margin: 0;
     font-size: 1rem;
     text-overflow: ellipsis;
+    overflow: hidden;
     text-wrap: nowrap;
 }
 

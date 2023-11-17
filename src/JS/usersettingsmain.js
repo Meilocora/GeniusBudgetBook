@@ -1,8 +1,8 @@
 "use strict";
 
-import UserSettingsAnimator from "./Classes/UserSettingsAnimator.js";
+import FrontendAnimator from "./Classes/FrontendAnimator.js";
 
-let animator = new UserSettingsAnimator();
+let animator = new FrontendAnimator();
 
 // Edit username area
 animator.titleTransition("title_changeUsername", "usernameForm");

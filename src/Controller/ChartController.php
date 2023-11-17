@@ -32,11 +32,6 @@ class ChartController extends AbstractController{
             }
     }
 
-    #TODO: auslagern in functions
-    public function getTimespanQueryDates($startDate, $endDate) {
-        return (int) round(((strtotime($endDate)) - strtotime($startDate)) /(60*60*24), 0);
-    }
-
     public function currentGoalShares($year, $queryDate, $dataset) {
         $currentGoalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $totalGoalShares = [];
@@ -186,11 +181,6 @@ class ChartController extends AbstractController{
             $dateArray [] = date('Y M', strtotime($month));
         }
         if(!in_array(date(('Y M'), strtotime($endDate)), $dateArray)) $dateArray [] = date(('Y M'), strtotime($endDate));
-        
-        #TODO: still necessary?!
-        if (date('Y-m', strtotime($endDate)) === date('Y-m')) {
-            if(!in_array(date('Y M'), $dateArray)) $dateArray [] = date('Y M');
-        }
         return $dateArray;
     }
 

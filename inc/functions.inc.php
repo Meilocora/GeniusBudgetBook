@@ -44,3 +44,7 @@ function calculateTimespanDays($startDate, $endDate) {
     $timespan = strtotime($endDate) - strtotime($startDate);
     return round((($timespan/24)/60)/60); 
 }
+
+function getTimespanQueryDates($startDate, $endDate) {
+    return (int) round(((strtotime($endDate)) - strtotime($startDate)) /(60*60*24), 0);
+}
