@@ -49,7 +49,7 @@
         <h3>Balances of wealth distribution categories</h3>
     </div>
     <div class="additional-row">
-        <span class="list-caption">target value &emsp; actual value</span>
+        <span class="list-caption">target value &nbsp; actual value</span>
     </div>
     <div class="additional-row">
         <form action="./?route=monthly-page/adjustwd" method="POST">

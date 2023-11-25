@@ -140,6 +140,21 @@ $container->add('customOverviewController', function() use($container) {
         $container->get('colorThemeController'));
 });
 
+$container->add('toolsController', function() use($container) {
+    return new \App\Controller\ToolsController(
+        $container->get('cashFlowPlannerRepository'),
+        $container->get('chartController'),
+        $container->get('colorThemeController'),
+        $container->get('wdController'));
+});
+$container->add('cashFlowPlannerModel', function() use($container) {
+    return new \App\CashFlowPlanner\CashFlowPlannerModel();
+});
+$container->add('cashFlowPlannerRepository', function() use($container) {
+    return new \App\CashFlowPlanner\CashFlowPlannerRepository(
+        $container->get('pdo'));
+});
+
 
 // ++++++++++ GLOBAL VARIABLES ++++++++++\\
 $navRoutes = [
@@ -679,12 +694,51 @@ else if($route === 'custom-overview') {
 else if($route === 'tools') {
     $authService = $container->get('authService');
     $authService->ensureLogin();
-    $routingController = $container->get('routingController');
-    $routingController->render('tools', [
-        'navRoutes' => $navRoutes,
-        'colorTheme' => $colorTheme,
-        'userShortcut' => $userShortcut
-    ]);
+    $_SESSION['tool'] = 'start';
+    if(isset($_POST['revName1'])) {
+        $_SESSION['tool'] = 'CashFlowPlanner';
+        $cashFlowData = [];
+        for($i=1; $i<11; $i++) {
+            $cashFlowData["revName{$i}"] = $_POST["revName{$i}"];
+            $cashFlowData["revAmount{$i}"] = @(int) $_POST["revAmount{$i}"];    
+            $cashFlowData["expName{$i}"] = $_POST["expName{$i}"];
+            $cashFlowData["expAmount{$i}"] = @(int) $_POST["expAmount{$i}"];
+        }
+    } else {
+        $cashFlowData = null;
+    }
+    if(isset($_POST['initialCapital'])) {
+        $initialCapital = (int) $_POST['initialCapital'];
+        $_SESSION['initialCapital'] = $initialCapital;
+        $regularInvest = (int) $_POST['regularInvest'];
+        $_SESSION['regularInvest'] = $regularInvest;
+        $investDuration = (int) $_POST['investDuration'];
+        $_SESSION['investDuration'] = $investDuration; 
+        $interestRate = (float) $_POST['interestRate']/100;
+        $_SESSION['interestRate'] = $interestRate;
+    } elseif(isset($_SESSION['initialCapital'])) {
+        $initialCapital = $_SESSION['initialCapital'];
+        $regularInvest = $_SESSION['regularInvest'];
+        $investDuration = $_SESSION['investDuration']; 
+        $interestRate = $_SESSION['interestRate'];
+    } else {
+        $initialCapital = 0;
+        $regularInvest = 0;
+        $investDuration = 0; 
+        $interestRate = 0.01;    
+    }
+    if(isset($_POST['millionaireAssumption'])) {
+        $_SESSION['millionaireAssumption'] = $_POST['millionaireAssumption'];
+        $millionaireAssumption = $_POST['millionaireAssumption'];
+    } else {
+        if(isset($_SESSION['millionaireAssumption'])) {
+            $millionaireAssumption = $_SESSION['millionaireAssumption'];
+        } else {
+            $millionaireAssumption = 'linear';
+        }
+    }
+    $toolsController = $container->get('toolsController');
+    $toolsController->showTools($navRoutes, $colorTheme, $userShortcut, $millionaireAssumption ,$cashFlowData, $initialCapital, $regularInvest, $investDuration, $interestRate);
 }
 else {
     $routingController = $container->get('routingController');

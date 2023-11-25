@@ -342,6 +342,7 @@ export default class ChartGenerator {
 
     generateBarChart(selector, yScale, xLabels, titleText, revColors, expColors, categories, revdataregular, revdatafixed, expdataregular, expdatafixed) {
         var ctx = document.getElementById(selector);
+        let noDataLabales = ['compoundInterestBarchart'];
         let myChart = new Chart(ctx, {
             type: 'bar',
             plugins: [ChartDataLabels],
@@ -413,7 +414,7 @@ export default class ChartGenerator {
                         padding: 10,
                         margin: 10,
                         font: {
-                            size: 14,
+                            size: noDataLabales.includes(selector) ? 0 : 14,
                             weight: 'bold',
                         },
                         formatter: function(value) {

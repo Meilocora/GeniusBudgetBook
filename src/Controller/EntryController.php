@@ -72,21 +72,8 @@ class EntryController extends AbstractController{
                     header("Location: ./?route=monthly-page#entry-form");
                     return;
                 }
-                else {
-                    $errorMessage[] = "Der Eintrag konnte nicht hinzugefügt werden!";
-                }
             }
-            else {
-                $errorMessage[] = "Das Formular wurde nicht vollständig ausgeführt!";
-            }
-            $this->render('pages/budget-book/monthly-page#entry-form', [
-                'errorMessage' => $errorMessage
-            ]);
         }
-        $this->render('pages/budget-book/monthly-page#entry-form', [
-            'errorMessage' => $errorMessage
-        ]);
-
     }
 
     public function delete($id) {

@@ -236,10 +236,10 @@ class DBInitialize {
         $stmt->execute();
 
         $dates= [];
-        for($x=0; $x<14; $x++) {
+        for($x=13; $x>-1; $x--) {
             $dates[] = "'" . date('Y-m',strtotime("-${x} month")) . "-01'";
         }
-       
+
         $query = "INSERT INTO `sandboxuserwdmonthly` (`id`, `dateslug`, `Bank Account-1-target`, `Bank Account-1-actual`,  `Savings Account-1-target`, `Savings Account-1-actual`, `Stocks-0-target`, `Stocks-0-actual`, `Real Estate-0-target`, `Real Estate-0-actual`,`State sponsored fund-0-target`, `State sponsored fund-0-actual`, `Collectibles-0-target`, `Collectibles-0-actual`) VALUES
             (NULL, {$dates[13]}, '2700', '2700', '6000','6005', '3400', '3050', '12000', '13100', '2950', '2370', '1200', '1385'), 
             (NULL, {$dates[12]}, '2450', '2450', '5800','5805', '3300', '2750', '12000', '12950', '2800', '2320', '1200', '1372'), 

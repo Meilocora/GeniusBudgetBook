@@ -5,6 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/Favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/Favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/Favicons/favicon-16x16.png">
+    <link rel="manifest" href="./img/Favicons/site.webmanifest">
+    <link rel="mask-icon" href="./img/Favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./img/Favicons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="./img/Favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
     <?php if($colorTheme === 'customTheme'): ?>
         <link rel='stylesheet' href='./styles/<?php echo e($colorTheme); ?>.php'>
     <?php else: ?>
@@ -50,7 +59,7 @@
     </header>
         <?php echo $content; ?>
     <footer class="footer" id="footer">
-        <p>Projekt: Genius Budget Book von Eric Manig</p>
+        <p>Project: Genius Budget Book by Eric Manig</p>
     </footer>
 </body>
 </html>

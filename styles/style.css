@@ -1,10 +1,31 @@
 /* === Fonts === */
+@font-face {
+    font-family: 'Grandstander';
+    font-style: normal;
+    font-weight: normal;
+    src: url('../fonts/Grandstander-Regular.ttf') format('truetype'), 
+  }
 
+  @font-face {
+    font-family: 'Grandstander';
+    font-style: normal;
+    font-weight: bold;
+    src: url('../fonts/Grandstander-Bold.ttf') format('truetype'), 
+  }
 
+  @font-face {
+    font-family: 'Grandstander';
+    font-style: italic;
+    font-weight: normal;
+    src: url('../fonts/Grandstander-Italic.ttf') format('truetype'), 
+  }
 
-
-
-
+  @font-face {
+    font-family: 'Grandstander';
+    font-style: italic;
+    font-weight: bold;
+    src: url('../fonts/Grandstander-BoldIzalic.ttf') format('truetype'), 
+  }
 
 /* === GLOBAL === */
 :root {
@@ -34,9 +55,10 @@
     --border-active: black 3px solid;
     --border-radius: 20px;
     --box-shadow-active: 0px 0px 10px var(--grey-heavy) inset;
-    /* --primaere-schriftart: Raleway; */
-    /* --sekundaere-schriftart: Arial; */
-    /* --fallback-schriftart: sans-serif; */
+
+    --primary-font: Grandstander;
+    --secondary-font: Arial;
+    --fallback-font: sans-serif;
 }
 
 html {
@@ -60,6 +82,7 @@ body {
         "footer footer footer";
     gap: 2rem 2rem;
     min-height: 100vh;
+    font-family: var(--primary-font, --secondary-font, --fallback-font);
 }
 
 main {
@@ -89,6 +112,9 @@ a {
 input[type="text"],
 input[type="textaera"] {
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-family: var(--primary-font, --secondary-font, --fallback-font);
 }
 
 /* === GENERAL === */
@@ -220,7 +246,7 @@ tbody tr:last-of-type td:last-of-type {
 
 .cancel-btn {
     margin: 0 .5rem;
-    padding: .5rem 1rem;
+    padding: .25rem 1rem;
     font-size: 1rem;
     border-radius: var(--border-radius);
     background-color: transparent;
@@ -497,6 +523,10 @@ section.chart-view-container {
     height: 70px;
     width: 200px;
     transition: all .5s ease-in-out;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .report-small {
@@ -564,7 +594,7 @@ section.chart-view-container {
     position: fixed;
     top: 370px;
     left: 50px;
-    width: 125px;
+    width: 135px;
     z-index: 4;
 }
 
@@ -596,7 +626,7 @@ a.scrollActive,
 .adjustmentsSymbol {
     position: fixed;
     top: 300px;
-    left: 92px;
+    left: 99px;
 }
 
 .adjustments-container .adjustments-box {
@@ -724,7 +754,6 @@ a.scrollActive,
     max-width: 10rem;
 }
 
-/* #TODO: Why 2nd and 3rd instead of 1st and 2nd?! */
 .adjustments-box .customDatesBox input[type="date"]:nth-of-type(2),
 .adjustments-box .customDatesBox input[type="month"]:nth-of-type(2) {
     border-radius: 20px 0px 0px 20px;
@@ -1224,6 +1253,8 @@ section.login-container>h1 {
     font-size: 1.15rem;
     padding: .25rem .5rem;
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     height: 2rem;
     border: 1px solid black;
     transition: border-color .5s ease-in-out, box-shadow .5s ease-in-out, color .5s ease-in-out, text-shadow .5s ease-in-out;
@@ -1377,7 +1408,7 @@ input[type="color"]::-moz-color-swatch {
 }
 
 #passwordForm {
-    height: 170px;
+    height: 220px;
 }
 
 #standardColorForm {
@@ -1385,17 +1416,17 @@ input[type="color"]::-moz-color-swatch {
 }
 
 #customColorForm {
-    height: 275px;
+    height: 290px;
 }
 
 #customChartColorForm {
-    height: 250px;
+    height: 270px;
 }
 
 #wdForm, 
 #revcatForm,
 #expcatForm {
-    height: 415px;
+    height: 430px;
 }
 
 div[id^="disclaimer"] {
@@ -1440,38 +1471,38 @@ div[id^="hint"] {
 }
 
 #title_changeUsername.titleSelected {
-    width: 201px;
+    width: 222px;
     transition: width 1s ease-in-out;
 }
 
 #title_changePassword.titleSelected {
-    width: 198px;
+    width: 214px;
     transition: width 1s ease-in-out;
 }
 
 #title_changeColorTheme.titleSelected {
-    width: 221px;
+    width: 243px;
     transition: width 1s ease-in-out;
 }
 
 #title_colorTheme.titleSelected {
-    width: 308px;
+    width: 342px;
     transition: width 1s ease-in-out;
 }
 #title_chartColorTheme.titleSelected {
-    width: 368px;
+    width: 411px;
     transition: width 1s ease-in-out;
 }
 #title_wdcats.titleSelected {
-    width: 261px;
+    width: 295px;
     transition: width 1s ease-in-out;
 }
 #title_revcats.titleSelected {
-    width: 253px;
+    width: 283px;
     transition: width 1s ease-in-out;
 }
 #title_expcats.titleSelected {
-    width: 292px;
+    width: 329px;
     transition: width 1s ease-in-out;
 }
 
@@ -1610,11 +1641,12 @@ section.form-container:hover {
 }
 
 .additional-label {
-    display: inline-block;
+    display: block;
     align-self: center;
     text-align: center;
     height: 2rem;
-    width: 60%;
+    /* width: 60%; */
+    width: 175px;
     padding: .3rem 1rem;
     background-color: var(--grey-heavy);
     color: white;
@@ -1622,6 +1654,10 @@ section.form-container:hover {
     border: var(--border-standard);
     border-radius: 20px 0px 0px 20px;
     transition: font-weight .2s ease-in-out, font-size .2s ease-in-out, padding .2s ease-in-out;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .additional-input {
@@ -1629,7 +1665,8 @@ section.form-container:hover {
     align-self: center;
     text-align: center;
     height: 2rem;
-    width: 40%;
+    /* width: 40%; */
+    width: 115px;
     border: var(--border-standard);
     outline: 0;
     transition: var(--transition-input);
@@ -1643,7 +1680,6 @@ section.form-container:hover {
     display: inline-block;
     margin-left: 12rem;
     font-style: italic;
-    font-size: 1.15rem;
     margin-top: 0;
     margin-bottom: 0;
 }
@@ -1814,6 +1850,8 @@ span>.additional-input:last-of-type {
 .table-span>select,
 .table-span>input {
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     display: block;
     width: 100%;
     height: 80%;
@@ -2053,8 +2091,8 @@ input.edit {
     min-width: 20%;
 }
 
-.option:nth-of-type(6) {
-    min-width: 40%;
+#slider {
+    width: 300px;
 }
 
 .option-span {
@@ -2140,6 +2178,8 @@ input[type="radio"]:checked+label {
     font-size: 1.15rem;
     padding: .25rem .5rem;
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     height: 2rem;
     border: 1px solid black;
     transition: border-color .5s ease-in-out, box-shadow .5s ease-in-out, color .5s ease-in-out, text-shadow .5s ease-in-out;
@@ -2173,8 +2213,13 @@ input[type="radio"]:checked+label {
     margin: 0;
     font-size: 1rem;
     text-overflow: ellipsis;
+    white-space: nowrap;
     overflow: hidden;
     text-wrap: nowrap;
+}
+
+.custom-list-container tr:nth-of-type(1)>td{
+    overflow:visible;
 }
 
 .custom-list-container tr>td:nth-of-type(1) {
@@ -2224,7 +2269,7 @@ input[type="radio"]:checked+label {
     display: none;
     right: -15px;
     top: 0px;
-    z-index: 4;
+    z-index: 1;
     background-color: black;
     border-radius: 100%;
 }
@@ -2241,7 +2286,7 @@ input[type="radio"]:checked+label {
     background-color: rgba(184, 93, 93, 0.5);
 }
 
-#cChartForm {
+.chartForm {
     width: 30%;
     align-items: center;
     margin-left: auto;
@@ -2253,9 +2298,9 @@ input[type="radio"]:checked+label {
     color: white;
 }
 
-#cChartForm input[type="text"],
-#cChartForm input[type="month"],
-#cChartForm select {
+.chartForm input[type="text"],
+.chartForm input[type="month"],
+.chartForm select {
     background-color: var(--grey-heavy);
     color: var(--theme-color-neon);
     border: 1px solid var(--theme-color-neon);
@@ -2266,11 +2311,11 @@ input[type="radio"]:checked+label {
     text-align: center;
 }
 
-#cChartForm label {
+.chartForm label {
     width: 30%;
 }
 
-#cChartForm input[type="radio"] {
+.chartForm input[type="radio"] {
     position: absolute;
     left: 50px;
 }
@@ -2280,4 +2325,204 @@ input[type="radio"]:checked+label {
     flex-direction: row;
     max-width: 800px;
     flex-wrap: wrap;
+}
+
+/* xxxxxxxxxxxxxxxxxxxxx TOOLS-VIEW xxxxxxxxxxxxxxxxxxxxx */
+.tools-container {
+    grid-area: list;
+    display: flex;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 685px;
+}
+
+.tool-box {
+    margin: 0rem 3rem 1rem 3rem;
+    padding: 2rem 1rem;
+    width: 400px;
+    height: 500px;
+    border: var(--border-container);
+    border-radius: var(--border-radius);
+    background: radial-gradient(circle, var(--theme-color-light) 23%, var(--theme-color-medium) 65%, var(--theme-color-heavy) 98%);
+    text-align: center;
+    box-shadow: 15px 15px 20px var(--grey-heavy);
+    transition: all .5s ease-in-out;
+    
+}
+
+.tool-box:hover {
+    margin: -3rem 0 0 0;
+    width: 496px;
+    height: 600px;
+    box-shadow: none;
+    background: radial-gradient(circle, var(--theme-color-light) 23%, var(--theme-color-medium) 65%);
+    transition: all .5s ease-in-out;
+    cursor: pointer;
+    z-index: 4;
+}
+
+.tool-box>h2 {
+    font-size: 2rem;
+    color: white;
+    text-shadow: var(--text-shadow-standard);
+    transition: all .5s ease-in-out;
+}
+
+.tool-box:hover>h2 {
+    font-size: 3rem;
+    color: var(--theme-color-neon);
+    transition: all .5s ease-in-out;
+}
+
+.tool-box>input[type="image"] {
+    margin-top: 2rem;
+    border-radius: var(--border-radius);
+    transition: all .5s ease-in-out;
+}
+
+.tool-box:hover>input[type="image"]#stonks {
+    height: 295px;
+    width: 400px;
+    transition: all .5s ease-in-out;
+}
+
+.tool-box:hover>input[type="image"]#moneybag {
+    height: 400px;
+    width: 293px;
+    transition: all .5s ease-in-out;
+}
+
+.tool-box:hover>input[type="image"]#interest {
+    height: 200px;
+    width: 400px;
+    transition: all .5s ease-in-out;
+}
+
+.tool-content {
+    display: flex;
+    flex-direction: column;
+    grid-area: list;
+    padding: 1rem 1rem;
+    border-radius: var(--border-radius);
+    margin-right: 1rem;
+    background: var(--background-standard);
+    border: var(--border-container);
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    transition: var(--container-transition);
+}
+
+.tool-content:hover {
+    box-shadow: var(--container-hover);
+    transition: var(--container-transition);
+}
+
+.tool-content>form {
+    height: 100%;
+    width: 100%;
+}
+
+.tool-content>form.chartForm {
+    height: 35%;
+    width: 55%;
+}
+
+.tool-content h3 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--theme-color-neon);
+    text-shadow: var(--text-shadow-standard);
+    margin-bottom: 1rem;
+}
+
+.planner-row,
+.planner-submit-row {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    width: 80%;
+    height: 2.75rem;
+    text-align: center;
+    margin-top: .75rem;
+    font-size: 0;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.planner-row:first-of-type,
+.planner-row:last-of-type {
+    margin-bottom: 1rem;
+}
+
+#planner-main-balance-row>.planner-span,
+.planner-row:first-of-type>.planner-span{
+    font-size: 1.25rem;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.planner-row:first-of-type>.planner-span:first-of-type {
+    border-radius: 20px 0px 0px 0px;
+}
+
+.planner-row:first-of-type>.planner-span:last-of-type {
+    border-radius: 0px 20px 0px 0px;
+}
+
+.planner-row:nth-last-child(2)>.planner-span:first-of-type {
+    border-radius: 0px 0px 0px 20px;
+}
+
+.planner-row:nth-last-child(2)>.planner-span:last-of-type {
+    border-radius: 0px 0px 20px 0px;
+}
+
+.planner-row>.planner-span{
+    display: inline-block;
+    width: 25%;
+    height: 100%;
+    margin: 0;
+    font-size: 1rem;
+    border: var(--border-standard);
+    padding: .75rem 0;
+}
+
+.planner-row>.revenue {
+    background-color: #9ACD32;
+}
+
+.planner-row>.expenditure {
+    background-color: coral;
+}
+
+input.planner-span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+    width: 100%;
+    height: 80%;
+    margin: .25rem 0;
+    background-color: transparent;
+    border: none;
+    text-align: center;
+}
+
+
+
+/* xxxxxxxxxxxxxxxxxxxxx ERROR-VIEW xxxxxxxxxxxxxxxxxxxxx */
+#error {
+    display: block;
+    width: 1850px;
+    text-align: center;
+    font-size: 5rem;
+    color: var(--theme-color-neon);
 }

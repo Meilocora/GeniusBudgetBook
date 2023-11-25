@@ -186,4 +186,10 @@ class WDController extends AbstractController{
                 return $filteredArray;
         }
     }
+
+    public function firstWDBalanceDate() {
+        $firstBalance = $this->wdRepository->fetchfirstBalance();
+        if($firstBalance === null) return null;
+        return $firstBalance['dateslug'];
+    }
 }

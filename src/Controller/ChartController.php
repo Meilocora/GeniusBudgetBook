@@ -59,18 +59,17 @@ class ChartController extends AbstractController{
                 $totalGoalShares = $totalLiquidWealthGoalShares;
                 break;
         }
-        arsort($totalGoalShares); 
+        // arsort($totalGoalShares); 
         return $totalGoalShares;
     }
 
     public function wdTrendArray($dataSet, $queryDate, $startDate) {
-        $twoDWDArray = $this->wdController->wdTrend($queryDate, $startDate, $dataSet);
+        $twoDWDArray = array_reverse($this->wdController->wdTrend($queryDate, $startDate, $dataSet));
         if(!empty($twoDWDArray)) {
             $categoriesCount = sizeof($twoDWDArray[0])-1;
             $dateArray = [];
             $categoriesArray = array_slice(array_keys($twoDWDArray[0]), 1, sizeof(array_keys($twoDWDArray[0])) - 1);
             $wdTrendArray = [];
-            
             for($y=0; $y<$categoriesCount; $y++) {
                 $localArray = [];
                 for($x=0; $x<sizeof($twoDWDArray); $x++) {
@@ -91,6 +90,7 @@ class ChartController extends AbstractController{
                 $modifiedDateArray[] = date_create($singleDate)->format('M Y');
             }
             $wdTrendArray[] = $modifiedDateArray;
+
             return $wdTrendArray;
         } else {
             return [[0], [0]];
@@ -184,6 +184,14 @@ class ChartController extends AbstractController{
         return $dateArray;
     }
 
+    public function yearsArray($years) {
+        $yearsArray = [];
+        for($i=(int)date('Y'); $i<$years+date('Y'); $i++) {
+            $yearsArray[] = $i;
+        }
+        return $yearsArray;
+    }
+
     public function entryDataByTypeC($startDate, $year, $type) {
         $entryArray = $this->entryController->entryTrendByEntrytype($startDate, $year, $type);
         for ($i = 0; $i < sizeof($entryArray); $i++) {;
@@ -237,6 +245,25 @@ class ChartController extends AbstractController{
             $entriesTrend[] = $localSum;
         }
         return $entriesTrend;
+    }
+
+    public function compundInterestTrend($initialInvest, $regularInvest, $interestRate, $years) {
+        $compoundInterestArray = [];
+        for($i=1; $i<$years+1; $i++) {
+            $compoundInterestArray[] = $this->compundInterest($initialInvest, $regularInvest, $interestRate, $i);
+        }
+        return $compoundInterestArray;
+    }
+
+    public function compundInterest($initialInvest, $regularInvest, $interestRate, $years) {
+        $n = 1; // times the rate is being compounded each year
+        $compundInterestArray = [];
+        $finalBalance = (int) round($initialInvest*pow(1+$interestRate,$years) + ($regularInvest*(1+$interestRate)*(pow((1+$interestRate), $years)-1))/($interestRate), 0);
+        $invest = $initialInvest + $regularInvest * $years;
+        $interest = (int) round($finalBalance - $invest, 0);
+        $compundInterestArray[] = $invest;
+        $compundInterestArray[] = $interest;
+        return $compundInterestArray;
     }
 
 }

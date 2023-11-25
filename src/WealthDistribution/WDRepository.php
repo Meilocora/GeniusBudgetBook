@@ -119,4 +119,12 @@ class WDRepository {
         $stmt->execute();
         return;
     }
+
+    public function fetchfirstBalance() {
+        $query ='SELECT * FROM ' . "`{$this->username}" . 'wdmonthly` ORDER BY `dateslug` ASC';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if(isset($results[0])) return $results[0]; else return null;
+    }
 }

@@ -615,7 +615,7 @@
             <h1>Custom Chart</h1>
         </div>
         <div class="charts-container-row">
-            <form action="./?route=custom-overview" method="POST" id="cChartForm">
+            <form action="./?route=custom-overview" method="POST" class="chartForm">
                 <div class="charts-container-row">
                     <span>Choose search settings:</span>
                 </div>
@@ -666,7 +666,7 @@
                             Months
                         </span>
                         <span class="report-content">
-                            <?php echo sizeof($dateArray); ?>
+                            <?php echo sizeof($dateArray)-1; ?>
                         </span>
                     </div>
                     <div class="report neutral">
