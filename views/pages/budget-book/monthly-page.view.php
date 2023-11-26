@@ -56,8 +56,8 @@
             <?php for($x = 0; $x < sizeof($wdcategories); $x = $x+3): ?>
             <span>
                     <label class="additional-label" for="<?php echo $wdcategories[$x]; ?>"><?php echo $wdcategories[$x]; ?></label>
-                    <input class="additional-input" type="number" max="999999" step="1" id ="<?php echo $wdcategories[$x] . '-target'; ?>" name="<?php echo $wdcategories[$x] . '-target'; ?>" value="<?php echo $wdcategories[$x+1]; ?>">
-                    <input class="additional-input" type="number" max="999999" step="1" id ="<?php echo $wdcategories[$x] . '-actual'; ?>" name="<?php echo $wdcategories[$x] . '-actual'; ?>" value="<?php echo $wdcategories[$x+2]; ?>">
+                    <input class="additional-input" type="number" max="999999" step="1" id ="<?php echo $wdcategories[$x] . '-target'; ?>" name="<?php echo $wdcategories[$x] . '-target'; ?>" value="<?php echo $wdcategories[$x+1]; ?>" required>
+                    <input class="additional-input" type="number" max="999999" step="1" id ="<?php echo $wdcategories[$x] . '-actual'; ?>" name="<?php echo $wdcategories[$x] . '-actual'; ?>" value="<?php echo $wdcategories[$x+2]; ?>" required>
             </span>
             <?php endfor; ?>
             <input type="hidden" name="date" value="<?php echo $datePretty; ?>">

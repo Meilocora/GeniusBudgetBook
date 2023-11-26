@@ -20,8 +20,8 @@ class CustomOverviewController extends AbstractController{
     public function showCustomOverview($navRoutes, $colorTheme, $userShortcut, $chartColorSet, $cTimeinterval, $cStartDate, $cEndDate, $cEntryType, $cFixation, $cCategories, $cCategoryQuery, $cTitles, $cTitleQuery, $cAmounts, $fromAmount, $toAmount, $cComments, $cCommentQuery, $cSortingProperty, $cSort, $currentPage, $perPage, $cChartSearch, $cChartSearchCategory, $cChartSearchRegex, $cChartStartDate, $cChartEndDate) {
         $startDate = $this->giveInterval($cTimeinterval, $cStartDate, $cEndDate)[0];
         $endDate = $this->giveInterval($cTimeinterval, $cStartDate, $cEndDate)[1];
-        $timespan = calculateTimespanDays($startDate, $endDate);
-        $timespanAccount = $this->entryController->timespanFirstEntry();
+        $timespan = max(1, calculateTimespanDays($startDate, $endDate));
+        $timespanAccount = max(1, $this->entryController->timespanFirstEntry());
         $categories = $this->giveCategories();
         $maxAmount = $this->entryController->highestAmount();
 

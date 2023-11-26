@@ -71,9 +71,11 @@
                     <?php endif; ?>
                 </div>
             <?php endfor; ?>
-            <div class="charts-container-row">
-                <canvas id="millionaireLinechart" width="1000px" height="500px"></canvas>
-            </div>
+            <?php if($millionaireYears < 1000) : ?>
+                <div class="charts-container-row">
+                    <canvas id="millionaireLinechart" width="1000px" height="500px"></canvas>
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
         <input type="button" value="Get Back" class="cancel-btn" id="getBackMillionaire">
     </div>
@@ -160,11 +162,11 @@
             </div>
             <div class="charts-container-row">
                 <label for="investDuration">Duration [years]:</label>
-                <input type="number" name="investDuration" id="investDuration" min="0" step="1" max="1000000" value="<?php echo $investDuration; ?>" required>
+                <input type="number" name="investDuration" id="investDuration" min="0" step="1" max="100" value="<?php echo $investDuration; ?>" required>
             </div>
             <div class="charts-container-row">
                 <label for="interestRate">APY [%]:</label>
-                <input type="number" name="interestRate" id="interestRate" min="0.01" step="0.01" max="100" value="<?php echo $interestRate*100; ?>" required>
+                <input type="number" name="interestRate" id="interestRate" min="0.01" step="0.01" max="30" value="<?php echo $interestRate*100; ?>" required>
             </div>
             <div class="charts-container-row">
                 <input type="submit" value="Calculate" class="btn">

@@ -217,7 +217,7 @@ class ChartController extends AbstractController{
         $startDate = $this->entryController->dateFirstEntry();
         $trendData = $this->entryDataByTypeC($startDate, $endDate, $type);
         $summedData = $this->summedEntryDataC($trendData);
-        $timespanDays = calculateTimespanDays($startDate, $endDate);
+        $timespanDays = max(1, calculateTimespanDays($startDate, $endDate));
         $resultArray = [];
         foreach ($summedData AS $key => $value) {
             if($value !== 0) $resultArray[$key] = round($value/$timespanDays*30, 0);

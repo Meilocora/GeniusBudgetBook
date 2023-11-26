@@ -113,7 +113,7 @@ class ToolsController extends AbstractController{
         $firstBalanceDate = $this->wDController->firstWDBalanceDate();
         if($firstBalanceDate === null) return;
         $wdYC = $this->chartController->wdTrendArray('actual', date('Y-m'), $firstBalanceDate);
-        $timeFactor = min(1, round((strtotime(date('Y-m')) - strtotime($firstBalanceDate))/60/60/24/30.42/12, 2));
+        $timeFactor = max(1, round((strtotime(date('Y-m')) - strtotime($firstBalanceDate))/60/60/24/30.42/12, 2));
         array_pop($wdYC);
         $catsArray = [];
         $increaseArray = [];
@@ -142,7 +142,7 @@ class ToolsController extends AbstractController{
                 $counter++;
                 for($i=0; $i<sizeof($catValuesArray); $i++) {
                     if($millionaireAssumption === 'linear') {
-                        $catValuesArray[$i] += $increaseArray[$i];
+                        $catValuesArray[$i] = max(0, $catValuesArray[$i] + $increaseArray[$i]);
                     } elseif($millionaireAssumption === 'exponentially') {
                         $catValuesArray[$i] += round($catValuesArray[$i] * $increaseArray[$i], 0);
                     }
@@ -168,11 +168,13 @@ class ToolsController extends AbstractController{
        return $returnArray;
     }
 
-    public function calculateIncrease($millionaireAssumption, $value1, $value2) {
+    public function calculateIncrease($millionaireAssumption, $value1 = 0.0001, $value2 = 0.0001) {
         if($millionaireAssumption === 'linear') {
             return $value2 - $value1;
         } elseif($millionaireAssumption === 'exponentially') {
-            return $value2 / $value1 - 1;  // use this to calculate with percentages
+            $value1 = max(0.0001, $value1);
+            $value2 = max(0.0001, $value2);
+            return $value2 / $value1 - 1;
         }
     }
     

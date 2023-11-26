@@ -233,7 +233,7 @@
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cAmounts" value="Custom">
                                 <input type="hidden" name="fromAmount" value="0">
-                                <input type="text" placeholder="insert max Amount" name="toAmount" min ="1" max="<?php echo $maxAmount; ?>" onfocus="(this.type='number')" onblur="(this.type='text')" <?php if($toAmount !== 0) echo "value='{$toAmount}'"; ?> required>
+                                <input type="text" placeholder="insert max Amount" name="toAmount" onfocus="(this.type='number')" onblur="(this.type='text')" <?php if($toAmount !== 0) echo "value='{$toAmount}'"; ?> required>
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>

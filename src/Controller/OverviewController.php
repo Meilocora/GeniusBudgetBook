@@ -23,7 +23,7 @@ class OverviewController extends AbstractController{
             $year = date('Y', strtotime($endDate));
         }
 
-        $timespanAccount = $this->entryController->timespanFirstEntry();
+        $timespanAccount = max(1, $this->entryController->timespanFirstEntry());
         $timespanQuery = max(1, getTimespanQueryDates($startDate, $endDate));
 
         $revColors = $this->colorThemeController->giveChartColorsBudgetBook('rev', 1);
