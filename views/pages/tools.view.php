@@ -7,8 +7,8 @@
         <h2>Cashflow Planner</h2>
         <input type='image' src='./img/moneybag.png' alt='Arrow symbol' height='320px' width='235px' id="moneybag">
     </div>
-    <div class="tool-box" id="compundInterestCalculatorBox">
-        <h2>Compund Interest Calculator</h2>
+    <div class="tool-box" id="compoundInterestCalculatorBox">
+        <h2>Compound Interest Calculator</h2>
         <input type='image' src='./img/interest.png' alt='Arrow symbol' height='160px' width='320px' id="interest">
     </div>
     <!-- ========== WHEN MILLIONAIRE ========== -->
@@ -149,8 +149,8 @@
         </form>
     </div>
     <!-- ========== COMPOUND INTEREST CALCULATOR ========== -->
-    <div class="tool-content hidden" id="compundInterestCalculatorContent">
-        <h3>Compund Interest Calculator</h3>
+    <div class="tool-content hidden" id="compoundInterestCalculatorContent">
+        <h3>Compound Interest Calculator</h3>
         <form action="./?route=tools" method="POST" class="chartForm">
             <div class="charts-container-row">
                 <label for="initialCapital">Initial Capital [€]:</label>
@@ -216,14 +216,14 @@
     let invest = [<?php for($i=0;$i<sizeof($compoundInterestArray);$i++) echo "{$compoundInterestArray[$i][0]}, "; ?>];
     let interest = [<?php  for($i=0;$i<sizeof($compoundInterestArray);$i++) echo "{$compoundInterestArray[$i][1]}, "; ?>];
 
-    chartGenerator.generateBarChart('compoundInterestBarchart', 'linear',  ['Invest', 'Interest', undefined, undefined], 'Compund Interest', colors, [0,0], labelArray, interest, invest, 0, 0);
+    chartGenerator.generateBarChart('compoundInterestBarchart', 'linear',  ['Invest', 'Interest', undefined, undefined], 'Compound Interest', colors, [0,0], labelArray, interest, invest, 0, 0);
 </script>
 <script defer>
     document.getElementById('whenMillionaireBox').addEventListener("click", e => {
         document.getElementById('whenMillionaireContent').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         localStorage.setItem("tool", JSON.stringify('whenMillionaire'));
     });
 
@@ -232,7 +232,7 @@
         document.getElementById('whenMillionaireContent').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         localStorage.setItem("tool", JSON.stringify('start'));
     });
 
@@ -240,7 +240,7 @@
         document.getElementById('cashflowPlannerContent').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         localStorage.setItem("tool", JSON.stringify('cashFlowPlanner'));
     });
 
@@ -249,22 +249,22 @@
         document.getElementById('cashflowPlannerContent').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         localStorage.setItem("tool", JSON.stringify('start'));
     });
 
-    document.getElementById('compundInterestCalculatorBox').addEventListener("click", e => {
-        document.getElementById('compundInterestCalculatorContent').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+    document.getElementById('compoundInterestCalculatorBox').addEventListener("click", e => {
+        document.getElementById('compoundInterestCalculatorContent').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
-        localStorage.setItem("tool", JSON.stringify('compundInterest'));
+        localStorage.setItem("tool", JSON.stringify('compoundInterest'));
     });
 
     document.getElementById('getBackInterest').addEventListener("click", e => {
         e.preventDefault();
-        document.getElementById('compundInterestCalculatorContent').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorContent').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
         localStorage.setItem("tool", JSON.stringify('start'));
@@ -275,15 +275,15 @@
         document.getElementById('whenMillionaireContent').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
     } else if(usedTool === 'cashFlowPlanner') {
         document.getElementById('cashflowPlannerContent').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
-    } else if (usedTool === 'compundInterest') {
-        document.getElementById('compundInterestCalculatorContent').classList.toggle("hidden");
-        document.getElementById('compundInterestCalculatorBox').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
+    } else if (usedTool === 'compoundInterest') {
+        document.getElementById('compoundInterestCalculatorContent').classList.toggle("hidden");
+        document.getElementById('compoundInterestCalculatorBox').classList.toggle("hidden");
         document.getElementById('whenMillionaireBox').classList.toggle("hidden");
         document.getElementById('cashflowPlannerBox').classList.toggle("hidden");
     }

@@ -49,11 +49,11 @@
                         </span> 
                         <span class="option-span">
                             <input type="radio" name="cEntryType" value="revenues" id="cRevenues" <?php if($cEntryType === 'revenues') echo 'checked'; ?>>
-                            <label for="cYTD">Only revenues</label>
+                            <label for="cRevenues">Only revenues</label>
                         </span> 
                         <span class="option-span">
                             <input type="radio" name="cEntryType" value="expenditures" id="cExpenditures" <?php if($cEntryType === 'expenditures') echo 'checked'; ?>>
-                            <label for="cYTD">Only expenditures</label>
+                            <label for="cExpenditures">Only expenditures</label>
                         </span> 
                     </div>
                     <div class="option">

@@ -54,7 +54,7 @@ class UsersController extends AbstractController {
         $categories= [];
         foreach($userData AS $data) {
             foreach($data AS $key => $value) {
-                if(preg_match('/^expcat{1,2}\d$/', $key) && $value != '') {
+                if(preg_match('/^expcat\d{1,2}$/', $key) && $value != '') {
                     $categories[] = $value;
             }
         }
