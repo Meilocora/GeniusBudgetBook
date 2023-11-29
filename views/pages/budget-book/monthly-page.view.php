@@ -15,7 +15,7 @@
         </div>
         <div class="form-row">
             <label for="amount" class="label">Amount</label>
-            <input type="number" name="amount" id="amount" class="input" min="0.01" step="0.01" required>
+            <input type="number" name="amount" id="amount" class="input" required>
         </div>
         <div class="form-row">
             <label for="date" class="label">Date</label>

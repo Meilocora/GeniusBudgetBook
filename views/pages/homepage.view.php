@@ -242,11 +242,17 @@
                 <span>Your total liquid assets are currently worth: <?php echo number_format($currentTotalLiquid, '0', ',', '.') . ' €'; ?></span>
             </div>
             <div class="charts-container-row">
-                <span>Your saving goal for <?php echo $year; ?> is <?php echo $goalsArray['savinggoal']; ?> €...</span>
+                <span>Your saving goal for <?php echo $year; ?> is <?php echo number_format($goalsArray['savinggoal'], '0', ',', '.') . '€ '; ?>...</span>
             </div>
-            <div class="charts-container-row">
-                <span>You need to save <?php echo number_format($currentSavingGoalSharesC['Missing liquid wealth'], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
-            </div>
+            <?php if($currentSavingGoalSharesC['Missing liquid wealth'] > 0): ?> 
+                <div class="charts-container-row">
+                    <span>You need to save <?php echo number_format($currentSavingGoalSharesC['Missing liquid wealth'], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
+                </div>
+            <?php elseif($currentSavingGoalSharesC['Missing liquid wealth'] === 0): ?>
+                <div class="charts-container-row">
+                    <span>Congratulations, you already reached your saving goal!</span>
+                </div>
+            <?php endif; ?>
             <div class="charts-container-row">
                 <canvas id="savingsDoughnutActual" width="600px" height="400px"></canvas>
                 <canvas id="savingsDoughnutGoal" width="600px" height="400px"></canvas>

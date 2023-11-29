@@ -2286,11 +2286,11 @@ input[type="radio"]:checked+label {
     display: block;
 }
 
-.custom-list-container tr.revenue td {
+.revenue * {
     background-color: rgba(151, 198, 131, 0.5);
 }
 
-.custom-list-container tr.expenditure td{
+.expenditure * {
     background-color: rgba(184, 93, 93, 0.5);
 }
 

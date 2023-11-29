@@ -27,12 +27,9 @@ class HomepageController extends AbstractController{
         }
 
         $currentWDTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target'); 
-        $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
         $currentWDActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual');
-        $currentWDActualArrayP = calculatePercentagesArray($currentWDActualArrayC);
         $currentTotalWealth = $this->wdController->currentTotalWealth($queryDate);
         $currentGoalSharesC = $this->chartController->currentGoalShares($year, $queryDate, 'wd');
-        $currentGoalSharesP = calculatePercentagesArray($currentGoalSharesC);
         $goalsArray = $this->yearlyController->fetchCurrentGoals($year);
         $daysleft = calculateRemainingDays($year);
         $backgroundColor10 = $this->colorThemeController->giveChartColors($chartColorSet, 1)[0];
@@ -42,15 +39,36 @@ class HomepageController extends AbstractController{
         $wdYC = $this->chartController->wdTrendArray('actual', $queryDate, $startDate);
         $wdYTargetActualC = $this->chartController->wdTrendArray('total-target-actual', $queryDate, $startDate);
         $donationsArrayC = $this->chartController->donationsValuesArray($year, $startDate, $queryDate);
-        $donationsArrayP = calculatePercentagesArray($donationsArrayC);
         $donationEntries = $this->entryController->donationsTrend($startDate, $queryDate);
         $savingsArrayC = $this->chartController->wdTrendArray('actual-liquid', $queryDate, $startDate);
         $currentSavingsTargetArrayC = $this->wdController->currentWDValues($queryDate, 'target-liquid'); 
-        $currentSavingsTargetArrayP = calculatePercentagesArray($currentSavingsTargetArrayC);
         $currentSavingsActualArrayC = $this->wdController->currentWDValues($queryDate, 'actual-liquid'); 
-        $currentSavingsActualArrayP = calculatePercentagesArray($currentSavingsActualArrayC);
         $currentTotalLiquid = $this->wdController->currentTotalLiquid($queryDate);
         $currentSavingGoalSharesC = $this->chartController->currentGoalShares($year, $queryDate, 'liquid');
+
+        // Calculate charts even if there are no balances yet for this month
+        if(@end(end($wdYC)) !== date('M Y', strtotime($queryDate))) {
+            $currentWDTargetArrayC = $this->wdController->currentWDValues(date('Y-m', strtotime("-1 month")), 'target'); 
+            $currentWDActualArrayC = $this->wdController->currentWDValues(date('Y-m', strtotime("-1 month")), 'actual');
+            $currentTotalWealth = $this->wdController->currentTotalWealth(date('Y-m', strtotime("-1 month")));
+            $currentGoalSharesC = $this->chartController->currentGoalShares($year, date('Y-m', strtotime("-1 month")), 'wd');
+            $wdYC = $this->chartController->wdTrendArray('actual', date('Y-m', strtotime("-1 month")), $startDate);
+            $wdYTargetActualC = $this->chartController->wdTrendArray('total-target-actual', date('Y-m', strtotime("-1 month")), $startDate);
+            $donationsArrayC = $this->chartController->donationsValuesArray($year, $startDate, date('Y-m', strtotime("-1 month")));
+            $donationEntries = $this->entryController->donationsTrend($startDate, date('Y-m', strtotime("-1 month")));
+            $savingsArrayC = $this->chartController->wdTrendArray('actual-liquid', date('Y-m', strtotime("-1 month")), $startDate);
+            $currentSavingsTargetArrayC = $this->wdController->currentWDValues(date('Y-m', strtotime("-1 month")), 'target-liquid'); 
+            $currentSavingsActualArrayC = $this->wdController->currentWDValues(date('Y-m', strtotime("-1 month")), 'actual-liquid'); 
+            $currentTotalLiquid = $this->wdController->currentTotalLiquid(date('Y-m', strtotime("-1 month")));
+            $currentSavingGoalSharesC = $this->chartController->currentGoalShares($year, date('Y-m', strtotime("-1 month")), 'liquid');
+        }
+
+        $currentWDTargetArrayP = calculatePercentagesArray($currentWDTargetArrayC);
+        $currentWDActualArrayP = calculatePercentagesArray($currentWDActualArrayC);
+        $currentGoalSharesP = calculatePercentagesArray($currentGoalSharesC);
+        $donationsArrayP = calculatePercentagesArray($donationsArrayC);
+        $currentSavingsTargetArrayP = calculatePercentagesArray($currentSavingsTargetArrayC);
+        $currentSavingsActualArrayP = calculatePercentagesArray($currentSavingsActualArrayC);
         $currentSavingGoalSharesP = calculatePercentagesArray($currentSavingGoalSharesC);
 
         $this->render('homepage', [

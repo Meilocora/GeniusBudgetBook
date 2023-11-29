@@ -49,7 +49,7 @@ class WDRepository {
     }
 
     public function fetchAllForTimeInterval($startDate, $endDate) {
-        $query = 'SELECT * FROM' . "`{$this->username}" . 'wdmonthly` WHERE `dateslug` BETWEEN :startdate AND :enddate';
+        $query = 'SELECT * FROM' . "`{$this->username}" . 'wdmonthly` WHERE `dateslug` BETWEEN :startdate AND :enddate ORDER BY `dateslug` ASC';
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':startdate', $startDate);
         $stmt->bindValue(':enddate', $endDate);

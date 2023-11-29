@@ -116,12 +116,24 @@ class ToolsController extends AbstractController{
         $timeFactor = max(1, round((strtotime(date('Y-m')) - strtotime($firstBalanceDate))/60/60/24/30.42/12, 2));
         array_pop($wdYC);
         $catsArray = [];
+        $increaseArrayRaw = [];
         $increaseArray = [];
         $catValuesArray = [];
         foreach($wdYC AS $category) {
             $catsArray[] = $category[0];
-            $increaseArray[] = round(($this->calculateIncrease($millionaireAssumption, $category[1], $category[sizeof($category)-1]))/$timeFactor, 2);
+            $increaseArrayRaw[] = round(($this->calculateIncrease($millionaireAssumption, $category[1], $category[sizeof($category)-1]))/$timeFactor, 2);
             $catValuesArray[] = $category[sizeof($category)-1];
+        }
+        foreach($increaseArrayRaw AS $increase) {
+            if($increase == 0) {
+                if($this->wDController->currentTotalWealth(date('Y-m')) === 0) {
+                    $increaseArray[] = $this->wDController->currentTotalWealth(date('Y-m', strtotime("-1 month"))) / $this->wDController->currentTotalWealth($firstBalanceDate) - 1;
+                } else {
+                    $increaseArray[] = $this->wDController->currentTotalWealth(date('Y-m')) / $this->wDController->currentTotalWealth($firstBalanceDate) - 1;
+                }
+            } else {
+                $increaseArray[] = $increase;
+            }  
         }
         $totalBalance = array_sum($catValuesArray);
         $increaseTestArray = [];
@@ -168,12 +180,11 @@ class ToolsController extends AbstractController{
        return $returnArray;
     }
 
-    public function calculateIncrease($millionaireAssumption, $value1 = 0.0001, $value2 = 0.0001) {
+    public function calculateIncrease($millionaireAssumption, int $value1, int $value2) {
         if($millionaireAssumption === 'linear') {
             return $value2 - $value1;
         } elseif($millionaireAssumption === 'exponentially') {
-            $value1 = max(0.0001, $value1);
-            $value2 = max(0.0001, $value2);
+            if($value1 === ''| $value2 === '' | $value1 === 0) return 0;
             return $value2 / $value1 - 1;
         }
     }

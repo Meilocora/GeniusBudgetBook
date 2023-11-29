@@ -26,7 +26,7 @@ class ChartController extends AbstractController{
             case 'YOY':
                 return date('Y-m-d', strtotime(date($year . '-m-' . '01'))-(60*60*24*365));
             case 'ALL':
-                return $this->entryController->dateFirstEntry();
+                return $this->wdController->firstWDBalanceDate();
             case 'Custom':
                 return false;
             }
@@ -64,7 +64,8 @@ class ChartController extends AbstractController{
     }
 
     public function wdTrendArray($dataSet, $queryDate, $startDate) {
-        $twoDWDArray = array_reverse($this->wdController->wdTrend($queryDate, $startDate, $dataSet));
+        // $twoDWDArray = array_reverse($this->wdController->wdTrend($queryDate, $startDate, $dataSet));
+        $twoDWDArray = $this->wdController->wdTrend($queryDate, $startDate, $dataSet);
         if(!empty($twoDWDArray)) {
             $categoriesCount = sizeof($twoDWDArray[0])-1;
             $dateArray = [];
