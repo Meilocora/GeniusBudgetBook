@@ -207,7 +207,7 @@
                         <td>
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cCategories" value="certainCategory">
-                                <select name="cCategoryQuery" required>
+                                <select name="cCategoryQuery" required style="padding: 0;">
                                     <?php if($cCategoryQuery !== null): ?>
                                         <option value="<?php echo e($cCategoryQuery); ?>"><?php echo e($cCategoryQuery); ?></option>
                                     <?php else: ?>
@@ -225,7 +225,7 @@
                         <td>
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cTitles" value="certainTitle">
-                                <input type="text" name="cTitleQuery" maxlength="50" placeholder="search title" value="<?php echo e($cTitleQuery); ?>">
+                                <input type="text" name="cTitleQuery" maxlength="50" placeholder="search title" value="<?php echo e($cTitleQuery); ?>" style="padding: 0;">
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>
@@ -233,13 +233,13 @@
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cAmounts" value="Custom">
                                 <input type="hidden" name="fromAmount" value="0">
-                                <input type="text" placeholder="insert max Amount" name="toAmount" onfocus="(this.type='number')" onblur="(this.type='text')" <?php if($toAmount !== 0) echo "value='{$toAmount}'"; ?> required>
+                                <input type="text" placeholder="insert max Amount" name="toAmount" onfocus="(this.type='number')" onblur="(this.type='text')" <?php if($toAmount !== 0) echo "value='{$toAmount}'"; ?> required style="padding: 0;">
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>
                         <td>
                             <form action="./?route=custom-overview" method="POST">
-                                <select name="cTimeinterval" required> 
+                                <select name="cTimeinterval" required style="padding: 0;"> 
                                     <?php $timeintervals = ['YTD', 'YoY', 'All']; ?>
                                     <option value="<?php echo e($cTimeinterval); ?>"><?php echo e($cTimeinterval); ?></option>
                                         <?php foreach($timeintervals AS $interval): ?>
@@ -254,7 +254,7 @@
                         <td>
                             <form action="./?route=custom-overview" method="POST">
                                 <input type="hidden" name="cComments" value="certainComment">
-                                <input type="text" name="cCommentQuery" maxlength="1024" placeholder="search comment" value="<?php echo e($cCommentQuery); ?>">
+                                <input type="text" name="cCommentQuery" maxlength="1024" placeholder="search comment" value="<?php echo e($cCommentQuery); ?>" style="padding: 0;">
                                 <input type='image' src='./img/checkmark.png' alt='Checkmark to change the month and year' height='30px' width='30px'>
                             </form>
                         </td>

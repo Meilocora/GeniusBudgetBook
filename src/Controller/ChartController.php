@@ -175,13 +175,14 @@ class ChartController extends AbstractController{
     }
 
     public function dateArray($startDate, $endDate) {
-        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30), 0);
+        $months = @(int) round((strtotime($endDate) - strtotime($startDate))/ (60*60*24*30.47), 0);
         $dateArray = [];
+
         for ($i = 0; $i < $months; $i++) {
             $month = date('Y-m', strtotime(" +{$i} months", strtotime($startDate)));
             $dateArray [] = date('Y M', strtotime($month));
         }
-        if(!in_array(date(('Y M'), strtotime($endDate)), $dateArray)) $dateArray [] = date(('Y M'), strtotime($endDate));
+        if(!in_array(date(('Y M'), strtotime($endDate)- 1*60*60*24), $dateArray)) $dateArray [] = date(('Y M'), strtotime($endDate));  // minus 1 day so php won't round up to the next month
         return $dateArray;
     }
 

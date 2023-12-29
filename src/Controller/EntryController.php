@@ -256,7 +256,7 @@ class EntryController extends AbstractController{
         $entryCollectionraw = $this->entryRepository->fetchAllForTimeInterval($startDate, $endDate);
         $donationsEntries = [];
         foreach($entryCollectionraw AS $entry) {
-            if(preg_match('/.*donation.*/i', $entry->category) | preg_match('/.*?donation.*?/i', $entry->title) | preg_match('/.*?donation.*?/i', $entry->comment)) {
+            if(preg_match('/.*donation.*/i', $entry->category) | preg_match('/.*spende.*/i', $entry->category) | preg_match('/.*?donation.*?/i', $entry->title) | preg_match('/.*?spende.*?/i', $entry->title) | preg_match('/.*?donation.*?/i', $entry->comment) | preg_match('/.*?spende.*?/i', $entry->comment)) {
                 $donationsEntries[] = $entry;
             }
         }
