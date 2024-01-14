@@ -136,7 +136,7 @@
         <div class="charts-container-row">
             <h1>Total Wealth</h1>
         </div>
-        <?php if($currentGoalSharesC['Missing wealth'] !== 0 & $year === date('Y') & $donationsArrayC[1] !== 0): ?>
+        <?php if((int)$currentGoalSharesC['Missing wealth'] !== 0 & $year === date('Y') & (int)$donationsArrayC[1] !== 0): ?>
             <div class="charts-container-row">
                 <span>Your total assets are currently worth: <?php echo number_format($currentTotalWealth, '0', ',', '.') . ' €'; ?></span>
             </div>
@@ -146,14 +146,14 @@
             <div class="charts-container-row">
                 <span>Just accumulate <?php echo number_format(($currentGoalSharesC['Missing wealth']/$daysleft), '0', ',', '.') . '€'; ?> each day und you will be there!</span>
             </div>
-        <?php elseif($currentGoalSharesC['Missing wealth'] === 0 & $year === date('Y') & $donationsArrayC[1] !== 0): ?>
+        <?php elseif((int)$currentGoalSharesC['Missing wealth'] === 0 & $year === date('Y') & (int)$donationsArrayC[1] !== 0): ?>
             <div class="charts-container-row">
                 <span>Congratulations, you have reached your personal wealth goal of <?php echo number_format($goalsArray["totalwealthgoal"], '0', ',', '.') . '€'; ?> already!!!</span>
             </div> 
             <div class="charts-container-row">
                 <span>Make sure to reach your donation goal aswell...</span>
             </div>
-        <?php elseif($currentGoalSharesC['Missing wealth'] === 0 & $year === date('Y') & $donationsArrayC[1] === 0): ?>
+        <?php elseif((int)$currentGoalSharesC['Missing wealth'] === 0 & $year === date('Y') & (int)$donationsArrayC[1] === 0): ?>
         <div class="charts-container-row">
             <span>Congratulations, you have reached your personal wealth goal of <?php echo number_format($goalsArray["totalwealthgoal"], '0', ',', '.') . '€'; ?> already!!!</span>
         </div> 
@@ -189,7 +189,7 @@
                 <span>Your donation goal is <?php echo number_format(array_sum($donationsArrayC), '0', ',', '.') . '€.'; ?></span>
             </div>
             <div class="charts-container-row">
-                <?php if($donationsArrayC[1] !== 0): ?>
+                <?php if((int)$donationsArrayC[1] !== 0): ?>
                     <span>You need to donate <?php echo number_format($donationsArrayC[1], '0', ',', '.') . '€ '; ?> more to reach the goal!</span>
                 <?php else: ?>
                     <span>Congratulations! You already reached your donations goal.</span>

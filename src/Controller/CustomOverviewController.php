@@ -250,7 +250,7 @@ class CustomOverviewController extends AbstractController{
             if($entry->income === 0) $expenditures -= $entry->amount;
         }
         $balancesArray['totalCashflow'] = $revenues + $expenditures !== 0 ? $revenues + $expenditures : .001;;
-        $balancesArray['revenues'] = $revenues !== 0 ? $revenues + $expenditures : .001;;
+        $balancesArray['revenues'] = $revenues !== 0 ? $revenues : .001;;
         $balancesArray['expenditures'] = $expenditures !== 0 ? $expenditures : .001;;
         return $balancesArray;
     }
@@ -264,7 +264,7 @@ class CustomOverviewController extends AbstractController{
             if($entry->income === 0 && $entry->fixedentry === 1) $expenditures -= $entry->amount;
         }
         $balancesArray['totalCashflow'] = $revenues + $expenditures !== 0 ? $revenues + $expenditures : .001;
-        $balancesArray['revenues'] = $revenues !== 0 ? $revenues + $expenditures : .001;
+        $balancesArray['revenues'] = $revenues !== 0 ? $revenues : .001;
         $balancesArray['expenditures'] = $expenditures !== 0 ? $expenditures : .001;
         return $balancesArray;
     }

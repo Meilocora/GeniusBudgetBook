@@ -163,7 +163,7 @@ export default class ChartGenerator {
                     line: {
                         borderWidth: (lineColors.length === 2) ? 4 : 2,
                         borderColor: (lineColors.length === 2) ? lineColors : 'black',
-                        tension: 0.5,
+                        tension: 0.15,
                     },
                     point: {
                         radius: 2,
@@ -269,7 +269,7 @@ export default class ChartGenerator {
                     line: {
                         borderWidth: 2,
                         borderColor: 'black',
-                        tension: 0.5,
+                        tension: 0.15,
                     },
                     point: {
                         radius: 2,
